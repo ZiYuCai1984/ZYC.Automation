@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="ZYC.CoreToolkit.Extensions.Autofac" />
+    <PackageReference Include="MahApps.Metro" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZYC.MdXaml\ZYC.MdXaml.csproj" />
+    <ProjectReference Include="..\ZYC.Automation.Core\ZYC.Automation.Core.csproj" />
+    <ProjectReference Include="..\ZYC.Automation.Modules.ModuleManager.Abstractions\ZYC.Automation.Modules.ModuleManager.Abstractions.csproj" />
+    <ProjectReference Include="..\ZYC.Automation.Modules.NuGet.Abstractions\ZYC.Automation.Modules.NuGet.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

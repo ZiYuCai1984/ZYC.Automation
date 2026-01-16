@@ -1,0 +1,66 @@
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using ZYC.Automation.Abstractions;
+using ZYC.Automation.Abstractions.Event;
+using ZYC.Automation.Abstractions.State;
+using ZYC.Automation.Core.Commands;
+using ZYC.Automation.Core.WindowTitle;
+using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
+
+namespace ZYC.Automation.WindowTitle.BuildIn;
+
+[RegisterSingleInstance]
+internal class SetPreventExitTitleItem : WindowTitleItem, INotifyPropertyChanged, IDisposable
+{
+    public SetPreventExitTitleItem(
+        IEventAggregator eventAggregator,
+        SetPreventExitCommand setPreventExitCommand,
+        DesktopWindowState desktopWindowState) : base(null!, null!)
+    {
+        SetPreventExitCommand = setPreventExitCommand;
+        DesktopWindowState = desktopWindowState;
+
+        SetPreventExitEvent =
+            eventAggregator.Subscribe<SetPreventExitCommandExecutedEvent>(OnSetPreventExitCommandExecuted);
+    }
+
+    private IDisposable SetPreventExitEvent { get; }
+
+    private SetPreventExitCommand SetPreventExitCommand { get; }
+
+    private DesktopWindowState DesktopWindowState { get; }
+
+    public override string Icon
+    {
+        get
+        {
+            if (DesktopWindowState.IsPreventExit)
+            {
+                return "LockOutline";
+            }
+
+            return "LockOpenOutline";
+        }
+    }
+
+    public override ICommand Command => SetPreventExitCommand;
+
+    public void Dispose()
+    {
+        SetPreventExitEvent.Dispose();
+    }
+
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnSetPreventExitCommandExecuted(SetPreventExitCommandExecutedEvent obj)
+    {
+        OnPropertyChanged(nameof(Icon));
+    }
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}

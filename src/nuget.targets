@@ -1,0 +1,140 @@
+﻿<Project>
+
+
+  <ItemGroup>
+    <PackageReference Update="ZYC.CoreToolkit" Version="$(V_ZYC_CoreToolkit)" />
+    <PackageReference Update="ZYC.CoreToolkit.Pro" Version="$(V_ZYC_CoreToolkit)" />
+    <PackageReference Update="ZYC.CoreToolkit.Abstractions" Version="$(V_ZYC_CoreToolkit)" />
+    <PackageReference Update="ZYC.CoreToolkit.Extensions.Autofac" Version="$(V_ZYC_CoreToolkit)" />
+    <PackageReference Update="ZYC.CoreToolkit.Extensions.Settings" Version="$(V_ZYC_CoreToolkit)" />
+    <PackageReference Update="ZYC.CoreToolkit.Extensions.WebView2" Version="$(V_ZYC_CoreToolkit)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <V_Microsoft_Web_WebView2>1.0.3712-prerelease</V_Microsoft_Web_WebView2>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Web.WebView2" Version="$(V_Microsoft_Web_WebView2)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!--!WARNING Autofac and Autofac.Extensions.DependencyInjection do not share the same version number !!-->
+    <V_Autofac>9.0.0</V_Autofac>
+    <V_Autofac_Extensions_DependencyInjection>10.0.0</V_Autofac_Extensions_DependencyInjection>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Autofac" Version="$(V_Autofac)" />
+    <PackageReference Update="Autofac.Extensions.DependencyInjection"
+                      Version="$(V_Autofac_Extensions_DependencyInjection)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <V_MahApps_Metro>3.0.0-rc0529</V_MahApps_Metro>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Update="MahApps.Metro" Version="$(V_MahApps_Metro)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <V_MahApps_Metro_IconPacks_Material>6.2.1</V_MahApps_Metro_IconPacks_Material>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Update="MahApps.Metro.IconPacks.Material" Version="$(V_MahApps_Metro_IconPacks_Material)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <V_AvalonEdit>6.3.1.120</V_AvalonEdit>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Update="AvalonEdit" Version="$(V_AvalonEdit)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <V_Emoji_Wpf>0.3.4</V_Emoji_Wpf>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Emoji.Wpf" Version="$(V_Emoji_Wpf)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <V_System_Drawing_Common>8.0.11</V_System_Drawing_Common>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Update="System.Drawing.Common" Version="$(V_System_Drawing_Common)" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Update="Aspire.Hosting.AppHost" Version="$(V_Aspire)" />
+  </ItemGroup>
+
+
+  <PropertyGroup>
+    <V_NuGet>7.0.1</V_NuGet>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Update="NuGet.Frameworks" Version="$(V_NuGet)" />
+    <PackageReference Update="NuGet.Protocol" Version="$(V_NuGet)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <V_Newtonsoft_Json>13.0.3</V_Newtonsoft_Json>
+  </PropertyGroup>
+
+  <!--!WARNING In order to be compatible with Newtonsoft.Json version in NuGet.Protocol and TickerQ-->
+  <ItemGroup>
+    <PackageReference Update="Newtonsoft.Json" Version="$(V_Newtonsoft_Json)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="WPFHexaEditor" Version="2.1.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="System.Reactive" Version="7.0.0-preview.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="CI.Microsoft.Terminal.Wpf" Version="1.22.250204002" />
+    <PackageReference Update="CI.Microsoft.Windows.Console.ConPTY" Version="1.22.250314001" />
+    <PackageReference Update="Microsoft.Windows.CsWin32" Version="0.3.264">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Update="log4net" Version="3.2.0" />
+    <PackageReference Update="LibreTranslate.Net" Version="1.0.1" />
+    <PackageReference Update="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
+    <PackageReference Update="SSH.NET" Version="2025.0.0" />
+    <PackageReference Update="PDFsharp" Version="6.2.1" />
+    <PackageReference Update="Google.Apis.Drive.v3" Version="1.70.0.3893" />
+    <PackageReference Update="Aspose.Words" Version="20.11.0" />
+    <PackageReference Update="Tools.InnoSetup" Version="6.7.0" />
+    <PackageReference Update="BrotliSharpLib" Version="0.3.3" />
+    <PackageReference Update="BouncyCastle.Cryptography" Version="2.7.0-beta.98" />
+    <PackageReference Update="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageReference Update="System.Security.Principal.Windows" Version="5.0.0" />
+    <PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,22 @@
+﻿using System.Net;
+using Titanium.Web.Proxy.EventArguments;
+
+namespace Titanium.Web.Proxy.Models;
+
+public abstract class TransparentBaseProxyEndPoint : ProxyEndPoint
+{
+    protected TransparentBaseProxyEndPoint(IPAddress ipAddress, int port, bool decryptSsl) : base(ipAddress, port,
+        decryptSsl)
+    {
+    }
+
+    /// <summary>
+    ///     The hostname of the generic certificate to negotiate SSL.
+    ///     This will be only used when Sever Name Indication (SNI) is not supported by client,
+    ///     or when it does not indicate any host name.
+    /// </summary>
+    public abstract string GenericCertificateName { get; set; }
+
+    internal abstract Task InvokeBeforeSslAuthenticate(ProxyServer proxyServer,
+        BeforeSslAuthenticateEventArgs connectArgs, ExceptionHandler? exceptionFunc);
+}

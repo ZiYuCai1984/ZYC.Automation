@@ -1,0 +1,12 @@
+<Project>
+
+  <ItemGroup>
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>_</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <Import Project="./nuget.targets" />
+
+
+</Project>

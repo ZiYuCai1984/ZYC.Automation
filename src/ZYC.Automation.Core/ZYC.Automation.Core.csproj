@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Autofac" />
+    <PackageReference Include="ZYC.CoreToolkit.Extensions.Autofac" />
+    <PackageReference Include="MahApps.Metro.IconPacks.Material" />
+    <PackageReference Include="ZYC.CoreToolkit" />
+    <PackageReference Include="AvalonEdit" />
+    <PackageReference Include="Emoji.Wpf" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZYC.Automation.Abstractions\ZYC.Automation.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <DisableNamespaceCheck>true</DisableNamespaceCheck>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CS8767</NoWarn>
+    <NoWarn>$(NoWarn);CS8618</NoWarn>
+    <NoWarn>$(NoWarn);CS8602</NoWarn>
+    <NoWarn>$(NoWarn);CS8604</NoWarn>
+    <NoWarn>$(NoWarn);CS8625</NoWarn>
+    <NoWarn>$(NoWarn);CS8603</NoWarn>
+    <NoWarn>$(NoWarn);CS8600</NoWarn>
+    <NoWarn>$(NoWarn);CS0067</NoWarn>
+    <NoWarn>$(NoWarn);SYSLIB0014</NoWarn>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" />
+    <PackageReference Include="Emoji.Wpf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="MdXaml\EmojiTable.txt" />
+  </ItemGroup>
+</Project>

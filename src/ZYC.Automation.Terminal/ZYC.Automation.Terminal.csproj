@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <DisableNamespaceCheck>true</DisableNamespaceCheck>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CS1998</NoWarn>
+    <NoWarn>$(NoWarn);CS8625</NoWarn>
+    <NoWarn>$(NoWarn);CS8618</NoWarn>
+    <NoWarn>$(NoWarn);CS8602</NoWarn>
+    <NoWarn>$(NoWarn);CS8604</NoWarn>
+    <NoWarn>$(NoWarn);CS8603</NoWarn>
+    <NoWarn>$(NoWarn);CS8622</NoWarn>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="CI.Microsoft.Terminal.Wpf" />
+    <PackageReference Include="CI.Microsoft.Windows.Console.ConPTY" />
+    <PackageReference Include="Microsoft.Windows.CsWin32" />
+  </ItemGroup>
+
+</Project>

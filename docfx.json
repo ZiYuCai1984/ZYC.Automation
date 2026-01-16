@@ -1,0 +1,41 @@
+{
+    "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+    "metadata": [
+        {
+            "src": [
+                {
+                    "src": "./src",
+                    "files": [
+                        "**/*.Abstractions.csproj"
+                    ],
+                    "exclude": [
+                        "**/bin/**",
+                        "**/_bin/**",
+                        "**/_bin_build/**",
+                        "**/obj/**",
+                        "**/_obj/**",
+                        "**/ZYC.Automation.Build.*/**/*.csproj"
+                    ]
+                }
+            ],
+            "dest": "./_api"
+        }
+    ],
+    "build": {
+        "content": [
+            {
+                "files": [
+                    "**/*.yml",
+                    "index.md"
+                ],
+                "exclude": [
+                    "_site/**"
+                ]
+            }
+        ],
+        "output": "./_site",
+        "template": [
+            "default"
+        ]
+    }
+}

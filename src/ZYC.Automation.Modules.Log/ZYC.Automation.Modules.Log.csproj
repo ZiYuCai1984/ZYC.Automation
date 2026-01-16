@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\ZYC.Automation.Modules.Log.Abstractions\ZYC.Automation.Modules.Log.Abstractions.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ZYC.CoreToolkit.Extensions.Autofac" />
+    <PackageReference Include="log4net" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZYC.Automation.Core\ZYC.Automation.Core.csproj" />
+    <ProjectReference Include="..\ZYC.Automation.Modules.ModuleManager.Abstractions\ZYC.Automation.Modules.ModuleManager.Abstractions.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,1 @@
+﻿libretranslate --load-only en,ja,zh,zt,ko

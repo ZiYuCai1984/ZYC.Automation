@@ -1,0 +1,62 @@
+﻿<Project>
+
+  <Import Project="./nuget.props" />
+
+  <Import Project="./version.props" Condition="Exists('./version.props')" />
+
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
+    <NoWarn>$(NoWarn);MSB3270</NoWarn>
+    <NoWarn>$(NoWarn);NETSDK1206</NoWarn>
+    <NoWarn>$(NoWarn);CSS102</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <EnableWpf>true</EnableWpf>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(EnableWpf)' == 'true'">
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(EnableWpf)' != 'true' or $(MSBuildProjectName.EndsWith('.Abstractions'))">
+    <TargetFramework>net10.0</TargetFramework>
+    <UseWPF>false</UseWPF>
+  </PropertyGroup>
+
+  <!--<PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.Abstractions'))">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>-->
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>$(MSBuildThisFileDirectory)_bin</OutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <SatelliteResourceLanguages>_</SatelliteResourceLanguages>
+    <ResolveAssemblyReferencesFindRelatedSatellites>false</ResolveAssemblyReferencesFindRelatedSatellites>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <IgnoreFromPublish>false</IgnoreFromPublish>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <RazorLangVersion>8.0</RazorLangVersion>
+    <GenerateScopedCss>false</GenerateScopedCss>
+  </PropertyGroup>
+
+</Project>

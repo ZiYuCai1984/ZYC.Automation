@@ -1,0 +1,22 @@
+﻿using Autofac;
+using ZYC.Automation.Modules.Aspire.Abstractions;
+using ZYC.CoreToolkit.Extensions.Autofac;
+
+namespace ZYC.Automation.Modules.Translator;
+
+internal class Module : ModuleBase
+{
+    public override async Task LoadAsync(ILifetimeScope lifetimeScope)
+    {
+        await Task.CompletedTask;
+
+        var commandlineResourcesProvider = lifetimeScope.Resolve<ICommandlineResourcesProvider>();
+
+        commandlineResourcesProvider.Register(
+            new CommandlineServiceOptions
+            {
+                Name = "libretranslate",
+                Command = "libretranslate --load-only en,ja,zh,zt,ko"
+            });
+    }
+}

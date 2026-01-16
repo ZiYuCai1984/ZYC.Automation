@@ -1,0 +1,15 @@
+﻿name: Publish NuGet package
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Push to NuGet.org
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          dotnet run --project src/ZYC.Automation.Build.NuGet/ZYC.Automation.Build.NuGet.csproj -c Release --property:DefineConstants="PUBLISH_NUGET_ORG"
+        env:
+          NUGET_APIKEY: ${{ secrets.NUGET_APIKEY }}

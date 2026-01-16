@@ -1,0 +1,29 @@
+﻿using ZYC.Automation.Abstractions.Tab;
+using ZYC.Automation.Core;
+using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
+
+namespace ZYC.Automation.Modules.Secrets;
+
+[RegisterSingleInstance]
+internal class WlanPasswordTabItemFactory : ITabItemFactory
+{
+    public bool IsSingle => true;
+
+    public async Task<ITabItemInstance> CreateTabItemInstanceAsync(TabItemCreationContext context)
+    {
+        await Task.CompletedTask;
+
+        return context.Resolve<WlanPasswordTabItem>();
+    }
+
+    public async Task<bool> CheckUriMatchedAsync(Uri uri)
+    {
+        await Task.CompletedTask;
+        if (uri.Host == WlanPasswordTabItem.Constants.Host)
+        {
+            return true;
+        }
+
+        return false;
+    }
+}

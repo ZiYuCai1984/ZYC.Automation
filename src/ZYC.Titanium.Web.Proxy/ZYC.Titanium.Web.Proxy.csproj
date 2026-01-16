@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <EnableWpf>false</EnableWpf>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DisableNamespaceCheck>true</DisableNamespaceCheck>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CS8618</NoWarn>
+    <NoWarn>$(NoWarn);CS8601</NoWarn>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <NoWarn>$(NoWarn);CS8604</NoWarn>
+    <NoWarn>$(NoWarn);CS8602</NoWarn>
+    <NoWarn>$(NoWarn);CS8603</NoWarn>
+    <NoWarn>$(NoWarn);CS8622</NoWarn>
+    <NoWarn>$(NoWarn);CS8625</NoWarn>
+    <NoWarn>$(NoWarn);CS8619</NoWarn>
+    <NoWarn>$(NoWarn);SYSLIB0028</NoWarn>
+    <NoWarn>$(NoWarn);SYSLIB0039</NoWarn>
+    <NoWarn>$(NoWarn);CS8765</NoWarn>
+    <NoWarn>$(NoWarn);CS8605</NoWarn>
+    <NoWarn>$(NoWarn);CS8600</NoWarn>
+    <NoWarn>$(NoWarn);SYSLIB0057</NoWarn>
+    <NoWarn>$(NoWarn);SYSLIB0004</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RootNamespace>Titanium.Web.Proxy</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BrotliSharpLib" />
+    <PackageReference Include="BouncyCastle.Cryptography" />
+  </ItemGroup>
+  <ItemGroup>
+    <!--<PackageReference Include="Microsoft.Win32.Registry" />-->
+    <!--<PackageReference Include="System.Security.Principal.Windows" />-->
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Network\WinAuth\Security\Common.cs">
+      <ExcludeFromSourceAnalysis>True</ExcludeFromSourceAnalysis>
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Update="Network\WinAuth\Security\LittleEndian.cs">
+      <ExcludeFromSourceAnalysis>True</ExcludeFromSourceAnalysis>
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Update="Network\WinAuth\Security\Message.cs">
+      <ExcludeFromSourceAnalysis>True</ExcludeFromSourceAnalysis>
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Update="Network\WinAuth\Security\State.cs">
+      <ExcludeFromSourceAnalysis>True</ExcludeFromSourceAnalysis>
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Update="Properties\AssemblyInfo.cs">
+      <ExcludeFromSourceAnalysis>True</ExcludeFromSourceAnalysis>
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
+  </ItemGroup>
+</Project>

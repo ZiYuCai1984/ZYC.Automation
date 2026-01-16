@@ -1,0 +1,19 @@
+﻿<Project>
+
+  <Target Name="Copy_Files_ZYC_Automation_Alpha" BeforeTargets="PrepareForBuild">
+    <ItemGroup>
+      <Files_ZYC_Automation_Alpha Include="$(MSBuildThisFileDirectory)..\**\*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(Files_ZYC_Automation_Alpha)" DestinationFolder="$(OutputPath)\%(RecursiveDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)..\SharedSources\**\*.cs"
+             Link="ZYC.SharedSources\%(RecursiveDir)%(Filename)%(Extension)">
+    </Compile>
+  </ItemGroup>
+
+
+</Project>
