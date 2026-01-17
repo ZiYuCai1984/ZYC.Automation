@@ -1,7 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <IgnoreFromPublish>true</IgnoreFromPublish>
-  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ZYC.Automation.Modules.Language.Abstractions\ZYC.Automation.Modules.Language.Abstractions.csproj" />
     <ProjectReference Include="..\ZYC.Automation.Modules.Secrets.Abstractions\ZYC.Automation.Modules.Secrets.Abstractions.csproj" />

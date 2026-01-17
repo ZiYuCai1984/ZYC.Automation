@@ -1,7 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <IgnoreFromPublish>true</IgnoreFromPublish>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ZYC.CoreToolkit.Abstractions" Version="3.3.2" />
   </ItemGroup>
