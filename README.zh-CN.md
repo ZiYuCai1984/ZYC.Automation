@@ -24,7 +24,7 @@
     <img src="https://img.shields.io/nuget/dt/ZYC.Automation.Alpha?logo=nuget&label=Downloads" alt="NuGet Downloads" />
   </a>
   <a href="https://raw.githubusercontent.com/ZiYuCai1984/Temp/refs/heads/main/ZYC.Automation.Setup.exe">
-    <img src="https://img.shields.io/badge/Download-Setup-blue?logo=windows&logoColor=white&label=Download Demo Installer" alt="Download Demo Installer" />
+    <img src="https://img.shields.io/badge/Download-Setup-blue?logo=windows&logoColor=white&label=Download%20Demo%20Installer" alt="Download Demo Installer" />
   </a>
   <img src="https://img.shields.io/badge/.NET-10.0-blue" alt=".NET 10" />
   <img src="https://img.shields.io/badge/Platform-WPF-orange" alt="Platform" />
