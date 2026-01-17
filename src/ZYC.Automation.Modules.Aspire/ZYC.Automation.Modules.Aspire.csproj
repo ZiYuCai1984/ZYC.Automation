@@ -4,10 +4,6 @@
 
 
   <PropertyGroup>
-    <NoWarn>$(NoWarn);MSB4011</NoWarn>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <IsAspireHost>true</IsAspireHost>
     <UserSecretsId>5cd4c3bf-cddc-4cf4-80a1-7d64205a734e</UserSecretsId>
   </PropertyGroup>
