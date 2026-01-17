@@ -109,6 +109,14 @@ public class Program
                 $"{BuildEnvironment.BuildProjectPath}\\build",
                 $"{BuildEnvironment.OutputPath}\\build");
 
+            IOTools.CopyFile(
+                BuildEnvironment.NuGetPropsPath,
+                $"{BuildEnvironment.OutputPath}\\build\\nuget.props");
+
+            IOTools.CopyFile(
+                BuildEnvironment.NuGetTargetsPath,
+                $"{BuildEnvironment.OutputPath}\\build\\nuget.targets");
+
             IOTools.CopyDirectory(
                 $"{BuildEnvironment.BuildProjectPath}\\SharedSources",
                 $"{BuildEnvironment.OutputPath}\\SharedSources");
@@ -132,8 +140,6 @@ public class Program
 
     private static Package GetProductPackage()
     {
-
-
         var group = new Group
         {
             TargetFramework = ProductInfo.TargetFramework,

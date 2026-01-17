@@ -11,7 +11,7 @@ This guide will walk you through creating a **ZYC.Automation Host** project from
 
 ```xml
 <ItemGroup>
-  <PackageReference Include="ZYC.Automation.Alpha" Version="1.0.0" />
+  <PackageReference Include="ZYC.Automation.Alpha" Version="1.0.1" />
 </ItemGroup>
 ```
 
