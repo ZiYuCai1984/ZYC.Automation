@@ -21,4 +21,9 @@
     <ProjectReference Include="..\ZYC.Automation.Abstractions\ZYC.Automation.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="packages\**\*.*" />
+    <None Include="packages\**\*.*" />
+  </ItemGroup>
+
 </Project>

@@ -37,7 +37,7 @@ This release establishes the foundational architecture for a modular, extensible
 
 ```bash
 dotnet add package ZYC.Automation.Alpha --version $(Version)
-````
+```
 
 ---
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.10.35004.147
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11408.92 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZYC.Automation", "ZYC.Automation\ZYC.Automation.csproj", "{17A6BD11-8C8C-4FDF-A066-10F3182351A0}"
 EndProject
@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.targets = Directory.Build.targets
 		nuget.props = nuget.props
 		nuget.targets = nuget.targets
+		..\README.md = ..\README.md
 		version.props = version.props
 		ZYC.Automation.sln.DotSettings = ZYC.Automation.sln.DotSettings
 	EndProjectSection
@@ -105,13 +106,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZYC.Automation.Modules.Aspi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZYC.Automation.Modules.Aspire.Abstractions", "ZYC.Automation.Modules.Aspire.Abstractions\ZYC.Automation.Modules.Aspire.Abstractions.csproj", "{66C1434C-F5DF-4E8A-9390-8A5E04F2D7E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZYC.Automation.Terminal", "ZYC.Automation.Terminal\ZYC.Automation.Terminal.csproj", "{952CECFA-CA3A-43DE-80AD-D275684F647B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZYC.Automation.Terminal", "Thirdparty\ZYC.Automation.Terminal\ZYC.Automation.Terminal.csproj", "{952CECFA-CA3A-43DE-80AD-D275684F647B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Thirdparty", "Thirdparty", "{911DCF44-4C42-4704-9BD3-6AE70D6AAC43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZYC.MdXaml", "ZYC.MdXaml\ZYC.MdXaml.csproj", "{308F911B-AB11-4C2B-B7A5-169FE301E632}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZYC.MdXaml", "Thirdparty\ZYC.MdXaml\ZYC.MdXaml.csproj", "{308F911B-AB11-4C2B-B7A5-169FE301E632}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZYC.Titanium.Web.Proxy", "ZYC.Titanium.Web.Proxy\ZYC.Titanium.Web.Proxy.csproj", "{B03A7F76-B721-4B2B-BD74-43A090228F8E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZYC.Titanium.Web.Proxy", "Thirdparty\ZYC.Titanium.Web.Proxy\ZYC.Titanium.Web.Proxy.csproj", "{B03A7F76-B721-4B2B-BD74-43A090228F8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

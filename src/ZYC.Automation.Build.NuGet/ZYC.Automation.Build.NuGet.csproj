@@ -14,11 +14,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="SharedSources\Entry.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="SharedSources\Entry.cs" />
+    <Compile Remove="SharedSources\**\*.*" />
+    <None Include="SharedSources\**\*.*" />
   </ItemGroup>
 
   <ItemGroup>
