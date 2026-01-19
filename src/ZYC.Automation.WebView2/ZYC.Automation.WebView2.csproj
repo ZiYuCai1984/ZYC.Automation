@@ -2,13 +2,12 @@
   <ItemGroup>
     <PackageReference Include="Autofac" />
     <PackageReference Include="Microsoft.Web.WebView2" />
-    <!--<PackageReference Include="System.Drawing.Common" />-->
     <PackageReference Include="ZYC.CoreToolkit" />
     <PackageReference Include="ZYC.CoreToolkit.Extensions.Autofac" />
     <PackageReference Include="ZYC.CoreToolkit.Extensions.WebView2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ZYC.Titanium.Web.Proxy\ZYC.Titanium.Web.Proxy.csproj" />
+    <ProjectReference Include="..\Thirdparty\ZYC.Titanium.Web.Proxy\ZYC.Titanium.Web.Proxy.csproj" />
     <ProjectReference Include="..\ZYC.Automation.Abstractions\ZYC.Automation.Abstractions.csproj" />
     <ProjectReference Include="..\ZYC.Automation.Core\ZYC.Automation.Core.csproj" />
   </ItemGroup>

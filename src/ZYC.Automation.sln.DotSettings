@@ -1,11 +1,14 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:Boolean x:Key="/Default/CodeEditing/SuppressNullableWarningFix/Enabled/@EntryValue">False</s:Boolean>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=28E69C4D_002D311A_002D426A_002D912E_002D2E8866ED0152/@EntryIndexedValue">ExplicitlyExcluded</s:String>
-	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=308F911B_002DAB11_002D4C2B_002DB7A5_002D169FE301E632/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=308F911B_002DAB11_002D4C2B_002DB7A5_002D169FE301E632/@EntryIndexedValue"></s:String>
+	<s:Boolean x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=308F911B_002DAB11_002D4C2B_002DB7A5_002D169FE301E632/@EntryIndexRemoved">True</s:Boolean>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=90F5A3BF_002D95DA_002D406D_002DAEF6_002DBAC7B2E189B2/@EntryIndexedValue"></s:String>
 	<s:Boolean x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=90F5A3BF_002D95DA_002D406D_002DAEF6_002DBAC7B2E189B2/@EntryIndexRemoved">True</s:Boolean>
-	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=952CECFA_002DCA3A_002D43DE_002D80AD_002DD275684F647B/@EntryIndexedValue">ExplicitlyExcluded</s:String>
-	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=B03A7F76_002DB721_002D4B2B_002DBD74_002D43A090228F8E/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=952CECFA_002DCA3A_002D43DE_002D80AD_002DD275684F647B/@EntryIndexedValue"></s:String>
+	<s:Boolean x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=952CECFA_002DCA3A_002D43DE_002D80AD_002DD275684F647B/@EntryIndexRemoved">True</s:Boolean>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=B03A7F76_002DB721_002D4B2B_002DBD74_002D43A090228F8E/@EntryIndexedValue"></s:String>
+	<s:Boolean x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=B03A7F76_002DB721_002D4B2B_002DBD74_002D43A090228F8E/@EntryIndexRemoved">True</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=CLI/@EntryIndexedValue">CLI</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=DI/@EntryIndexedValue">DI</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=GPT/@EntryIndexedValue">GPT</s:String>
@@ -14,6 +17,7 @@
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=RECT/@EntryIndexedValue">RECT</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=UI/@EntryIndexedValue">UI</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/UserRules/=4a98fdf6_002D7d98_002D4f5a_002Dafeb_002Dea44ad98c70c/@EntryIndexedValue">&lt;Policy&gt;&lt;Descriptor Staticness="Instance" AccessRightKinds="Private" Description="Instance fields (private)"&gt;&lt;ElementKinds&gt;&lt;Kind Name="FIELD" /&gt;&lt;Kind Name="READONLY_FIELD" /&gt;&lt;/ElementKinds&gt;&lt;/Descriptor&gt;&lt;Policy Inspect="True" Prefix="_" Suffix="" Style="aaBb_AaBb" /&gt;&lt;/Policy&gt;</s:String>
+	<s:Boolean x:Key="/Default/Environment/ExcludedFiles/FilesAndFoldersToSkip/=_002E_002E_005CThirdparty/@EntryIndexedValue">True</s:Boolean>
 
 	<s:Boolean x:Key="/Default/Environment/UpdatesManger/IsDownloadUpdateDataAllowed/@EntryValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/GrammarAndSpelling/GrammarChecking/Exceptions/=mah/@EntryIndexedValue">True</s:Boolean>

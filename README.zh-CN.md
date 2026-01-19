@@ -150,15 +150,40 @@ dotnet add package ZYC.Automation.Alpha --version [版本号]
 
 ## 🏗️ 项目结构
 
-```
+```text
 ZYC.Automation
 ├── src
-│   ├── ZYC.Automation.Core               # 核心框架、本地化与异常处理
-│   ├── ZYC.Automation.Modules.Aspire     # Aspire AppHost/编排能力集成
-│   ├── ZYC.Automation                    # WPF 主程序入口
-│   └── ...
-├── docs                                  # 项目文档
-└── ...
+│   ├── ZYC.Automation                         # WPF desktop host/entry: main window, workspaces, menus, UI lifecycle
+│   ├── ZYC.Automation.Abstractions            # Shared contracts: interfaces, states, configs used across host/modules
+│   ├── ZYC.Automation.Core                    # Core infrastructure: commands, bindings, converters, base UI components, i18n
+│   ├── ZYC.Automation.MetroWindow             # Metro-style window shell (alternative window implementation)
+│   ├── ZYC.Automation.WebView2                # WebView2 hosting layer: navigation, menu bar, interop, page hosting
+│   ├── ZYC.Automation.CLI                     # CLI tool: developer utilities, module/file helpers, automation entrypoints
+│   ├── ZYC.Automation.Build.*                 # Build & packaging toolchain
+│   │   ├── ZYC.Automation.Build.NuGet         # NuGet packaging tool: build/.props/.targets, README, PatchNote, outputs
+│   │   ├── ZYC.Automation.Build.InnoSetup     # Inno Setup builder: produces the Windows installer (setup)
+│   │   └── ZYC.Automation.Build.NewModule     # Module scaffolder: templates for Module + Abstractions projects
+│   ├── ZYC.Automation.Modules.*               # Feature modules
+│   │   ├── ZYC.Automation.Modules.About                  # About / version info page (UI + tab)
+│   │   ├── ZYC.Automation.Modules.Aspire                 # .NET Aspire AppHost/orchestration integration + dashboard
+│   │   ├── ZYC.Automation.Modules.BlazorDemo             # Blazor Server demo: web UI + auth/integration showcase
+│   │   ├── ZYC.Automation.Modules.CLI                    # In-app CLI module (terminal-like tools page)
+│   │   ├── ZYC.Automation.Modules.FileExplorer           # File Explorer module (Explorer-like browsing in tabs)
+│   │   ├── ZYC.Automation.Modules.Language               # Language/i18n module: language switching + resources config
+│   │   ├── ZYC.Automation.Modules.Log                    # Logging module: view logs, open log folder, log plumbing
+│   │   ├── ZYC.Automation.Modules.Mock                   # Test/demo module for validating UI/notifications/tasks/workspaces
+│   │   ├── ZYC.Automation.Modules.ModuleManager          # Module manager: enable/disable/install/uninstall (local + NuGet)
+│   │   ├── ZYC.Automation.Modules.NuGet                  # NuGet access layer: sources, metadata, version utilities
+│   │   ├── ZYC.Automation.Modules.Secrets                # Secrets utilities: password generator, Wi-Fi password, secrets UI
+│   │   ├── ZYC.Automation.Modules.Settings               # Settings module: settings UI, grouping, reset actions
+│   │   ├── ZYC.Automation.Modules.TaskManager            # Task manager: queue/progress/pause/cancel/cleanup framework
+│   │   ├── ZYC.Automation.Modules.Translator             # Translator module: integrates translation services/local runner
+│   │   ├── ZYC.Automation.Modules.Update                 # Update module: check/download/apply+restart, fault handling UI
+│   │   └── ZYC.Automation.Modules.WebBrowser             # Built-in web browser module (tab-hosted browsing)
+│   └── Thirdparty                           # Integrated third-party components (vendored/forked)
+│       ├── ZYC.Automation.Terminal           # Terminal/ConPTY integration: pseudo console, PTY, process + pipes
+│       ├── ZYC.MdXaml                        # Markdown renderer + extensions
+│       └── ZYC.Titanium.Web.Proxy            # HTTP(S) proxy core (integrated Titanium Web Proxy fork)
 ```
 ---
 
