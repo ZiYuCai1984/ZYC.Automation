@@ -2,6 +2,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ZYC.Automation.Core\ZYC.Automation.Core.csproj" />
     <ProjectReference Include="..\ZYC.Automation.Modules.NuGet.Abstractions\ZYC.Automation.Modules.NuGet.Abstractions.csproj" />
+    <ProjectReference Include="..\ZYC.Automation.Modules.Settings.Abstractions\ZYC.Automation.Modules.Settings.Abstractions.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ZYC.CoreToolkit.Extensions.Autofac" />

@@ -1,5 +1,4 @@
-﻿using ZYC.Automation.Abstractions.Config.Attributes;
-using ZYC.CoreToolkit.Abstractions.Settings;
+﻿using ZYC.CoreToolkit.Abstractions.Settings;
 
 namespace ZYC.Automation.Modules.NuGet.Abstractions;
 
@@ -11,7 +10,7 @@ public class NuGetConfig : IConfig
     /// <summary>
     ///     Gets or sets the NuGet sources used for updates.
     /// </summary>
-    public string[] Sources { get; set; } = ["https://api.nuget.org/v3/index.json"];
+    public string Source { get; set; } = "https://api.nuget.org/v3/index.json";
 
     /// <summary>
     ///     Gets or sets the relative cache folder for NuGet packages.

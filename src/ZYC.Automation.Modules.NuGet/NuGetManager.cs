@@ -9,52 +9,68 @@ using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Modules.NuGet.Abstractions;
+using ZYC.Automation.Modules.Settings.Abstractions.Event;
 using ZYC.CoreToolkit.Dotnet;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.NuGet;
 
 [RegisterSingleInstanceAs(typeof(INuGetManager))]
-internal class NuGetManager : INuGetManager
+internal class NuGetManager : INuGetManager, IDisposable
 {
-    public NuGetManager(IAppContext appContext, NuGetConfig config)
+    private NuGetSource? _nugetSource;
+
+    public NuGetManager(
+        IAppContext appContext,
+        NuGetConfig config,
+        IEventAggregator eventAggregator)
     {
-        AppContext = appContext ?? throw new ArgumentNullException(nameof(appContext));
-        NuGetConfig = config ?? throw new ArgumentNullException(nameof(config));
+        AppContext = appContext;
+        NuGetConfig = config;
+        EventAggregator = eventAggregator;
 
         SourceCacheContext = new NullSourceCacheContext
         {
             DirectDownload = true
         };
 
-        if (NuGetConfig.Sources != null)
-        {
-            foreach (var source in NuGetConfig.Sources)
-            {
-                if (string.IsNullOrWhiteSpace(source))
-                {
-                    continue;
-                }
-
-                NuGetSources[source] = new NuGetSource(source);
-            }
-        }
-
-        if (NuGetSources.Count == 0)
-        {
-            const string defaultSource = "https://api.nuget.org/v3/index.json";
-            NuGetSources[defaultSource] = new NuGetSource(defaultSource);
-        }
+        NuGetConfigChangedEvent = eventAggregator.Subscribe<SettingChangedEvent<NuGetConfig>>(OnNuGetConfigChanged);
     }
 
-    private IDictionary<string, NuGetSource> NuGetSources { get; } =
-        new Dictionary<string, NuGetSource>(StringComparer.OrdinalIgnoreCase);
+    private IDisposable NuGetConfigChangedEvent { get; }
 
     private IAppContext AppContext { get; }
 
     private NuGetConfig NuGetConfig { get; }
 
+    private IEventAggregator EventAggregator { get; }
+
+    public NuGetSource NuGetSource
+    {
+        get
+        {
+            if (_nugetSource == null)
+            {
+                var source = NuGetConfig.Source;
+                if (string.IsNullOrWhiteSpace(source))
+                {
+                    source = "https://api.nuget.org/v3/index.json";
+                }
+
+                _nugetSource = new NuGetSource(source);
+            }
+
+            return _nugetSource;
+        }
+    }
+
     private SourceCacheContext SourceCacheContext { get; }
+
+    public void Dispose()
+    {
+        NuGetConfigChangedEvent.Dispose();
+        SourceCacheContext.Dispose();
+    }
 
     public async Task ClearNuGetHttpCacheAsync()
     {
@@ -66,7 +82,7 @@ internal class NuGetManager : INuGetManager
         NuGetVersion nugetVersion,
         CancellationToken token)
     {
-        var nugetSource = GetDefaultNuGetSource();
+        var nugetSource = NuGetSource;
 
         var downloadResource =
             await nugetSource.SourceRepository.GetResourceAsync<DownloadResource>(token);
@@ -99,7 +115,7 @@ internal class NuGetManager : INuGetManager
         NuGetVersion nugetVersion,
         CancellationToken token)
     {
-        var nugetSource = GetDefaultNuGetSource();
+        var nugetSource = NuGetSource;
 
         var packageMetadataResource =
             await nugetSource.SourceRepository.GetResourceAsync<PackageMetadataResource>(token);
@@ -143,7 +159,7 @@ internal class NuGetManager : INuGetManager
 
         processedPackages.Add(ProcessPackage(packageId, version));
 
-        var nugetSource = GetDefaultNuGetSource();
+        var nugetSource = NuGetSource;
 
         var packageMetadataResource =
             await nugetSource.SourceRepository.GetResourceAsync<PackageMetadataResource>(token);
@@ -181,7 +197,7 @@ internal class NuGetManager : INuGetManager
         bool includePrerelease,
         CancellationToken token)
     {
-        var nugetSource = GetDefaultNuGetSource();
+        var nugetSource = NuGetSource;
 
         var metadataResource =
             await nugetSource.SourceRepository.GetResourceAsync<MetadataResource>(token);
@@ -207,95 +223,63 @@ internal class NuGetManager : INuGetManager
         string packageId,
         string version)
     {
-        using var httpClient = new HttpClient();
-
-        foreach (var source in NuGetSources.Keys)
+        var patchNote = await TryFetchReleaseNotesAsync(
+            packageId,
+            version);
+        if (!string.IsNullOrWhiteSpace(patchNote))
         {
-            var patchNote = await TryFetchReleaseNotesAsync(
-                httpClient,
-                source,
-                packageId,
-                version);
-            if (!string.IsNullOrWhiteSpace(patchNote))
-            {
-                return patchNote;
-            }
+            return patchNote;
         }
 
         return null;
     }
 
-    private string GetDefaultSource()
+    private void OnNuGetConfigChanged(SettingChangedEvent<NuGetConfig> obj)
     {
-        if (NuGetConfig.Sources is { Length: > 0 })
-        {
-            foreach (var source in NuGetConfig.Sources)
-            {
-                if (!string.IsNullOrWhiteSpace(source))
-                {
-                    return source;
-                }
-            }
-        }
-
-        if (NuGetSources.Count > 0)
-        {
-            return NuGetSources.Keys.First();
-        }
-
-        throw new InvalidOperationException("No NuGet sources configured.");
-    }
-
-    private NuGetSource GetDefaultNuGetSource()
-    {
-        return GetNuGetSource(GetDefaultSource());
-    }
-
-    private NuGetSource GetNuGetSource(string source)
-    {
-        if (!NuGetSources.TryGetValue(source, out var nugetSource))
-        {
-            nugetSource = new NuGetSource(source);
-            NuGetSources[source] = nugetSource;
-        }
-
-        return nugetSource;
+        _nugetSource = null;
     }
 
     private async Task<string?> TryFetchReleaseNotesAsync(
-        HttpClient httpClient,
-        string nugetSouce,
         string packageId,
         string version)
     {
-        using var indexJson = JsonDocument.Parse(
-            await httpClient.GetStringAsync(nugetSouce, CancellationToken.None));
-        var baseAddress = indexJson.RootElement
-            .GetProperty("resources")
-            .EnumerateArray()
-            .Select(r => new
-            {
-                Type = r.GetProperty("@type").GetString(),
-                Id = r.GetProperty("@id").GetString()
-            })
-            .First(x => x.Type != null && x.Type.StartsWith("PackageBaseAddress", StringComparison.OrdinalIgnoreCase))
-            .Id!;
+        try
+        {
+            using var httpClient = new HttpClient();
 
+            using var indexJson = JsonDocument.Parse(
+                await httpClient.GetStringAsync(NuGetSource.Source, CancellationToken.None));
+            var baseAddress = indexJson.RootElement
+                .GetProperty("resources")
+                .EnumerateArray()
+                .Select(r => new
+                {
+                    Type = r.GetProperty("@type").GetString(),
+                    Id = r.GetProperty("@id").GetString()
+                })
+                .First(x => x.Type != null &&
+                            x.Type.StartsWith("PackageBaseAddress", StringComparison.OrdinalIgnoreCase))
+                .Id!;
 
-        var lowerId = packageId.ToLowerInvariant();
-        var nugetVersion = NuGetVersion.Parse(version);
-        var lowerVersion = nugetVersion.ToNormalizedString().ToLowerInvariant();
+            var lowerId = packageId.ToLowerInvariant();
+            var nugetVersion = NuGetVersion.Parse(version);
+            var lowerVersion = nugetVersion.ToNormalizedString().ToLowerInvariant();
 
-        var nuspecUrl = $"{baseAddress.TrimEnd('/')}/{lowerId}/{lowerVersion}/{lowerId}.nuspec";
+            var nuspecUrl = $"{baseAddress.TrimEnd('/')}/{lowerId}/{lowerVersion}/{lowerId}.nuspec";
 
-        var xml = await httpClient.GetStringAsync(nuspecUrl, CancellationToken.None);
-        var xdoc = XDocument.Parse(xml);
+            var xml = await httpClient.GetStringAsync(nuspecUrl, CancellationToken.None);
+            var xdoc = XDocument.Parse(xml);
 
-        var releaseNotes = xdoc
-            .Descendants()
-            .FirstOrDefault(e => e.Name.LocalName.Equals("releaseNotes", StringComparison.OrdinalIgnoreCase))
-            ?.Value.Trim();
+            var releaseNotes = xdoc
+                .Descendants()
+                .FirstOrDefault(e => e.Name.LocalName.Equals("releaseNotes", StringComparison.OrdinalIgnoreCase))
+                ?.Value.Trim();
 
-        return string.IsNullOrWhiteSpace(releaseNotes) ? null : releaseNotes;
+            return string.IsNullOrWhiteSpace(releaseNotes) ? null : releaseNotes;
+        }
+        catch (Exception e)
+        {
+            return e.ToString();
+        }
     }
 }

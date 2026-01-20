@@ -16,12 +16,14 @@ namespace ZYC.Automation.Modules.ModuleManager;
 internal class NuGetModuleManager : INuGetModuleManager
 {
     public NuGetModuleManager(
+        NuGetConfig nugetConfig,
         IPendingDeleteManager pendingDeleteManager,
         INuGetManager nuGetManager,
         NuGetModuleManagerConfig config,
         NuGetModuleManifestState manifestState,
         IAppContext appContext)
     {
+        NuGetConfig = nugetConfig;
         PendingDeleteManager = pendingDeleteManager;
         NuGetManager = nuGetManager;
         Config = config;
@@ -29,15 +31,21 @@ internal class NuGetModuleManager : INuGetModuleManager
         AppContext = appContext;
     }
 
+    private NuGetConfig NuGetConfig { get; }
+    
     private IPendingDeleteManager PendingDeleteManager { get; }
+    
     private INuGetManager NuGetManager { get; }
+    
     private NuGetModuleManagerConfig Config { get; }
+    
     private NuGetModuleManifestState ManifestState { get; }
+
     private IAppContext AppContext { get; }
 
     public async Task<INuGetModule[]> GetModulesAsync(CancellationToken token)
     {
-        var source = new PackageSource(Config.Source);
+        var source = new PackageSource(NuGetConfig.Source);
         var repository = Repository.Factory.GetCoreV3(source);
         var search = await repository.GetResourceAsync<PackageSearchResource>(token);
         var filter = new SearchFilter(true)

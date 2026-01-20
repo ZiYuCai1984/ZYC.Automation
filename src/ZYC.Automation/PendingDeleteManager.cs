@@ -1,10 +1,12 @@
 ﻿using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.State;
+using ZYC.CoreToolkit.Abstractions.Attributes;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation;
 
 [RegisterSingleInstanceAs(typeof(IPendingDeleteManager))]
+[TempCode]
 public class PendingDeleteManager : IPendingDeleteManager
 {
     public PendingDeleteManager(PendingFileOperationsState pendingFileOperationsState)
