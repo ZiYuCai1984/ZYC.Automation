@@ -44,7 +44,6 @@ internal class
         try
         {
             await NuGetModuleManager.UninstallAsync((INuGetModule)parameter);
-            ToastManager.PromptMessage(new ToastMessage("Take effect after restart ."));
             BannerManager.PromptRestart();
         }
         catch (Exception e)
