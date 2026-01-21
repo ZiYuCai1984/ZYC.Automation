@@ -7,29 +7,39 @@
 
 ## 🌟 Highlights
 
-🎉 **Initial public release** of **ZYC.Automation.Alpha**.
+✨ **Major refactor of NuGet module management and UI integration**
 
-This release establishes the foundational architecture for a modular, extensible automation framework built on modern .NET technologies.
+This release significantly improves the internal design and usability of NuGet-based modules, laying a more solid foundation for future automation workflows and module lifecycle management.
 
 ---
 
 ## 🆕 New Features
 
-- Initial project structure and core abstractions
-- Modular startup and extension points for future automation components
-- Basic configuration and lifecycle integration
+- Introduced a clearer NuGet module domain model:
+  - `NuGetModuleState`
+  - `NuGetModuleConfig`
+  - `InstalledNuGetModule`
+- Fully refactored **INuGetModuleManager** to an async-first API
+- Enhanced **NuGetModuleManagerView** with:
+  - Module list visualization
+  - Install / uninstall actions
+  - Manual refresh
+  - NuGet cache cleanup
 
 ---
 
 ## 🛠 Improvements
 
-- N/A (initial release)
+- Removed legacy manifest / state / config coupling in favor of explicit domain objects
+- Simplified module installation pipeline by removing file extraction responsibilities from the manager
+- Improved UI–logic separation for module management workflows
+- Upgraded dependency **ZYC.CoreToolkit** to **v3.7.4**
 
 ---
 
 ## 🐛 Bug Fixes
 
-- N/A (initial release)
+- Fixed typo in `ManagedTaskProgressChangedEvent` and updated all related usages
 
 ---
 

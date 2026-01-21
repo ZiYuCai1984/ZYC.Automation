@@ -20,11 +20,14 @@ internal sealed partial class NuGetModuleManagerView
     }
 
     private RefreshNuGetModuleCommand RefreshNuGetModuleCommand { get; }
+
     private INuGetModuleManager NuGetModuleManager { get; }
 
     private INuGetManager NuGetManager { get; }
 
     public ObservableCollection<INuGetModule> NuGetModules { get; } = new();
+
+    public int ModulesCount => NuGetModules.Count;
 
     protected override async void InternalOnLoaded()
     {
@@ -40,5 +43,7 @@ internal sealed partial class NuGetModuleManagerView
         {
             NuGetModules.Add(module);
         }
+
+        OnPropertyChanged(nameof(ModulesCount));
     }
 }

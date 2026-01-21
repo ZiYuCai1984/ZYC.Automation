@@ -30,137 +30,141 @@
                                 CommandParameter="{Binding .}" />
         </StackPanel>
     </page:PageBase.HeaderAdditionContent>
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+    <Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Auto">
-        <ItemsControl ItemsSource="{Binding NuGetModules}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderThickness="0 0 0 1"
+            <ItemsControl ItemsSource="{Binding NuGetModules}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderThickness="0 0 0 1"
                             BorderBrush="{DynamicResource MahApps.Brushes.Validation2}"
                             Margin="0 0 16 0">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Grid Margin="0 8 0 16">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <Grid Margin="0 4 4 4"
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Margin="0 8 0 16">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Grid Margin="0 4 4 4"
                                       Background="Transparent">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="64" />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
-                                    <iconPacks:PackIconMaterial Kind="{Binding Icon}"
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="64" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <iconPacks:PackIconMaterial Kind="{Binding Icon}"
                                                                 HorizontalAlignment="Center"
                                                                 VerticalAlignment="Center"
                                                                 Width="32"
                                                                 Height="32" />
-                                    <TextBlock Grid.Column="1"
+                                        <TextBlock Grid.Column="1"
                                                VerticalAlignment="Center"
                                                HorizontalAlignment="Left"
                                                Margin="8 0 0 0"
                                                TextTrimming="WordEllipsis"
                                                FontWeight="Bold"
                                                Text="{Binding ModuleAssemblyName}" />
-                                </Grid>
+                                    </Grid>
 
-                                <Grid Grid.Row="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="64" />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid>
-                                        <TextBlock HorizontalAlignment="Center"
+                                    <Grid Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="64" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid>
+                                            <TextBlock HorizontalAlignment="Center"
                                                    FontWeight="Bold"
                                                    Foreground="Green"
                                                    Text="*Installed*"
                                                    Visibility="{Binding Installed,Converter={converters:BoolToVisibilityConverter}}" />
-                                    </Grid>
-                                    <StackPanel Grid.Column="1"
+                                        </Grid>
+                                        <StackPanel Grid.Column="1"
                                                 Margin="8 0 0 0">
 
-                                        <TextBlock Margin="0 0 0 4">
+                                            <TextBlock Margin="0 0 0 4">
                                             <Run Text="Dependence on" />
                                             <Run Text=" : " />
                                             <Run Text="{Binding DependencyOn.Length,Mode=OneWay}" />
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Text="No Item"
+                                            <TextBlock Text="No Item"
                                                    Margin="32 0 0 4"
                                                    Visibility="{Binding DependencyOn.Length,Converter={converters:IntToVisibilityConverter Reverse=True},FallbackValue=Collapsed}" />
 
-                                        <ItemsControl ItemsSource="{Binding DependencyOn}"
+                                            <ItemsControl ItemsSource="{Binding DependencyOn}"
                                                       Margin="32 0 0 0">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding ModuleAssemblyName}"
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding ModuleAssemblyName}"
                                                                Margin="0 0 0 4" />
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
 
-                                        <TextBlock Margin="0 0 0 4">
+                                            <TextBlock Margin="0 0 0 4">
                                             <Run Text="Dependence by" />
                                             <Run Text=" : " />
                                             <Run Text="{Binding DependencyBy.Length,Mode=OneWay}" />
-                                        </TextBlock>
+                                            </TextBlock>
 
-                                        <TextBlock Text="No Item"
+                                            <TextBlock Text="No Item"
                                                    Margin="32 0 0 4"
                                                    Visibility="{Binding DependencyBy.Length,Converter={converters:IntToVisibilityConverter Reverse=True},FallbackValue=Collapsed}" />
 
-                                        <ItemsControl ItemsSource="{Binding DependencyBy}"
+                                            <ItemsControl ItemsSource="{Binding DependencyBy}"
                                                       Margin="32 0 0 0">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding ModuleAssemblyName}"
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding ModuleAssemblyName}"
                                                                Margin="0 0 0 4" />
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
 
-                                    </StackPanel>
+                                        </StackPanel>
+
+                                    </Grid>
 
                                 </Grid>
 
-                            </Grid>
-
-                            <StackPanel Grid.Column="1"
+                                <StackPanel Grid.Column="1"
                                         Orientation="Horizontal"
                                         Margin="16 16 0 8"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Top">
-                                <!--TODO Supports injecting custom operations-->
-                                <Button Margin="8 0  0 8"
+                                    <!--TODO Supports injecting custom operations-->
+                                    <Button Margin="8 0  0 8"
                                         Command="{markupEx:LifetimeScopeResolve commands:InstallNuGetModuleCommand}"
                                         CommandParameter="{Binding .}">
-                                    <iconPacks:PackIconMaterial Kind="DownloadOutline"
+                                        <iconPacks:PackIconMaterial Kind="DownloadOutline"
                                                                 HorizontalAlignment="Center"
                                                                 VerticalAlignment="Center"
                                                                 Width="16"
                                                                 Height="16" />
-                                </Button>
-                                <Button Margin="8 0  0 8"
+                                    </Button>
+                                    <Button Margin="8 0  0 8"
                                         Command="{markupEx:LifetimeScopeResolve commands:UninstallNuGetModuleCommand}"
                                         CommandParameter="{Binding .}">
-                                    <iconPacks:PackIconMaterial Kind="DeleteOutline"
+                                        <iconPacks:PackIconMaterial Kind="DeleteOutline"
                                                                 HorizontalAlignment="Center"
                                                                 VerticalAlignment="Center"
                                                                 Width="16"
                                                                 Height="16" />
-                                </Button>
-                            </StackPanel>
+                                    </Button>
+                                </StackPanel>
 
-                        </Grid>
+                            </Grid>
 
 
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </ScrollViewer>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <page:NoItemView Visibility="{Binding ModulesCount,Converter={converters:IntToVisibilityConverter Reverse=True}}"/>
+    </Grid>
 </page:PageBase>
