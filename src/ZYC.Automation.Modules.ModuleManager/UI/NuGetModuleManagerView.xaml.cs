@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using ZYC.Automation.Abstractions;
+using ZYC.Automation.Abstractions.Notification.Toast;
 using ZYC.Automation.Modules.ModuleManager.Abstractions;
 using ZYC.Automation.Modules.ModuleManager.Commands;
 using ZYC.Automation.Modules.NuGet.Abstractions;
@@ -10,15 +12,21 @@ namespace ZYC.Automation.Modules.ModuleManager.UI;
 internal sealed partial class NuGetModuleManagerView
 {
     public NuGetModuleManagerView(
+        IToastManager toastManager,
+        IAppLogger<NuGetModuleManagerView> logger,
         RefreshNuGetModuleCommand refreshNuGetModuleCommand,
         INuGetModuleManager nuGetModuleManager,
         INuGetManager nuGetManager)
     {
+        ToastManager = toastManager;
+        Logger = logger;
         RefreshNuGetModuleCommand = refreshNuGetModuleCommand;
         NuGetModuleManager = nuGetModuleManager;
         NuGetManager = nuGetManager;
     }
 
+    private IToastManager ToastManager { get; }
+    private IAppLogger<NuGetModuleManagerView> Logger { get; }
     private RefreshNuGetModuleCommand RefreshNuGetModuleCommand { get; }
 
     private INuGetModuleManager NuGetModuleManager { get; }
@@ -37,13 +45,21 @@ internal sealed partial class NuGetModuleManagerView
 
     public async Task RefreshNuGetModulesAsync()
     {
-        var modules = await NuGetModuleManager.GetModulesAsync();
-        NuGetModules.Clear();
-        foreach (var module in modules)
+        try
         {
-            NuGetModules.Add(module);
-        }
+            var modules = await NuGetModuleManager.GetModulesAsync();
+            NuGetModules.Clear();
+            foreach (var module in modules)
+            {
+                NuGetModules.Add(module);
+            }
 
-        OnPropertyChanged(nameof(ModulesCount));
+            OnPropertyChanged(nameof(ModulesCount));
+        }
+        catch (Exception e)
+        {
+            ToastManager.PromptException(e);
+            Logger.Error(e);
+        }
     }
 }
