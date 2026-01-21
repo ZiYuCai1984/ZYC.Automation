@@ -173,7 +173,7 @@ public class Program
             Copyright = ProductInfo.Copyright,
             Icon = "app.png",
             ProjectUrl = ProductInfo.Repository,
-            ReleaseNotes = GetReleaseNotes(),
+            ReleaseNotes = GetPatchNote(),
             Description = ProductInfo.Description,
             Dependencies = dependencies
         };
@@ -187,7 +187,7 @@ public class Program
         return package;
     }
 
-    private static string GetReleaseNotes()
+    private static string GetPatchNote()
     {
         var patchNote = File.ReadAllText(
             BuildEnvironment.PatchNotePath);

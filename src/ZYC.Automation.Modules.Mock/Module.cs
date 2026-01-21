@@ -27,14 +27,15 @@ internal class Module : ModuleBase
         mockTabItemFactory.RegisterMockTabItem(
             new MockTabItemInfo(typeof(TestTaskManagerView)));
 
-        var commandlineResourcesProvider = lifetimeScope.Resolve<ICommandlineResourcesProvider>();
-
-        commandlineResourcesProvider.Register(new CommandlineServiceOptions
+        if (lifetimeScope.TryResolve<ICommandlineResourcesProvider>(
+                out var commandlineResourcesProvider))
         {
-            Name = "mock",
-            Command = "echo Hello World"
-        });
-
+            commandlineResourcesProvider.Register(new CommandlineServiceOptions
+            {
+                Name = "mock",
+                Command = "echo Hello World"
+            });
+        }
         return Task.CompletedTask;
     }
 }

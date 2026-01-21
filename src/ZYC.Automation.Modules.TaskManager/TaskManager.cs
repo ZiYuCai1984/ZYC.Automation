@@ -425,7 +425,7 @@ internal sealed class TaskManager : ITaskManager, IAsyncDisposable
                 _ = FlushAsync(CancellationToken.None);
             }
 
-            EventAggregator.Publish(new ManagedTaskProgressChangedEvnet(nr));
+            EventAggregator.Publish(new ManagedTaskProgressChangedEvent(nr));
         }
 
         void ReportStatus(string s)

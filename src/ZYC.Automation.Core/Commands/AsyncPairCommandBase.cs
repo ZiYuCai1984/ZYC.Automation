@@ -34,11 +34,11 @@ public abstract class AsyncPairCommandBase<T1, T2> : AsyncCommandBase, IPairComm
         Command2.RaiseCanExecuteChanged();
     }
 
-    public new async Task ExecuteAsync(object? parameter)
+    public override async void Execute(object? parameter)
     {
-        IsExecuting = true;
         try
         {
+            IsExecuting = true;
             await InternalExecuteAsync(parameter);
         }
         finally

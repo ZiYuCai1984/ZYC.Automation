@@ -10,13 +10,14 @@ internal class Module : ModuleBase
     {
         await Task.CompletedTask;
 
-        var commandlineResourcesProvider = lifetimeScope.Resolve<ICommandlineResourcesProvider>();
-
-        commandlineResourcesProvider.Register(
-            new CommandlineServiceOptions
-            {
-                Name = "libretranslate",
-                Command = "libretranslate --load-only en,ja,zh,zt,ko"
-            });
+        if (lifetimeScope.TryResolve<ICommandlineResourcesProvider>(out var commandlineResourcesProvider))
+        {
+            commandlineResourcesProvider.Register(
+                new CommandlineServiceOptions
+                {
+                    Name = "libretranslate",
+                    Command = "libretranslate --load-only en,ja,zh,zt,ko"
+                });
+        }
     }
 }

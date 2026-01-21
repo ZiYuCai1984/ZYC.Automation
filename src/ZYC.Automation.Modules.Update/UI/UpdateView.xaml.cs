@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions;
+using ZYC.Automation.Modules.NuGet.Abstractions.Commands;
 using ZYC.Automation.Modules.Update.Abstractions;
 using ZYC.Automation.Modules.Update.Abstractions.Event;
 using ZYC.Automation.Modules.Update.Commands;
@@ -12,7 +13,7 @@ internal sealed partial class UpdateView
 {
     public UpdateView(
         IEventAggregator eventAggregator,
-        ClearNuGetHttpCacheCommand clearNuGetHttpCacheCommand,
+        IClearNuGetHttpCacheCommand clearNuGetHttpCacheCommand,
         IUpdateManager updateManager,
         DownloadCommand downloadCommand,
         CheckUpdateCommand checkUpdateCommand,
@@ -46,7 +47,7 @@ internal sealed partial class UpdateView
 
     private IEventAggregator EventAggregator { get; }
 
-    public ClearNuGetHttpCacheCommand ClearNuGetHttpCacheCommand { get; }
+    public IClearNuGetHttpCacheCommand ClearNuGetHttpCacheCommand { get; }
 
     private IUpdateManager UpdateManager { get; }
 

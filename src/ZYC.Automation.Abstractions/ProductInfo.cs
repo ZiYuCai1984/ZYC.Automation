@@ -25,7 +25,7 @@ public static class ProductInfo
     /// <summary>
     ///     Gets the product version string.
     /// </summary>
-    public static string Version => "1.0.1";
+    public static string Version => "1.0.3";
 
     /// <summary>
     ///     Gets the copyright notice.
@@ -58,4 +58,6 @@ public static class ProductInfo
     public static string ProjectUrl => "https://github.com/ZiYuCai1984/ZYC.Automation";
 
     public static string TargetFramework => "net10.0";
+
+    public static string NuGetModuleAssetsJsonFile => "nuget.module.assets.json";
 }

@@ -1,14 +1,17 @@
 ﻿using ZYC.Automation.Abstractions;
 using ZYC.Automation.Core.Commands;
 using ZYC.Automation.Modules.NuGet.Abstractions;
+using ZYC.Automation.Modules.NuGet.Abstractions.Commands;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
-namespace ZYC.Automation.Modules.Update.Commands;
+namespace ZYC.Automation.Modules.NuGet.Commands;
 
-[RegisterSingleInstance]
-internal class ClearNuGetHttpCacheCommand : AsyncCommandBase
+[RegisterSingleInstanceAs(typeof(IClearNuGetHttpCacheCommand))]
+internal class ClearNuGetHttpCacheCommand : AsyncCommandBase, IClearNuGetHttpCacheCommand
 {
-    public ClearNuGetHttpCacheCommand(INuGetManager nuGetManager, IAppLogger<ClearNuGetHttpCacheCommand> logger)
+    public ClearNuGetHttpCacheCommand(
+        INuGetManager nuGetManager, 
+        IAppLogger<ClearNuGetHttpCacheCommand> logger)
     {
         NuGetManager = nuGetManager;
         Logger = logger;

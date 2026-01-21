@@ -9,6 +9,7 @@ using ZYC.Automation.Abstractions.State;
 using ZYC.CoreToolkit;
 using ZYC.CoreToolkit.Abstractions.Autofac;
 using ZYC.CoreToolkit.Abstractions.Settings;
+using ZYC.CoreToolkit.Dotnet;
 using ZYC.CoreToolkit.Extensions.Autofac;
 using ZYC.CoreToolkit.Extensions.Settings;
 using ModuleNameTools = ZYC.Automation.Abstractions.ModuleNameTools;
@@ -75,7 +76,6 @@ public static class ModuleTools
                 continue;
             }
 
-
             var assembly = Assembly.LoadFrom(dllFile);
 
             RegisterAllFromAssembly(appContextDirectory, builder, assembly);
@@ -124,6 +124,43 @@ public static class ModuleTools
             }
         }
 
+
+        //TODO Refactoring is required(register nuget moodule from nuget cache)
+        var assetsJsonPath = Path.Combine(appContextDirectory, ProductInfo.NuGetModuleAssetsJsonFile);
+        if (File.Exists(assetsJsonPath))
+        {
+            var assemblyFromNuGetCache =
+                AssetsRuntimeLoaderTools.LoadRuntimeAssemblies(
+                    assetsJsonPath, 
+                    "net10.0-windows");
+
+            foreach (var assembly in assemblyFromNuGetCache)
+            {
+                RegisterAllFromAssembly(appContextDirectory, builder, assembly);
+
+                var types = assembly.SafeGetTypes();
+                foreach (var type in types)
+                {
+                    if (!type.IsSubclassOf(typeof(ModuleBase)))
+                    {
+                        continue;
+                    }
+
+                    var instance = Activator.CreateInstance(type) as ModuleBase;
+
+                    Debug.Assert(instance != null);
+
+                    instance.ModulePath = assembly.Location;
+                    instance.IsEnabled = true;
+                    instance.ReferenceAssemblyNames = ResolveModuleDependencyOn(assembly);
+
+                    instance.RegisterAsync(builder).Wait();
+
+                    modules.Add(instance);
+                    break;
+                }
+            }
+        }
 
         var allModules = modules.ToArray();
         foreach (var module in allModules)
@@ -188,22 +225,6 @@ public static class ModuleTools
 
             logger?.Warn($"Clean up module <{dllFile}>");
         }
-
-        //!WARNING Not delete abstraction dlls
-        //string GetAbstractionsDllPath(string dllFilePath)
-        //{
-        //    dllFilePath = dllFilePath.Remove(dllFilePath.Length - 3, 3);
-        //    dllFilePath = $"{dllFilePath}Abstractions.dll";
-
-        //    return dllFilePath;
-        //}
-
-        //var abstractionsDllPath = GetAbstractionsDllPath(dllFile);
-
-        //if (File.Exists(abstractionsDllPath))
-        //{
-        //    DeleteFileWhenNotInUse(abstractionsDllPath, timeout);
-        //}
     }
 
 
@@ -315,5 +336,16 @@ public static class ModuleTools
         }
 
         return list.ToArray();
+    }
+
+    /// <summary>
+    ///     !WARNING Based on the metadata, there may be a problem.
+    /// </summary>
+    /// <returns></returns>
+    private static bool IsAlreadyLoadedBySimpleName(string assemblyPath)
+    {
+        var simpleName = AssemblyName.GetAssemblyName(assemblyPath).Name;
+        return AppDomain.CurrentDomain.GetAssemblies()
+            .Any(a => string.Equals(a.GetName().Name, simpleName, StringComparison.OrdinalIgnoreCase));
     }
 }

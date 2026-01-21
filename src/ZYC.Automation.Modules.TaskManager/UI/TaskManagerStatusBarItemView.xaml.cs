@@ -26,7 +26,7 @@ internal partial class TaskManagerStatusBarItemView : IDisposable, INotifyProper
         SubscribeEvent<ManagedTaskEnqueuedEvent>(OnManagedTaskEnqueued);
         SubscribeEvent<ManagedTaskFaultedEvnet>(OnManagedTaskFaulted);
         SubscribeEvent<ManagedTaskPausedEvent>(OnManagedTaskPaused);
-        SubscribeEvent<ManagedTaskProgressChangedEvnet>(OnManagedTaskProgrssChanged);
+        SubscribeEvent<ManagedTaskProgressChangedEvent>(OnManagedTaskProgrssChanged);
         SubscribeEvent<ManagedTaskResumedEvent>(OnManagedTaskResumed);
         SubscribeEvent<ManagedTaskStartedEvent>(OnManagedTaskStarted);
         SubscribeEvent<ManagedTaskStatusTextChangedEvent>(OnManagedTaskStatusTextChanged);
@@ -84,7 +84,7 @@ internal partial class TaskManagerStatusBarItemView : IDisposable, INotifyProper
         //ignore
     }
 
-    private void OnManagedTaskProgrssChanged(ManagedTaskProgressChangedEvnet obj)
+    private void OnManagedTaskProgrssChanged(ManagedTaskProgressChangedEvent obj)
     {
         //ignore
     }
