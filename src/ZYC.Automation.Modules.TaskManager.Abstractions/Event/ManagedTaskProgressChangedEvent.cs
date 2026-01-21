@@ -3,13 +3,13 @@
 /// <summary>
 ///     Raised when task progress changes.
 /// </summary>
-public sealed class ManagedTaskProgressChangedEvnet
+public sealed class ManagedTaskProgressChangedEvent
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ManagedTaskProgressChangedEvnet" /> class.
+    ///     Initializes a new instance of the <see cref="ManagedTaskProgressChangedEvent" /> class.
     /// </summary>
     /// <param name="snapshot">The task snapshot.</param>
-    public ManagedTaskProgressChangedEvnet(TaskRecord snapshot)
+    public ManagedTaskProgressChangedEvent(TaskRecord snapshot)
     {
         Snapshot = snapshot;
     }

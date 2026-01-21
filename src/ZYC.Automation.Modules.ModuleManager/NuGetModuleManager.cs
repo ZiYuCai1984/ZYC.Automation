@@ -1,5 +1,6 @@
 ﻿using System.IO;
-using System.IO.Compression;
+using System.Text;
+using System.Text.RegularExpressions;
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Protocol;
@@ -16,55 +17,60 @@ namespace ZYC.Automation.Modules.ModuleManager;
 internal class NuGetModuleManager : INuGetModuleManager
 {
     public NuGetModuleManager(
+        
         NuGetConfig nugetConfig,
-        IPendingDeleteManager pendingDeleteManager,
         INuGetManager nuGetManager,
-        NuGetModuleManagerConfig config,
-        NuGetModuleManifestState manifestState,
+        NuGetModuleConfig config,
+        NuGetModuleState state,
         IAppContext appContext)
     {
         NuGetConfig = nugetConfig;
-        PendingDeleteManager = pendingDeleteManager;
         NuGetManager = nuGetManager;
-        Config = config;
-        ManifestState = manifestState;
+        NuGetModuleConfig = config;
+        State = state;
         AppContext = appContext;
     }
 
     private NuGetConfig NuGetConfig { get; }
-    
-    private IPendingDeleteManager PendingDeleteManager { get; }
-    
+
     private INuGetManager NuGetManager { get; }
-    
-    private NuGetModuleManagerConfig Config { get; }
-    
-    private NuGetModuleManifestState ManifestState { get; }
+
+    private NuGetModuleConfig NuGetModuleConfig { get; }
+
+    private NuGetModuleState State { get; }
 
     private IAppContext AppContext { get; }
 
-    public async Task<INuGetModule[]> GetModulesAsync(CancellationToken token)
+    public async Task<INuGetModule[]> GetModulesAsync()
     {
         var source = new PackageSource(NuGetConfig.Source);
         var repository = Repository.Factory.GetCoreV3(source);
-        var search = await repository.GetResourceAsync<PackageSearchResource>(token);
+        var search = await repository.GetResourceAsync<PackageSearchResource>(CancellationToken.None);
         var filter = new SearchFilter(true)
         {
-            //TODO OrderBy = SearchOrderBy.Popularity ??
-            //OrderBy = SearchOrderBy.Popularity
+            OrderBy = SearchOrderBy.Id
         };
         var results = await search.SearchAsync(
-            Config.SearchTerm,
+            NuGetModuleConfig.SearchTerm,
             filter,
-            0,
-            50,
+            NuGetModuleConfig.SearchSkip,
+            NuGetModuleConfig.SearchTake,
             NullLogger.Instance,
-            token);
+            CancellationToken.None);
+
+        var regex = new Regex(
+            NuGetModuleConfig.IncludeRegex,
+            RegexOptions.IgnoreCase);
 
         var modules = new List<INuGetModule>();
         foreach (var result in results)
         {
-            var installed = ManifestState.InstalledModules.Any(m => m.PackageId == result.Identity.Id);
+            if (!regex.IsMatch(result.Identity.Id))
+            {
+                continue;
+            }
+
+            var installed = State.InstalledModules.Any(m => m.PackageId == result.Identity.Id);
             modules.Add(new NuGetModule(
                 result.Identity.Id,
                 result.Identity.Version.ToNormalizedString(),
@@ -75,100 +81,106 @@ internal class NuGetModuleManager : INuGetModuleManager
         return modules.ToArray();
     }
 
-    public async Task InstallAsync(INuGetModule module, CancellationToken token)
+    public async Task InstallAsync(INuGetModule module)
     {
-        var processed = new HashSet<string>();
-        await NuGetManager.DownloadPackageAndDependenciesRecursiveAsync(
-            module.PackageId,
-            module.Version,
-            processed,
-            token);
-
-        var packagePath = NuGetManager.GetNuGetPackageCacheFilePath(module.PackageId, module.Version);
-        var extractFolder = AppContext.GetCurrentDirectory();
-        var files = await ExtractAsync(packagePath, extractFolder);
-
-        var list = ManifestState.InstalledModules.ToList();
-        list.Add(new NuGetModuleManifestState.InstalledModule
+        var newModule = new InstalledNuGetModule
         {
             PackageId = module.PackageId,
-            Version = module.Version,
-            Files = files.ToArray()
-        });
-        ManifestState.InstalledModules = list.ToArray();
+            Version = module.Version
+        };
+
+        var newModules = State.InstalledModules.ToList();
+        newModules.Add(newModule);
+
+
+        await UpdateProjectAssetsJsonAsync(
+            newModules.ToArray(),
+            NuGetModuleConfig.TargetFramework,
+            NuGetConfig.Source,
+            GetNuGetModuleAssetsJsonPath());
+
+        State.InstalledModules = newModules.ToArray();
+
+        var nugetModule = (NuGetModule)module;
+        nugetModule.Installed = true;
     }
 
-    public void Uninstall(INuGetModule module)
+    public async Task UninstallAsync(INuGetModule module)
     {
-        var record = ManifestState.InstalledModules.FirstOrDefault(m => m.PackageId == module.PackageId);
+        var record = State.InstalledModules.FirstOrDefault(m => m.PackageId == module.PackageId);
         if (record == null)
         {
             return;
         }
 
-        foreach (var file in record.Files)
-        {
-            var path = Path.Combine(AppContext.GetCurrentDirectory(), file);
-            if (File.Exists(path))
-            {
-                try
-                {
-                    File.Delete(path);
-                }
-                catch
-                {
-                    PendingDeleteManager.Add(file);
-                }
-            }
-        }
+        var newModules = State.InstalledModules.ToList();
+        newModules.Remove(record);
 
-        var list = ManifestState.InstalledModules.ToList();
-        list.Remove(record);
-        ManifestState.InstalledModules = list.ToArray();
+        await UpdateProjectAssetsJsonAsync(
+            newModules.ToArray(),
+            NuGetModuleConfig.TargetFramework,
+            NuGetConfig.Source,
+            GetNuGetModuleAssetsJsonPath());
+
+        State.InstalledModules = newModules.ToArray();
 
         var nugetModule = (NuGetModule)module;
         nugetModule.Installed = false;
     }
 
-    /// <summary>
-    ///     TODO What happens when encountering the same currently occupied assembly during decompression?
-    /// </summary>
-    /// <param name="zipPath"></param>
-    /// <param name="folder"></param>
-    /// <returns></returns>
-    private static async Task<List<string>> ExtractAsync(string zipPath, string folder)
+    public string GetNuGetModuleAssetsJsonPath()
     {
-        var files = new List<string>();
-        await Task.Run(() =>
-        {
-            try
-            {
-                using var archive = ZipFile.OpenRead(zipPath);
-                foreach (var entry in archive.Entries)
-                {
-                    try
-                    {
-                        if (string.IsNullOrEmpty(entry.Name))
-                        {
-                            continue;
-                        }
+        return Path.Combine(
+            AppContext.GetMainAppDirectory(),
+            ProductInfo.NuGetModuleAssetsJsonFile);
+    }
 
-                        var dest = Path.Combine(folder, entry.FullName);
-                        Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
-                        entry.ExtractToFile(dest, true);
-                        files.Add(entry.FullName);
-                    }
-                    catch
-                    {
-                        //ignore
-                    }
-                }
-            }
-            catch (Exception)
+    private static async Task UpdateProjectAssetsJsonAsync(
+        InstalledNuGetModule[] modules,
+        string targetFramework,
+        string nugetSource,
+        string projectAssetsJsonPath)
+    {
+        var tempProjectDirectory = Directory.CreateDirectory("temp").FullName;
+        var tempCsprojPath = Path.Combine(tempProjectDirectory, "temp.csproj");
+
+        try
+        {
+            var csprojContent = new StringBuilder();
+            csprojContent.Append($"""
+                                  <Project Sdk="Microsoft.NET.Sdk">
+                                    <PropertyGroup>
+                                      <TargetFramework>{targetFramework}</TargetFramework>
+                                    </PropertyGroup>
+                                    <ItemGroup>
+                                    
+                                  """);
+
+            foreach (var module in modules)
             {
-                DebuggerTools.Break();
+                csprojContent.AppendLine(
+                    $"<PackageReference Include=\"{module.PackageId}\" Version=\"{module.Version}\" />");
             }
-        });
-        return files;
+
+            csprojContent.Append("""
+                                   </ItemGroup>
+                                 </Project>
+                                 """);
+
+            await File.WriteAllTextAsync(tempCsprojPath, csprojContent.ToString());
+
+            var restoreCommand = $"dotnet restore \"{tempCsprojPath}\" --source \"{nugetSource}\"";
+            if (await CommandTools.ExecuteCommandAsync(restoreCommand) != 0)
+            {
+                throw new InvalidOperationException("Restore failed");
+            }
+
+
+            File.Copy(Path.Combine("temp", "obj", "project.assets.json"), projectAssetsJsonPath, true);
+        }
+        finally
+        {
+            IOTools.DeleteDirectoryIfExists(tempProjectDirectory);
+        }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using ZYC.Automation.Abstractions;
+using ZYC.Automation.Abstractions.Notification.Toast;
 using ZYC.Automation.Core.Commands;
 using ZYC.Automation.Modules.ModuleManager.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
@@ -6,31 +8,46 @@ using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 namespace ZYC.Automation.Modules.ModuleManager.Commands;
 
 [RegisterSingleInstance]
-internal class InstallNuGetModuleCommand : PairCommandBase<InstallNuGetModuleCommand, UninstallNuGetModuleCommand>
+internal class InstallNuGetModuleCommand : AsyncPairCommandBase<InstallNuGetModuleCommand, UninstallNuGetModuleCommand>
 {
     public InstallNuGetModuleCommand(
+        IToastManager toastManager,
+        IAppLogger<InstallNuGetModuleCommand> logger,
         ILifetimeScope lifetimeScope,
         INuGetModuleManager nuGetModuleManager,
-        NuGetModuleManifestState nuGetModuleManifestState) : base(lifetimeScope)
+        NuGetModuleState nuGetModuleState) : base(lifetimeScope)
     {
+        ToastManager = toastManager;
+        Logger = logger;
         NuGetModuleManager = nuGetModuleManager;
-        NuGetModuleManifestState = nuGetModuleManifestState;
+        NuGetModuleState = nuGetModuleState;
     }
+
+    private IToastManager ToastManager { get; }
+
+    private IAppLogger<InstallNuGetModuleCommand> Logger { get; }
 
     private INuGetModuleManager NuGetModuleManager { get; }
 
-    private NuGetModuleManifestState NuGetModuleManifestState { get; }
+    private NuGetModuleState NuGetModuleState { get; }
 
-    protected override async void InternalExecute(object? parameter)
+    protected override async Task InternalExecuteAsync(object? parameter)
     {
-        base.InternalExecute(parameter);
-
         if (parameter == null)
         {
             return;
         }
 
-        await NuGetModuleManager.InstallAsync((INuGetModule)parameter, CancellationToken.None);
+        try
+        {
+            await NuGetModuleManager.InstallAsync((INuGetModule)parameter);
+            ToastManager.PromptMessage(new ToastMessage("Take effect after restart ."));
+        }
+        catch (Exception e)
+        {
+            Logger.Error(e);
+            ToastManager.PromptException(e);
+        }
     }
 
     public override bool CanExecute(object? parameter)
@@ -43,7 +60,7 @@ internal class InstallNuGetModuleCommand : PairCommandBase<InstallNuGetModuleCom
         var module = (INuGetModule)parameter;
 
         return !IsExecuting
-               && !NuGetModuleManifestState.InstalledModules.Any(t =>
+               && !NuGetModuleState.InstalledModules.Any(t =>
                    t.PackageId == module.PackageId && t.Version == module.Version);
     }
 }

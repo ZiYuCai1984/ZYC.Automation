@@ -78,7 +78,7 @@ internal sealed partial class TaskManagerView
         UpdateSnapshot(obj.Snapshot);
     }
 
-    private void OnManagedTaskProgrssChanged(ManagedTaskProgressChangedEvnet obj)
+    private void OnManagedTaskProgrssChanged(ManagedTaskProgressChangedEvent obj)
     {
         UpdateSnapshot(obj.Snapshot);
     }
@@ -176,7 +176,7 @@ internal sealed partial class TaskManagerView
         SubscribeEvent<ManagedTaskEnqueuedEvent>(OnManagedTaskEnqueued);
         SubscribeEvent<ManagedTaskFaultedEvnet>(OnManagedTaskFaulted);
         SubscribeEvent<ManagedTaskPausedEvent>(OnManagedTaskPaused);
-        SubscribeEvent<ManagedTaskProgressChangedEvnet>(OnManagedTaskProgrssChanged);
+        SubscribeEvent<ManagedTaskProgressChangedEvent>(OnManagedTaskProgrssChanged);
         SubscribeEvent<ManagedTaskResumedEvent>(OnManagedTaskResumed);
         SubscribeEvent<ManagedTaskStartedEvent>(OnManagedTaskStarted);
         SubscribeEvent<ManagedTaskStatusTextChangedEvent>(OnManagedTaskStatusTextChanged);

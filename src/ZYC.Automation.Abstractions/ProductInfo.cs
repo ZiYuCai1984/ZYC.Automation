@@ -58,4 +58,6 @@ public static class ProductInfo
     public static string ProjectUrl => "https://github.com/ZiYuCai1984/ZYC.Automation";
 
     public static string TargetFramework => "net10.0";
+
+    public static string NuGetModuleAssetsJsonFile => "nuget.module.assets.json";
 }
