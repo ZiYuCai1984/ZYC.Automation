@@ -32,6 +32,8 @@
                             BorderBrush="Transparent">
                         <core:HybridIcon HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
+                                         HorizontalContentAlignment="Center"
+                                         VerticalContentAlignment="Center"
                                          Width="16"
                                          Height="16"
                                          Icon="{Binding Icon}" />
@@ -91,6 +93,8 @@
                         <core:HybridIcon Icon="{Binding Icon}"
                                          HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
+                                         HorizontalContentAlignment="Center"
+                                         VerticalContentAlignment="Center"
                                          Width="16"
                                          Height="16" />
                     </Button>

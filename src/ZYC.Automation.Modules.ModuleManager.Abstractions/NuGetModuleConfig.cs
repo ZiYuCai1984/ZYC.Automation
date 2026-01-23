@@ -18,6 +18,5 @@ public class NuGetModuleConfig : IConfig
 
     public string TargetFramework { get; set; } = "net10.0-windows";
 
-
     public string IncludeRegex { get; set; } = "^(?!.*Abstractions$).+";
 }

@@ -9,6 +9,8 @@ namespace ZYC.Automation.Modules.Language;
 
 internal class Module : ModuleBase
 {
+    public override string Icon => LanguageTabItem.Constants.DefaultIcon;
+
     public override async Task RegisterAsync(ContainerBuilder builder)
     {
         await Task.CompletedTask;

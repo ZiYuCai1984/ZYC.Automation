@@ -11,6 +11,8 @@ internal class WindowTitleManager : IWindowTitleManager
     public WindowTitleManager(ILifetimeScope lifetimeScope)
     {
         LifetimeScope = lifetimeScope;
+
+        RegisterItem<RestartTitleItem>();
         RegisterItem<OpenAppFolderInExplorerTitleItem>();
         RegisterItem<AttachDebuggerTitleItem>();
         RegisterItem<SetTopmostTitleItem>();

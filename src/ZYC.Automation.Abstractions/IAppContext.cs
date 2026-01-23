@@ -131,7 +131,7 @@ public interface IAppContext
     /// <summary>
     ///     Occurs when the application is exiting.
     /// </summary>
-    event EventHandler Exit;
+    event EventHandler? Exit;
 
     /// <summary>
     ///     Occurs when the application is about to exit.

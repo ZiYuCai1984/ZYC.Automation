@@ -10,6 +10,8 @@ namespace ZYC.Automation.Modules.Secrets;
 
 internal class Module : ModuleBase
 {
+    public override string Icon => SecretsTabItem.Constants.Icon;
+
     public override Task RegisterAsync(ContainerBuilder builder)
     {
         builder.RegisterAdapter<IConfig[], ISecrets[]>(configs =>

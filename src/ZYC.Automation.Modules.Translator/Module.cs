@@ -6,6 +6,9 @@ namespace ZYC.Automation.Modules.Translator;
 
 internal class Module : ModuleBase
 {
+    public override string Icon => "TranslateVariant";
+
+
     public override async Task LoadAsync(ILifetimeScope lifetimeScope)
     {
         await Task.CompletedTask;

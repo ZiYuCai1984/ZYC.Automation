@@ -1,11 +1,14 @@
 ﻿using System.Windows;
 using System.Windows.Threading;
 using ZYC.Automation.Abstractions;
+using ZYC.CoreToolkit;
 
 namespace ZYC.Automation;
 
 internal partial class AppContext
 {
+    private static IDisposable? TaskbarIcon { get; set; }
+
     public void ExitProcess()
     {
         if (Exiting != null)
@@ -34,6 +37,8 @@ internal partial class AppContext
     public static void FocusExitProcess(IAppLogger<AppContext>? logger = null)
     {
         logger?.Warn("Focus exit !!");
+        TaskbarIcon?.TryDispose();
+
         Environment.Exit(0);
     }
 
@@ -79,5 +84,10 @@ internal partial class AppContext
     {
         e.Handled = AppConfig.HandleGlobalException;
         Logger.Error(e.Exception);
+    }
+
+    internal static void SetTaskbarIconReference(IDisposable taskbarIcon)
+    {
+        TaskbarIcon = taskbarIcon;
     }
 }

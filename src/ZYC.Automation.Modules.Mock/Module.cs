@@ -9,6 +9,8 @@ namespace ZYC.Automation.Modules.Mock;
 
 internal class Module : ModuleBase
 {
+    public override string Icon => "🚀";
+
     public override Task LoadAsync(ILifetimeScope lifetimeScope)
     {
         lifetimeScope.RegisterTabItemFactory<IMockTabItemFactory>();
@@ -36,6 +38,7 @@ internal class Module : ModuleBase
                 Command = "echo Hello World"
             });
         }
+
         return Task.CompletedTask;
     }
 }

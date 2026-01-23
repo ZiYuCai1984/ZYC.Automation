@@ -12,6 +12,7 @@
                xmlns:commands="clr-namespace:ZYC.Automation.Modules.ModuleManager.Commands"
                xmlns:buttons="clr-namespace:ZYC.Automation.Core.Buttons;assembly=ZYC.Automation.Core"
                xmlns:nugetCommands="clr-namespace:ZYC.Automation.Modules.NuGet.Abstractions.Commands;assembly=ZYC.Automation.Modules.NuGet.Abstractions"
+               xmlns:core="clr-namespace:ZYC.Automation.Core;assembly=ZYC.Automation.Core"
                mc:Ignorable="d"
                d:DesignHeight="450" d:DesignWidth="800"
                Title="{localizations:L NuGet Modules}"
@@ -55,11 +56,13 @@
                                             <ColumnDefinition Width="64" />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <iconPacks:PackIconMaterial Kind="{Binding Icon}"
-                                                                HorizontalAlignment="Center"
-                                                                VerticalAlignment="Center"
-                                                                Width="32"
-                                                                Height="32" />
+                                        <core:HybridIcon
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Width="24"
+                                            Height="24" 
+                                            FontSize="16"
+                                            Icon="{Binding Icon}"/>
                                         <TextBlock Grid.Column="1"
                                                VerticalAlignment="Center"
                                                HorizontalAlignment="Left"

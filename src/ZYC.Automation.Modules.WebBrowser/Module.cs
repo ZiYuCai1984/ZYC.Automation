@@ -7,6 +7,8 @@ namespace ZYC.Automation.Modules.WebBrowser;
 
 internal class Module : ModuleBase
 {
+    public override string Icon => WebBrowserTabItem.Constants.MenuIcon;
+
     public override Task LoadAsync(ILifetimeScope lifetimeScope)
     {
         lifetimeScope.RegisterTabItemFactory<WebBrowserTabItemFactory>();

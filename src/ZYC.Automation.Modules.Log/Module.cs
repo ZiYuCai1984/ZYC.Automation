@@ -7,6 +7,8 @@ namespace ZYC.Automation.Modules.Log;
 
 internal class Module : ModuleBase
 {
+    public override string Icon => "ScriptOutline";
+
     public override Task RegisterAsync(ContainerBuilder builder)
     {
         builder.RegisterGeneric(typeof(FooLogger<>)).As(typeof(IAppLogger<>));

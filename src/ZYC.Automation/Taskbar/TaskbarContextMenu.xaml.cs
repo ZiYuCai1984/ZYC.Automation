@@ -12,7 +12,7 @@ namespace ZYC.Automation.Taskbar;
 
 [RegisterSingleInstanceAs(
     typeof(ITaskbarMenuManager), typeof(TaskbarContextMenu))]
-internal partial class TaskbarContextMenu : ITaskbarMenuManager
+internal partial class TaskbarContextMenu : ITaskbarMenuManager, IDisposable
 {
     public TaskbarContextMenu(
         ILifetimeScope lifetimeScope,
@@ -34,6 +34,9 @@ internal partial class TaskbarContextMenu : ITaskbarMenuManager
         RegisterMenuItem(lifetimeScope.Resolve<UnfreezeWindowTaskbarItem>());
         RegisterMenuItem(lifetimeScope.Resolve<ShowWindowTaskbarMenuItem>());
         RegisterMenuItem(lifetimeScope.Resolve<ExitProcessTaskbarItem>());
+
+
+        AppContext.SetTaskbarIconReference(TaskbarIcon);
     }
 
     private ShowWindowCommand ShowWindowCommand { get; }
@@ -41,6 +44,11 @@ internal partial class TaskbarContextMenu : ITaskbarMenuManager
     private TaskbarIcon TaskbarIcon { get; }
 
     public ObservableCollection<ITaskbarMenuItem> TaskbarMenuItems { get; } = new();
+
+    public void Dispose()
+    {
+        TaskbarIcon.Dispose();
+    }
 
     public void RegisterMenuItem(ITaskbarMenuItem menuItem)
     {
