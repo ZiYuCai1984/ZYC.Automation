@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
+﻿using Autofac;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Autofac;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Config;
 using ZYC.Automation.Abstractions.State;
@@ -131,7 +131,7 @@ public static class ModuleTools
         {
             var assemblyFromNuGetCache =
                 AssetsRuntimeLoaderTools.LoadRuntimeAssemblies(
-                    assetsJsonPath, 
+                    assetsJsonPath,
                     "net10.0-windows");
 
             foreach (var assembly in assemblyFromNuGetCache)

@@ -6,6 +6,8 @@ namespace ZYC.Automation.Modules.About;
 
 internal class Module : ModuleBase
 {
+    public override string Icon => AboutTabItem.Constants.Icon;
+
     public override Task LoadAsync(ILifetimeScope lifetimeScope)
     {
         lifetimeScope.RegisterTabItemFactory<AboutTabItemFactory>();

@@ -7,6 +7,8 @@ namespace ZYC.Automation.Modules.FileExplorer;
 
 internal class Module : ModuleBase
 {
+    public override string Icon => FileExplorerTabItem.Constants.Icon;
+
     public override Task LoadAsync(ILifetimeScope lifetimeScope)
     {
         lifetimeScope.RegisterTabItemFactory<FileExplorerTabItemFactory>();

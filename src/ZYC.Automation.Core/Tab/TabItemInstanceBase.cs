@@ -75,7 +75,7 @@ public abstract class TabItemInstanceBase : ITabItemInstance
         // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
         View?.TryDispose();
     }
-
+    //TODO Design failure !!
     protected T GetConstant<T>(string propertyName)
     {
         var key = (GetType(), propertyName);

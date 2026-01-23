@@ -9,6 +9,8 @@ namespace ZYC.Automation.Modules.Update;
 
 internal class Module : ModuleBase
 {
+    public override string Icon => UpdateTabItem.Constants.Icon;
+
     private IDisposable? MainWindowLoadedEvent { get; set; }
 
     public override Task LoadAsync(ILifetimeScope lifetimeScope)

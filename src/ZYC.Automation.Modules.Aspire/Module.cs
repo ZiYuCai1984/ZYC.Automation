@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using ZYC.Automation.Abstractions;
 using ZYC.Automation.Core;
 using ZYC.Automation.Modules.Aspire.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac;
@@ -7,6 +8,8 @@ namespace ZYC.Automation.Modules.Aspire;
 
 internal class Module : ModuleBase
 {
+    public override string Icon => Base64IconResources.Aspire;
+
     public override async Task RegisterAsync(ContainerBuilder builder)
     {
         await Task.CompletedTask;

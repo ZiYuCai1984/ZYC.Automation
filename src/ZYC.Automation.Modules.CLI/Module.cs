@@ -9,6 +9,8 @@ namespace ZYC.Automation.Modules.CLI;
 
 internal class Module : ModuleBase
 {
+    public override string Icon => CLITabItem.Constants.Icon;
+
     public override Task LoadAsync(ILifetimeScope lifetimeScope)
     {
         lifetimeScope.RegisterTabItemFactory<CLITabItemFactory>();

@@ -12,7 +12,7 @@ internal class CLIMainMenuItem : MainMenuItem
     {
         Info = new MenuItemInfo
         {
-            Title = CLITabItem.Constants.Title,
+            Title = CLITabItem.Constants.DefaultTitle,
             Icon = CLITabItem.Constants.Icon,
             Anchor = MainMenuAnchors.Default,
             Localization = false

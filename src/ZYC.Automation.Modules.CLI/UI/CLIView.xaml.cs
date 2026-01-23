@@ -22,6 +22,7 @@ internal partial class CLIView : IDisposable
     public void Dispose()
     {
         EasyTerminalControl.Loaded -= OnEasyTerminalControlLoaded;
+        EasyTerminalControl.DisconnectConPTYTerm();
     }
 
     private void OnEasyTerminalControlLoaded(object sender, RoutedEventArgs e)

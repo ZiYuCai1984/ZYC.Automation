@@ -102,14 +102,20 @@ public class HybridIcon : ContentControl
         Content = new PackIconMaterial
         {
             Kind = kind,
-            VerticalAlignment = VerticalAlignment.Center,
-            VerticalContentAlignment = VerticalAlignment.Center,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            HorizontalContentAlignment = HorizontalAlignment.Center
+
         };
-        // Optionally bind Foreground/FontSize as well.
+
         if (Content is PackIconMaterial pi)
         {
+            pi.SetBinding(VerticalAlignmentProperty, new Binding(nameof(VerticalAlignment)) { Source = this });
+            pi.SetBinding(VerticalContentAlignmentProperty, new Binding(nameof(VerticalContentAlignment)) { Source = this });
+
+            pi.SetBinding(HorizontalAlignmentProperty, new Binding(nameof(HorizontalAlignment)) { Source = this });
+            pi.SetBinding(HorizontalContentAlignmentProperty, new Binding(nameof(HorizontalContentAlignment)) { Source = this });
+
+
+            pi.SetBinding(WidthProperty, new Binding(nameof(Width)) { Source = this });
+            pi.SetBinding(HeightProperty, new Binding(nameof(Height)) { Source = this });
             pi.SetBinding(ForegroundProperty, new Binding(nameof(Foreground)) { Source = this });
             pi.SetBinding(FontSizeProperty, new Binding(nameof(FontSize)) { Source = this });
         }
@@ -123,17 +129,21 @@ public class HybridIcon : ContentControl
         {
             Text = emojiText,
             TextAlignment = TextAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-            HorizontalAlignment = HorizontalAlignment.Center
-            // Segoe UI Emoji provides color glyphs; the system falls back if missing.
-            //FontFamily = new FontFamily("Segoe UI Emoji")
         };
 
-        // Bind size and color (color may not affect color emoji; used as a fallback).
+
+        tb.SetBinding(VerticalAlignmentProperty, new Binding(nameof(VerticalAlignment)) { Source = this });
+        tb.SetBinding(VerticalContentAlignmentProperty, new Binding(nameof(VerticalContentAlignment)) { Source = this });
+
+        tb.SetBinding(HorizontalAlignmentProperty, new Binding(nameof(HorizontalAlignment)) { Source = this });
+        tb.SetBinding(HorizontalContentAlignmentProperty, new Binding(nameof(HorizontalContentAlignment)) { Source = this });
+
         tb.SetBinding(FontSizeProperty, new Binding(nameof(FontSize)) { Source = this });
         tb.SetBinding(ForegroundProperty, new Binding(nameof(Foreground)) { Source = this });
 
-        // Hint the rendering path to use DirectWrite (usually the default).
+        tb.SetBinding(FontFamilyProperty, new Binding(nameof(FontFamily)) { Source = this });
+
+
         TextOptions.SetTextFormattingMode(tb, TextFormattingMode.Display);
         TextOptions.SetTextRenderingMode(tb, TextRenderingMode.Auto);
 
