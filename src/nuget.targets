@@ -10,13 +10,20 @@
   </ItemGroup>
 
   <!--!WARNING The value of $(NuGetPackageRoot) is inconsistent between the restore and build (it is empty during restore), $(NuGetPackageRoot) cannot be used here. !!-->
-  <Import Project="$(USERPROFILE)\.nuget\packages\ZYC.CoreToolkit\$(V_ZYC_CoreToolkit)\nuget.targets"></Import>
+  <!--<Import Project="$(USERPROFILE)\.nuget\packages\ZYC.CoreToolkit\$(V_ZYC_CoreToolkit)\nuget.targets"></Import>-->
 
+  <PropertyGroup>
+    <V_Microsoft_Web_WebView2>1.0.3712-prerelease</V_Microsoft_Web_WebView2>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Update="Microsoft.Web.WebView2" Version="$(V_Microsoft_Web_WebView2)" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <V_Autofac>9.0.0</V_Autofac>
+    <V_Autofac_Extensions_DependencyInjection>10.0.0</V_Autofac_Extensions_DependencyInjection>
+  </PropertyGroup>
 
   <ItemGroup>
     <!--!WARNING Autofac and Autofac.Extensions.DependencyInjection do not share the same version number !!-->
@@ -24,6 +31,10 @@
     <PackageReference Update="Autofac.Extensions.DependencyInjection"
                       Version="$(V_Autofac_Extensions_DependencyInjection)" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <V_Microsoft_Extensions_Logging_Abstractions>10.0.2</V_Microsoft_Extensions_Logging_Abstractions>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Update="Microsoft.Extensions.Logging" 

@@ -1,45 +1,35 @@
-﻿
-# 🚀 Release Notes - Version $(Version)
+﻿# 🚀 Release Notes - Version $(Version)
 
 **Release Date:** $(ReleaseDate)
 
 ---
 
-## 🌟 Highlights
-
-✨ **Major refactor of NuGet module management and UI integration**
-
-This release significantly improves the internal design and usability of NuGet-based modules, laying a more solid foundation for future automation workflows and module lifecycle management.
-
----
-
 ## 🆕 New Features
 
-- Introduced a clearer NuGet module domain model:
-  - `NuGetModuleState`
-  - `NuGetModuleConfig`
-  - `InstalledNuGetModule`
-- Fully refactored **INuGetModuleManager** to an async-first API
-- Enhanced **NuGetModuleManagerView** with:
-  - Module list visualization
-  - Install / uninstall actions
-  - Manual refresh
-  - NuGet cache cleanup
+* Added **Microsoft.Extensions.Logging** support across the codebase, including:
+
+  * log4net adapter
+  * compatibility extensions for existing logging infrastructure
+* Introduced unified logging integration via **ILoggerFactory** and **ILogger<>**, backed by log4net
 
 ---
 
 ## 🛠 Improvements
 
-- Removed legacy manifest / state / config coupling in favor of explicit domain objects
-- Simplified module installation pipeline by removing file extraction responsibilities from the manager
-- Improved UI–logic separation for module management workflows
-- Upgraded dependency **ZYC.CoreToolkit** to **v3.7.4**
+* Updated DI registrations to consistently provide `ILoggerFactory` and `ILogger<>`
+* Refactored **CLIView** and **NuGetModuleManagerView** to:
+
+  * Use injected loggers
+  * Integrate busy window / busy state handling
+* Improved tab management logic and removed obsolete or redundant code
+* Centralized and cleaned up **NuGet package references and MSBuild targets**
+* General code cleanup and improved dependency injection patterns
 
 ---
 
 ## 🐛 Bug Fixes
 
-- Fixed typo in `ManagedTaskProgressChangedEvent` and updated all related usages
+* N/A (no user-facing bug fixes in this release)
 
 ---
 
@@ -60,4 +50,3 @@ dotnet add package ZYC.Automation.Alpha --version $(Version)
 
 **Thank you for trying out ZYC.Automation.Alpha!**
 Your feedback will help shape future releases.
-
