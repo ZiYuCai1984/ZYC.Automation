@@ -33,14 +33,6 @@ public interface ITabManager
 
     void MoveAllTabItemInstances(Guid from, Guid to);
 
-    //Task NavigateBackgroundAsync(Uri uri);
-
-    ////TODO It seems not work (NavigateBackgroundAsync)!!
-    //Task NavigateBackgroundAsync(string uri)
-    //{
-    //    return NavigateBackgroundAsync(new Uri(uri));
-    //}
-
     /// <summary>
     ///     Change the url inside the tab
     /// </summary>

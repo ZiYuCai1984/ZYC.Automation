@@ -7,13 +7,14 @@ using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using System.Windows;
 using Autofac;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Config;
 using ZYC.Automation.Abstractions.State;
 using ZYC.Automation.CLI;
 using ZYC.Automation.Core;
 using ZYC.Automation.Core.Localizations;
-using ZYC.Automation.Infrastructure;
 using ZYC.Automation.Modules.Settings.Abstractions;
 using ZYC.Automation.Modules.Settings.Abstractions.Event;
 using ZYC.Automation.WebView2;
@@ -115,8 +116,17 @@ internal partial class Program
 
         var builder = new ContainerBuilder();
 
-        builder.RegisterGeneric(typeof(NullLogger<>))
+        builder.RegisterGeneric(typeof(Infrastructure.NullLogger<>))
             .As(typeof(IAppLogger<>));
+
+
+        builder.RegisterInstance(NullLoggerFactory.Instance)
+            .As<ILoggerFactory>()
+            .SingleInstance();
+
+        builder.RegisterGeneric(typeof(Logger<>))
+            .As(typeof(ILogger<>));
+
 
         var appContextDirectory = AppContext.GetMainAppDirectory();
 

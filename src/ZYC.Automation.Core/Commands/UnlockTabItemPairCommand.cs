@@ -30,8 +30,6 @@ public class
 
         TabItemLockState.TabItems =
             TabItemLockState.TabItems = TabItemLockState.TabItems.RemoveReference(instance.TabReference);
-
-        RaisePairCommandsChanged();
     }
 
     protected override bool InternalCanExecute(ITabItemInstance? instance)

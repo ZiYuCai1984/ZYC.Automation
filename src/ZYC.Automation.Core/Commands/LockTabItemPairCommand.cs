@@ -45,7 +45,5 @@ public class
 
         TabItemLockState.TabItems =
             TabItemLockState.TabItems.AddReference(instance.TabReference);
-
-        RaisePairCommandsChanged();
     }
 }

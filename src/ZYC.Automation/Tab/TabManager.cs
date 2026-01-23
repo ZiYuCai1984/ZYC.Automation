@@ -295,33 +295,6 @@ internal partial class TabManager : ITabManager
                 await NavigateBackgroundAsync(workspaceId, item);
             }
 
-            #region //!WARNING Bad design, used to update and restore the state of <TabItemLockState>
-
-            //If two identical uris are restored, it ignores the order and always locks the previous one!!
-
-            var oriReferences = TabItemLockState.TabItems;
-            var newReferences = new List<TabReference>();
-
-            var tabItems = TabItemInstances.ToArray();
-
-
-            foreach (var oriReference in oriReferences)
-            {
-                foreach (var item in tabItems)
-                {
-                    if (oriReference.Uri != item.Uri)
-                    {
-                        continue;
-                    }
-
-                    newReferences.Add(item.TabReference);
-                    break;
-                }
-            }
-
-            TabItemLockState.TabItems = newReferences.ToArray();
-
-            #endregion
 
             var focusUri = navigation.Focus;
             if (focusUri == null)
@@ -331,6 +304,35 @@ internal partial class TabManager : ITabManager
 
             await FocusAsync(focusUri);
         }
+
+
+        #region //!WARNING Bad design, used to update and restore the state of <TabItemLockState>
+
+        //If two identical uris are restored, it ignores the order and always locks the previous one!!
+
+        var oriReferences = TabItemLockState.TabItems;
+        var newReferences = new List<TabReference>();
+
+        var tabItems = TabItemInstances.ToArray();
+
+
+        foreach (var oriReference in oriReferences)
+        {
+            foreach (var item in tabItems)
+            {
+                if (oriReference.Uri != item.Uri)
+                {
+                    continue;
+                }
+
+                newReferences.Add(item.TabReference);
+                break;
+            }
+        }
+
+        TabItemLockState.TabItems = newReferences.ToArray();
+
+        #endregion
     }
 
     public void SetFocusedTabItemInstance(Guid workspaceId, ITabItemInstance? instance)

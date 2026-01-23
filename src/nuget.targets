@@ -1,6 +1,5 @@
 ﻿<Project>
 
-
   <ItemGroup>
     <PackageReference Update="ZYC.CoreToolkit" Version="$(V_ZYC_CoreToolkit)" />
     <PackageReference Update="ZYC.CoreToolkit.Pro" Version="$(V_ZYC_CoreToolkit)" />
@@ -10,24 +9,29 @@
     <PackageReference Update="ZYC.CoreToolkit.Extensions.WebView2" Version="$(V_ZYC_CoreToolkit)" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <V_Microsoft_Web_WebView2>1.0.3712-prerelease</V_Microsoft_Web_WebView2>
-  </PropertyGroup>
+  <!--!WARNING The value of $(NuGetPackageRoot) is inconsistent between the restore and build (it is empty during restore), $(NuGetPackageRoot) cannot be used here. !!-->
+  <Import Project="$(USERPROFILE)\.nuget\packages\ZYC.CoreToolkit\$(V_ZYC_CoreToolkit)\nuget.targets"></Import>
+
 
   <ItemGroup>
     <PackageReference Update="Microsoft.Web.WebView2" Version="$(V_Microsoft_Web_WebView2)" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <!--!WARNING Autofac and Autofac.Extensions.DependencyInjection do not share the same version number !!-->
-    <V_Autofac>9.0.0</V_Autofac>
-    <V_Autofac_Extensions_DependencyInjection>10.0.0</V_Autofac_Extensions_DependencyInjection>
-  </PropertyGroup>
 
   <ItemGroup>
+    <!--!WARNING Autofac and Autofac.Extensions.DependencyInjection do not share the same version number !!-->
     <PackageReference Update="Autofac" Version="$(V_Autofac)" />
     <PackageReference Update="Autofac.Extensions.DependencyInjection"
                       Version="$(V_Autofac_Extensions_DependencyInjection)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Extensions.Logging" 
+                      Version="$(V_Microsoft_Extensions_Logging_Abstractions)" />
+    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" 
+                      Version="$(V_Microsoft_Extensions_Logging_Abstractions)" />
+    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" 
+                      Version="$(V_Microsoft_Extensions_Logging_Abstractions)" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -61,15 +65,6 @@
   <ItemGroup>
     <PackageReference Update="Emoji.Wpf" Version="$(V_Emoji_Wpf)" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <V_System_Drawing_Common>8.0.11</V_System_Drawing_Common>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Update="System.Drawing.Common" Version="$(V_System_Drawing_Common)" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Update="Aspire.Hosting.AppHost" Version="$(V_Aspire)" />
@@ -128,17 +123,9 @@
     <PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Update="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.2" />
   </ItemGroup>
 
 </Project>

@@ -3,8 +3,10 @@
     <ProjectReference Include="..\ZYC.Automation.Modules.Log.Abstractions\ZYC.Automation.Modules.Log.Abstractions.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ZYC.CoreToolkit.Extensions.Autofac" />
     <PackageReference Include="log4net" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="ZYC.CoreToolkit.Extensions.Autofac" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ZYC.Automation.Core\ZYC.Automation.Core.csproj" />

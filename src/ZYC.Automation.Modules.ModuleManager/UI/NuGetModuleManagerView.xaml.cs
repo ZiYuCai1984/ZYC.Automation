@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using ZYC.Automation.Abstractions;
+using ZYC.Automation.Abstractions.BusyWindow;
 using ZYC.Automation.Abstractions.Notification.Toast;
 using ZYC.Automation.Modules.ModuleManager.Abstractions;
 using ZYC.Automation.Modules.ModuleManager.Commands;
@@ -12,12 +13,14 @@ namespace ZYC.Automation.Modules.ModuleManager.UI;
 internal sealed partial class NuGetModuleManagerView
 {
     public NuGetModuleManagerView(
+        IAppBusyWindow appBusyWindow,
         IToastManager toastManager,
         IAppLogger<NuGetModuleManagerView> logger,
         RefreshNuGetModuleCommand refreshNuGetModuleCommand,
         INuGetModuleManager nuGetModuleManager,
         INuGetManager nuGetManager)
     {
+        AppBusyWindow = appBusyWindow;
         ToastManager = toastManager;
         Logger = logger;
         RefreshNuGetModuleCommand = refreshNuGetModuleCommand;
@@ -25,6 +28,7 @@ internal sealed partial class NuGetModuleManagerView
         NuGetManager = nuGetManager;
     }
 
+    private IAppBusyWindow AppBusyWindow { get; }
     private IToastManager ToastManager { get; }
     private IAppLogger<NuGetModuleManagerView> Logger { get; }
     private RefreshNuGetModuleCommand RefreshNuGetModuleCommand { get; }
@@ -45,6 +49,8 @@ internal sealed partial class NuGetModuleManagerView
 
     public async Task RefreshNuGetModulesAsync()
     {
+        var handler = AppBusyWindow.Enqueue();
+
         try
         {
             var modules = await NuGetModuleManager.GetModulesAsync();
@@ -60,6 +66,10 @@ internal sealed partial class NuGetModuleManagerView
         {
             ToastManager.PromptException(e);
             Logger.Error(e);
+        }
+        finally
+        {
+            handler.Close();
         }
     }
 }
