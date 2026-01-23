@@ -2,6 +2,7 @@
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.BusyWindow;
 using ZYC.Automation.Abstractions.Notification.Toast;
+using ZYC.Automation.Core.Localizations;
 using ZYC.Automation.Modules.ModuleManager.Abstractions;
 using ZYC.Automation.Modules.ModuleManager.Commands;
 using ZYC.Automation.Modules.NuGet.Abstractions;
@@ -13,6 +14,7 @@ namespace ZYC.Automation.Modules.ModuleManager.UI;
 internal sealed partial class NuGetModuleManagerView
 {
     public NuGetModuleManagerView(
+        NuGetConfig nugetConfig,
         IAppBusyWindow appBusyWindow,
         IToastManager toastManager,
         IAppLogger<NuGetModuleManagerView> logger,
@@ -20,6 +22,7 @@ internal sealed partial class NuGetModuleManagerView
         INuGetModuleManager nuGetModuleManager,
         INuGetManager nuGetManager)
     {
+        NugetConfig = nugetConfig;
         AppBusyWindow = appBusyWindow;
         ToastManager = toastManager;
         Logger = logger;
@@ -28,6 +31,7 @@ internal sealed partial class NuGetModuleManagerView
         NuGetManager = nuGetManager;
     }
 
+    private NuGetConfig NugetConfig { get; }
     private IAppBusyWindow AppBusyWindow { get; }
     private IToastManager ToastManager { get; }
     private IAppLogger<NuGetModuleManagerView> Logger { get; }
@@ -51,6 +55,7 @@ internal sealed partial class NuGetModuleManagerView
     {
         var handler = AppBusyWindow.Enqueue();
 
+        handler.Title = $"{L.Translate("Fetching NuGet packages from")} {NugetConfig.Source}";
         try
         {
             var modules = await NuGetModuleManager.GetModulesAsync();
