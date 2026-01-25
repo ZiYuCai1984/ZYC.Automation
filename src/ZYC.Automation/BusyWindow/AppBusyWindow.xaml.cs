@@ -8,7 +8,7 @@ using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.BusyWindow;
 
-[RegisterSingleInstanceAs(typeof(IAppBusyWindow))]
+[RegisterAs(typeof(IAppBusyWindow))]
 internal partial class AppBusyWindow : IAppBusyWindow
 {
     public static readonly DependencyProperty ShowProgressProperty =

@@ -247,7 +247,15 @@ internal partial class TabManager : ITabManager
         }
 
         DetachTabItemInstance(workspaceId, instance);
-        instance.Dispose();
+
+        try
+        {
+            instance.Dispose();
+        }
+        catch (Exception e)
+        {
+            Logger.Error(e);
+        }
 
         InvokeCloseTabItemEvent(workspaceId, instance);
 
@@ -474,7 +482,6 @@ internal partial class TabManager : ITabManager
     {
         var workspace = WorkspaceDictionary[workspaceId];
 
-        // ReSharper disable once CanSimplifyDictionaryLookupWithTryAdd
         if (!WorkspaceTabItemInstanceListDictionary.ContainsKey(workspace))
         {
             WorkspaceTabItemInstanceListDictionary.Add(workspace, new List<ITabItemInstance>());

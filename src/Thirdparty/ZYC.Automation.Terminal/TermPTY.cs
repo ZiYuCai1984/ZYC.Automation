@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
+using Windows.Win32;
 using EasyWindowsTerminalControl.Internals;
 using Microsoft.Terminal.Wpf;
 using Microsoft.Win32.SafeHandles;
-using Windows.Win32;
 
 namespace EasyWindowsTerminalControl;
 
@@ -27,6 +28,14 @@ public class TermPTY : ITerminalConnection
     public static Regex colorStrip = new(@"((\x1B\[\??[0-9;]*[a-zA-Z])|\uFEFF|\u200B|\x1B\]0;|[\a\b])",
         RegexOptions.Compiled | RegexOptions.ExplicitCapture); //also strips BOM, bells, backspaces etc
 
+    private static readonly Regex AnsiOscRegex = new(
+        // CSI: ESC[ ... letter   |   OSC: ESC] ... BEL or ST
+        @"\x1B\[[0-?]*[ -/]*[@-~]|\x1B\][^\x07]*(?:\x07|\x1B\\)",
+        RegexOptions.Compiled);
+
+    private readonly int READ_BUFFER_SIZE;
+    private readonly bool USE_BINARY_WRITER;
+
     private SafeFileHandle _consoleInputPipeWriteHandle;
     private StreamWriter _consoleInputWriter;
     private BinaryWriter _consoleInputWriterB;
@@ -34,10 +43,8 @@ public class TermPTY : ITerminalConnection
     public InterceptDelegate InterceptInputToTermApp;
 
     public InterceptDelegate InterceptOutputToUITerminal;
-    private readonly int READ_BUFFER_SIZE;
     public bool ReadLoopStarted;
     private PseudoConsole TheConsole;
-    private readonly bool USE_BINARY_WRITER;
 
     public TermPTY(int READ_BUFFER_SIZE = 1024 * 16, bool USE_BINARY_WRITER = false,
         IProcessFactory ProcessFactory = null)
@@ -152,8 +159,6 @@ public class TermPTY : ITerminalConnection
             ConsoleOutStream = new FileStream(outputPipe.ReadSide, FileAccess.Read);
             TermProcIsStarted = true;
 
-            TermReady?.Invoke(this, EventArgs.Empty);
-
             // Store input pipe handle, and a writer for later reuse
             _consoleInputPipeWriteHandle = inputPipe.WriteSide;
             var st = new FileStream(_consoleInputPipeWriteHandle, FileAccess.Write);
@@ -165,6 +170,8 @@ public class TermPTY : ITerminalConnection
             {
                 _consoleInputWriterB = new BinaryWriter(st);
             }
+
+            TermReady?.Invoke(this, EventArgs.Empty);
 
             // free resources in case the console is ungracefully closed (e.g. by the 'x' in the window titlebar)
             ReadOutputLoop();
@@ -373,6 +380,63 @@ public class TermPTY : ITerminalConnection
     {
         WriteToUITerminal(fullReset ? "\x001bc\x1b]104\x1b\\" : "\x1b[H\x1b[2J\u001b[3J");
     }
+
+    private static string StripAnsiOsc(string s)
+    {
+        return AnsiOscRegex.Replace(s, string.Empty);
+    }
+
+
+    public async Task ExecuteAndWaitAsync(string command, TimeSpan? timeout = null)
+    {
+        if (string.IsNullOrWhiteSpace(command))
+        {
+            return;
+        }
+
+        timeout ??= TimeSpan.FromSeconds(30);
+
+        var marker = "__ZYC_DONE_" + Guid.NewGuid().ToString("N") + "__";
+        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        void OnTermPTYTerminalOutput(object? _, TerminalOutputEventArgs e)
+        {
+            if (string.IsNullOrEmpty(e.Data))
+            {
+                return;
+            }
+
+            var text = StripAnsiOsc(e.Data).Trim();
+            if (text.StartsWith(marker, StringComparison.Ordinal))
+            {
+                tcs.TrySetResult();
+            }
+        }
+
+        TerminalOutput += OnTermPTYTerminalOutput;
+        try
+        {
+            WriteToTerm($"{command} & echo {marker}\r\n");
+
+            var completed = await Task.WhenAny(
+                tcs.Task,
+                Task.Delay(timeout.Value)
+            ).ConfigureAwait(false);
+
+            if (completed != tcs.Task)
+            {
+                tcs.TrySetException(
+                    new TimeoutException($"Command timed out after {timeout.Value}. Command: {command}"));
+            }
+
+            await tcs.Task.ConfigureAwait(false);
+        }
+        finally
+        {
+            TerminalOutput -= OnTermPTYTerminalOutput;
+        }
+    }
+
 
     protected class InternalProcessFactory : IProcessFactory
     {

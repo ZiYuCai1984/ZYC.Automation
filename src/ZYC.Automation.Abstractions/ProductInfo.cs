@@ -30,7 +30,7 @@ public static class ProductInfo
     /// <summary>
     ///     Gets the copyright notice.
     /// </summary>
-    public static string Copyright => $"© 2015 - {DateTime.Now.Year} {Author}. All rights reserved.";
+    public static string Copyright => CoreToolkit.Abstractions.ProductInfo.Copyright;
 
     /// <summary>
     ///     Gets the product description.
@@ -41,7 +41,7 @@ public static class ProductInfo
     /// <summary>
     ///     Gets the product author.
     /// </summary>
-    public static string Author => "tomoko";
+    public static string Author => CoreToolkit.Abstractions.ProductInfo.Author;
 
     /// <summary>
     ///     Gets the main executable file name.

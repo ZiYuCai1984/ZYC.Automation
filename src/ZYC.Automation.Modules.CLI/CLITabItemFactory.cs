@@ -1,4 +1,5 @@
-﻿using ZYC.Automation.Abstractions.Tab;
+﻿using Autofac;
+using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
@@ -12,8 +13,7 @@ internal class CLITabItemFactory : ITabItemFactory
     public async Task<ITabItemInstance> CreateTabItemInstanceAsync(TabItemCreationContext context)
     {
         await Task.CompletedTask;
-
-        return context.Resolve<CLITabItem>();
+        return context.Resolve<CLITabItem>(new TypedParameter(typeof(Uri), context.Uri));
     }
 
     public async Task<bool> CheckUriMatchedAsync(Uri uri)

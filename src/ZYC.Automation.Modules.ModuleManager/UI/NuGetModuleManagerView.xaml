@@ -68,7 +68,7 @@
                                                HorizontalAlignment="Left"
                                                Margin="8 0 0 0"
                                                TextTrimming="WordEllipsis"
-                                               FontWeight="Bold"
+                                               FontWeight="SemiBold"
                                                Text="{Binding ModuleAssemblyName}" />
                                     </Grid>
 
@@ -79,7 +79,7 @@
                                         </Grid.ColumnDefinitions>
                                         <Grid>
                                             <TextBlock HorizontalAlignment="Center"
-                                                   FontWeight="Bold"
+                                                       FontWeight="SemiBold"
                                                    Foreground="Green"
                                                    Text="*Installed*"
                                                    Visibility="{Binding Installed,Converter={converters:BoolToVisibilityConverter}}" />

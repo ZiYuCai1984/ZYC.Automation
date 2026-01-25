@@ -28,6 +28,8 @@ internal class Module : ModuleBase
             new MockTabItemInfo(typeof(TestNotificationView)));
         mockTabItemFactory.RegisterMockTabItem(
             new MockTabItemInfo(typeof(TestTaskManagerView)));
+        mockTabItemFactory.RegisterMockTabItem(
+            new MockTabItemInfo(typeof(TestCLIView)));
 
         if (lifetimeScope.TryResolve<ICommandlineResourcesProvider>(
                 out var commandlineResourcesProvider))

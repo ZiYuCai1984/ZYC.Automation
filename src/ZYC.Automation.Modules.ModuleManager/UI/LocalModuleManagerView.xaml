@@ -69,7 +69,7 @@
                                                HorizontalAlignment="Left"
                                                Margin="8 0 0 0"
                                                TextTrimming="WordEllipsis"
-                                               FontWeight="Bold"
+                                               FontWeight="SemiBold"
                                                Text="{Binding ModuleAssemblyName}" />
                                 </Grid>
 
@@ -80,7 +80,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Grid>
                                         <TextBlock HorizontalAlignment="Center"
-                                                   FontWeight="Bold"
+                                                   FontWeight="SemiBold"
                                                    Foreground="Red"
                                                    Text="*Deleted*">
                                             <TextBlock.Visibility>
@@ -102,7 +102,7 @@
                                                 </MultiBinding>
                                             </Grid.Visibility>
                                             <TextBlock HorizontalAlignment="Center"
-                                                       FontWeight="Bold"
+                                                       FontWeight="SemiBold"
                                                        Foreground="Green"
                                                        Text="*Enabled*">
                                                 <TextBlock.Visibility>
@@ -115,7 +115,7 @@
                                                 </TextBlock.Visibility>
                                             </TextBlock>
                                             <TextBlock HorizontalAlignment="Center"
-                                                       FontWeight="Bold"
+                                                       FontWeight="SemiBold"
                                                        Foreground="Red"
                                                        Text="*Disabled*">
                                                 <TextBlock.Visibility>

@@ -1,61 +1,70 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions;
-using ZYC.Automation.Core.Tab;
+using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Modules.CLI.UI;
+using ZYC.CoreToolkit;
+using ZYC.CoreToolkit.Common;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.CLI;
 
 [Register]
-internal class CLITabItem : TabItemInstanceBase<CLIView>
+internal class CLITabItem : ITabItemInstance
 {
-    private static readonly object Sync = new();
-    private static readonly HashSet<int> UsedIndexes = new();
+    private object? _view;
 
-    public CLITabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public CLITabItem(
+        ILifetimeScope lifetimeScope,
+        CLITabItemIndexPool indexPool,
+        Uri uri)
     {
-        Index = AllocateMinIndex();
+        LifetimeScope = lifetimeScope;
+        IndexPool = indexPool;
+        Lease = IndexPool.AcquireLease();
+
+        TabReference = new TabReference(uri);
     }
 
-    public override bool Localization => false;
+    private ILifetimeScope LifetimeScope { get; }
 
-    public int Index { get; }
+    private CLITabItemIndexPool IndexPool { get; }
 
-    public override string Title => $"{Constants.DefaultTitle} - {Index}";
+    private IndexPool.Lease Lease { get; }
 
-    public override void Dispose()
+    public TabReference TabReference { get; }
+
+    public Guid Id => TabReference.Id;
+
+    public Uri Uri => TabReference.Uri;
+
+    public string Scheme => Uri.Scheme;
+
+    public string Host => Uri.Host;
+
+    public string Title => $"{Constants.DefaultTitle} - {Lease.Index}";
+
+    public string Icon => Constants.Icon;
+
+    public object View => _view ??= LifetimeScope.Resolve<CLIView>(
+        new TypedParameter(typeof(CLIUriOptions), CLIUriOptions.Parse(Uri)));
+
+    public bool Localization => false;
+
+    public Task LoadAsync()
     {
-        ReleaseIndex(Index);
-
-        base.Dispose();
+        return Task.CompletedTask;
     }
 
-    private static int AllocateMinIndex()
+    public bool OnClosing()
     {
-        lock (Sync)
-        {
-            var i = 1;
-            while (UsedIndexes.Contains(i))
-            {
-                i++;
-            }
-
-            UsedIndexes.Add(i);
-            return i;
-        }
+        return true;
     }
 
-    private static void ReleaseIndex(int index)
-    {
-        if (index <= 0)
-        {
-            return;
-        }
 
-        lock (Sync)
-        {
-            UsedIndexes.Remove(index);
-        }
+    public void Dispose()
+    {
+        Lease.Dispose();
+        View.TryDispose();
     }
 
     public class Constants

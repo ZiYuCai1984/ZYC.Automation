@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using Autofac;
@@ -159,21 +158,12 @@ public abstract partial class WebViewHostBase : UserControl, IDisposable
 
         FirstRending = false;
 
+        var env = await GetCoreWebView2Environment();
+        await WebView2.EnsureCoreWebView2Async(env);
 
-        try
-        {
-            var env = await GetCoreWebView2Environment();
-            await WebView2.EnsureCoreWebView2Async(env);
+        AttachEvent();
 
-            AttachEvent();
-
-            await InternalWebViewHostLoadedAsync();
-        }
-        catch (Exception e)
-        {
-            Logger.Error(e);
-            Content = ResolveErrorView(e);
-        }
+        await InternalWebViewHostLoadedAsync();
     }
 
     private IErrorView? ResolveErrorView(Exception e)
@@ -188,19 +178,24 @@ public abstract partial class WebViewHostBase : UserControl, IDisposable
 
     private async void OnWebViewHostLoaded(object sender, RoutedEventArgs e)
     {
-        var dllPath = Path.Combine(
-            AppContext.GetMainAppDirectory(),
-            "runtimes",
-            "win-x64",
-            "native",
-            "WebView2Loader.dll");
-        NativeDllLoaderTools.LoadFrom(dllPath);
+        try
+        {
+            var dllPath = Path.Combine(
+                AppContext.GetMainAppDirectory(),
+                "runtimes",
+                "win-x64",
+                "native",
+                "WebView2Loader.dll");
+            NativeDllLoaderTools.LoadFrom(dllPath);
 
-        await OnWebViewHostLoaded();
+            await OnWebViewHostLoaded();
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex);
+            Content = ResolveErrorView(ex);
+        }
     }
-
-    [DllImport("kernel32", SetLastError = true)]
-    public static extern IntPtr LoadLibrary(string lpFileName);
 
     public void DeleteAllCookies()
     {
