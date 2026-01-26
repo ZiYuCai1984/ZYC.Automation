@@ -59,4 +59,18 @@
     <GenerateScopedCss>false</GenerateScopedCss>
   </PropertyGroup>
 
+
+
+  <PropertyGroup>
+    <EnableFody Condition="'$(EnableFody)' == ''">false</EnableFody>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(EnableFody)' == 'true'">
+    <None Include="$(MSBuildThisFileDirectory)FodyWeavers.xml"
+          Link="FodyWeavers.xml" />
+
+    <PackageReference Include="PropertyChanged.Fody" />
+  </ItemGroup>
+
+
 </Project>

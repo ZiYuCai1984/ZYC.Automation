@@ -4,10 +4,10 @@ using ZYC.CoreToolkit.Abstractions.Settings;
 
 namespace ZYC.Automation.Modules.Language.Abstractions;
 
-[Hidden]
 /// <summary>
-/// Defines configuration for language resources.
+///     Defines configuration for language resources.
 /// </summary>
+[Hidden]
 public interface ILanguageResourcesConfig : IConfig
 {
     /// <summary>

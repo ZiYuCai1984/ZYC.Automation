@@ -1,10 +1,12 @@
-﻿using ZYC.CoreToolkit.Abstractions.Settings;
+﻿using PropertyChanged;
+using ZYC.CoreToolkit.Abstractions.Settings;
 
 namespace ZYC.Automation.Modules.NuGet.Abstractions;
 
 /// <summary>
 ///     Defines NuGet configuration settings for module updates.
 /// </summary>
+[AddINotifyPropertyChangedInterface]
 public class NuGetConfig : IConfig
 {
     /// <summary>

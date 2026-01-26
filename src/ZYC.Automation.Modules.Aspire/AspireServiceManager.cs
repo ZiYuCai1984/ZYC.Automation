@@ -1,9 +1,10 @@
-﻿using Autofac;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using Autofac;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Notification.Toast;
 using ZYC.Automation.Modules.Aspire.Abstractions;
 using ZYC.Automation.Modules.Aspire.Abstractions.Event;
-using ZYC.Automation.Modules.Settings.Abstractions.Event;
 using ZYC.CoreToolkit;
 using ZYC.CoreToolkit.Abstractions;
 using ZYC.CoreToolkit.Dotnet;
@@ -29,17 +30,13 @@ internal sealed partial class AspireServiceManager : IAspireServiceManager, IDis
         LifetimeScope = lifetimeScope;
         Logger = logger;
 
-        AspireServiceStartFaultedEvent =
-            eventAggregator.Subscribe<AspireServiceStartFaultedAndDisposeFinishedEvent>(
-                OnAspireServiceStartFaultedAndDisposeFinished);
-
-        AspireConfigChangedEvent =
-            eventAggregator.Subscribe<SettingChangedEvent<AspireConfig>>(OnAspireConfigChanged);
+        eventAggregator.Subscribe<AspireServiceStartFaultedAndDisposeFinishedEvent>(
+            OnAspireServiceStartFaultedAndDisposeFinished).DisposeWith(CompositeDisposable);
     }
 
-    private IDisposable AspireConfigChangedEvent { get; }
-
     private SemaphoreSlim Gate { get; } = new(1, 1);
+
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private AspireConfig AspireConfig { get; }
 
@@ -48,8 +45,6 @@ internal sealed partial class AspireServiceManager : IAspireServiceManager, IDis
     private IEventAggregator EventAggregator { get; }
 
     private AspireServiceEnvironment AspireServiceEnvironment { get; }
-
-    private IDisposable AspireServiceStartFaultedEvent { get; }
 
     private ILifetimeScope LifetimeScope { get; }
 
@@ -123,7 +118,6 @@ internal sealed partial class AspireServiceManager : IAspireServiceManager, IDis
     public void SetAspireBinarySource(AspireBinarySource source)
     {
         AspireConfig.AspireBinarySource = source;
-        PublishAspireConfigChangedEvent();
     }
 
     public async Task DownloadAspireToolsAsync()
@@ -146,16 +140,6 @@ internal sealed partial class AspireServiceManager : IAspireServiceManager, IDis
         await DotnetNuGetTools
             .DownloadNuGetPackagesAsync(packages.ToArray(), AspireServiceEnvironment.AspireToolsFolder)
             .ConfigureAwait(false);
-    }
-
-    private void PublishAspireConfigChangedEvent()
-    {
-        EventAggregator.Publish(new AspireConfigChangedEvent());
-    }
-
-    private void OnAspireConfigChanged(SettingChangedEvent<AspireConfig> obj)
-    {
-        PublishAspireConfigChangedEvent();
     }
 
     private void OnAspireServiceStartFaultedAndDisposeFinished(AspireServiceStartFaultedAndDisposeFinishedEvent obj)

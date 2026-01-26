@@ -121,6 +121,7 @@ internal sealed class ToastStackPopupHost : IDisposable
         else
         {
             Show();
+            RefreshPlacement();
         }
     }
 
@@ -235,6 +236,12 @@ internal sealed class ToastStackPopupHost : IDisposable
             throw new InvalidOperationException("IToast must be a FrameworkElement.");
         }
 
+        if (!_owner.Dispatcher.CheckAccess())
+        {
+            _owner.Dispatcher.InvokeAsync(() => Add(toast));
+            return;
+        }
+
         element.MinWidth = ToastMinWidth;
         element.MaxWidth = ToastMaxWidth;
         element.MinHeight = ToastMinHeight;
@@ -252,15 +259,7 @@ internal sealed class ToastStackPopupHost : IDisposable
             toast.Closed -= handler;
             _closedHandlers.Remove(toast);
             _elementToToast.Remove(element);
-
-            if (element.Dispatcher.CheckAccess())
-            {
-                RemoveCore(element);
-            }
-            else
-            {
-                element.Dispatcher.InvokeAsync(() => RemoveCore(element));
-            }
+            RemoveCore(element);
         };
 
         _closedHandlers[toast] = handler;
@@ -272,8 +271,11 @@ internal sealed class ToastStackPopupHost : IDisposable
             ForceRemove(oldestElement);
         }
 
-        _popup.IsOpen = true;
-        Reposition();
+        if (ShouldBeVisible())
+        {
+            _popup.IsOpen = true;
+            Reposition();
+        }
     }
 
     private void ForceRemove(FrameworkElement element)

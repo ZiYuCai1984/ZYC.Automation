@@ -3,7 +3,6 @@ using System.Windows.Input;
 using Autofac;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.MainMenu;
-using ZYC.Automation.Abstractions.SideBar;
 using ZYC.Automation.Abstractions.StatusBar;
 using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Abstractions.Workspace;
@@ -26,12 +25,6 @@ public static class LifetimeScopeTools
         {
             var eventAggregator = lifetimeScope.Resolve<IEventAggregator>();
             return eventAggregator.Subscribe(handler, onUiThread);
-        }
-
-        public void RegisterDefaultSideBarItem<T>() where T : ISideBarItem
-        {
-            var provider = lifetimeScope.Resolve<IDefaultSideBarItemsProvider>();
-            provider.RegisterItem<T>();
         }
 
         public void RegisterDefaultStatucBarItem<T>() where T : IStatusBarItem

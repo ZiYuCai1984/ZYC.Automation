@@ -13,7 +13,6 @@ internal class Module : ModuleBase
     {
         lifetimeScope.RegisterTabItemFactory<SettingsTabItemFactory>();
         lifetimeScope.RegisterRootMainMenuItem<ISettingsMainMenuItemsProvider>();
-        lifetimeScope.RegisterDefaultSideBarItem<SettingsSideBarItem>();
 
         return Task.CompletedTask;
     }

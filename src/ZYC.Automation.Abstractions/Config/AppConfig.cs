@@ -1,7 +1,9 @@
-﻿using ZYC.CoreToolkit.Abstractions.Settings;
+﻿using PropertyChanged;
+using ZYC.CoreToolkit.Abstractions.Settings;
 
 namespace ZYC.Automation.Abstractions.Config;
 
+[AddINotifyPropertyChangedInterface]
 public class AppConfig : IConfig
 {
     public string Title { get; set; } = ProductInfo.ProductName;

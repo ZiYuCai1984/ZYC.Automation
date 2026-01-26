@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using Autofac;
-using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.MainMenu;
+using ZYC.Automation.Core;
 using ZYC.Automation.Core.Commands;
 using ZYC.Automation.Core.Menu;
 using ZYC.Automation.Modules.Aspire.Abstractions;
-using ZYC.Automation.Modules.Aspire.Abstractions.Event;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.Aspire;
@@ -39,8 +41,7 @@ internal class SetAspireBinarySourceOptionMainMenuItem : MainMenuItem, INotifyPr
     public SetAspireBinarySourceOptionMainMenuItem(
         IAspireServiceManager aspireServiceManager,
         AspireBinarySource aspireBinarySource,
-        AspireConfig aspireConfig,
-        IEventAggregator eventAggregator)
+        AspireConfig aspireConfig)
     {
         Info = new MenuItemInfo
         {
@@ -51,10 +52,15 @@ internal class SetAspireBinarySourceOptionMainMenuItem : MainMenuItem, INotifyPr
         AspireServiceManager = aspireServiceManager;
         TargetAspireBinarySource = aspireBinarySource;
         AspireConfig = aspireConfig;
-        AspireBinarySourceChangedEvent =
-            eventAggregator.Subscribe<AspireConfigChangedEvent>(OnAspireConfigChanged);
 
 
+        AspireConfig.ObserveAnyChange()
+            .Throttle(TimeSpan.FromMilliseconds(200))
+            .Subscribe(_ =>
+            {
+                OnPropertyChanged(nameof(Title));
+            }).DisposeWith(CompositeDisposable);
+        
         Command = new RelayCommand(_ => TargetAspireBinarySource != AspireConfig.AspireBinarySource,
             _ =>
             {
@@ -63,7 +69,7 @@ internal class SetAspireBinarySourceOptionMainMenuItem : MainMenuItem, INotifyPr
         );
     }
 
-    private IDisposable AspireBinarySourceChangedEvent { get; }
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private IAspireServiceManager AspireServiceManager { get; }
 
@@ -86,16 +92,10 @@ internal class SetAspireBinarySourceOptionMainMenuItem : MainMenuItem, INotifyPr
 
     public void Dispose()
     {
-        AspireBinarySourceChangedEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnAspireConfigChanged(AspireConfigChangedEvent obj)
-    {
-        OnPropertyChanged(nameof(Title));
-    }
-
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {

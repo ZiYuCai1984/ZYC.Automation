@@ -10,7 +10,6 @@ internal partial class AspireServiceManager
         }
 
         Gate.Dispose();
-        AspireServiceStartFaultedEvent.Dispose();
-        AspireConfigChangedEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 }

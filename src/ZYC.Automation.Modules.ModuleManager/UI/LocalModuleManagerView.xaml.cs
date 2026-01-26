@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Reactive.Disposables.Fluent;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Config;
 using ZYC.Automation.Modules.ModuleManager.Abstractions;
@@ -20,30 +21,26 @@ public partial class LocalModuleManagerView
         LocalModuleManager = localModuleManager;
         ModuleConfig = moduleConfig;
 
-        DeleteModuleEvent = EventAggregator.Subscribe<DeleteModuleEvent>(_ =>
+        EventAggregator.Subscribe<DeleteModuleEvent>(_ =>
         {
             OnPropertyChanged(nameof(ModulePendingDeleteAssemblyNames));
-        });
+        }).DisposeWith(CompositeDisposable);
 
-        DisableModuleEvent = EventAggregator.Subscribe<DisableModuleEvent>(_ =>
+        EventAggregator.Subscribe<DisableModuleEvent>(_ =>
         {
             OnPropertyChanged(nameof(ModuleDisabledAssemblyNames));
-        });
+        }).DisposeWith(CompositeDisposable);
+        ;
 
-        EnableModuleEvent = EventAggregator.Subscribe<EnableModuleEvent>(_ =>
+        EventAggregator.Subscribe<EnableModuleEvent>(_ =>
         {
             OnPropertyChanged(nameof(ModuleDisabledAssemblyNames));
-        });
-
+        }).DisposeWith(CompositeDisposable);
+        ;
 
         InitializeComponent();
     }
 
-    private IDisposable DisableModuleEvent { get; }
-
-    private IDisposable EnableModuleEvent { get; }
-
-    private IDisposable DeleteModuleEvent { get; }
 
     private IEventAggregator EventAggregator { get; }
 
@@ -64,14 +61,5 @@ public partial class LocalModuleManagerView
         {
             ModuleInfos.Add(module);
         }
-    }
-
-    public override void Dispose()
-    {
-        base.Dispose();
-
-        DeleteModuleEvent.Dispose();
-        DisableModuleEvent.Dispose();
-        EnableModuleEvent.Dispose();
     }
 }

@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <EnableFody>true</EnableFody>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ZYC.CoreToolkit.Abstractions" Version="3.3.2" />
+    <PackageReference Include="ZYC.CoreToolkit.Abstractions" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ZYC.Automation.Abstractions\ZYC.Automation.Abstractions.csproj" />

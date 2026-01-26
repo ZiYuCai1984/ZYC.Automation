@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Net.Http;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Text.Json;
 using System.Xml.Linq;
 using NuGet.Common;
@@ -8,8 +10,8 @@ using NuGet.Packaging.Core;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 using ZYC.Automation.Abstractions;
+using ZYC.Automation.Core;
 using ZYC.Automation.Modules.NuGet.Abstractions;
-using ZYC.Automation.Modules.Settings.Abstractions.Event;
 using ZYC.CoreToolkit.Dotnet;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
@@ -22,28 +24,28 @@ internal class NuGetManager : INuGetManager, IDisposable
 
     public NuGetManager(
         IAppContext appContext,
-        NuGetConfig config,
-        IEventAggregator eventAggregator)
+        NuGetConfig config)
     {
         AppContext = appContext;
         NuGetConfig = config;
-        EventAggregator = eventAggregator;
 
         SourceCacheContext = new NullSourceCacheContext
         {
             DirectDownload = true
         };
 
-        NuGetConfigChangedEvent = eventAggregator.Subscribe<SettingChangedEvent<NuGetConfig>>(OnNuGetConfigChanged);
+        config.ObserveProperty(nameof(NuGetConfig.Source)).Subscribe(_ =>
+        {
+            _nugetSource = null;
+        }).DisposeWith(CompositeDisposable);
     }
 
-    private IDisposable NuGetConfigChangedEvent { get; }
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private IAppContext AppContext { get; }
 
     private NuGetConfig NuGetConfig { get; }
 
-    private IEventAggregator EventAggregator { get; }
 
     public NuGetSource NuGetSource
     {
@@ -68,7 +70,7 @@ internal class NuGetManager : INuGetManager, IDisposable
 
     public void Dispose()
     {
-        NuGetConfigChangedEvent.Dispose();
+        CompositeDisposable.Dispose();
         SourceCacheContext.Dispose();
     }
 
@@ -232,11 +234,6 @@ internal class NuGetManager : INuGetManager, IDisposable
         }
 
         return null;
-    }
-
-    private void OnNuGetConfigChanged(SettingChangedEvent<NuGetConfig> obj)
-    {
-        _nugetSource = null;
     }
 
     private async Task<string?> TryFetchReleaseNotesAsync(

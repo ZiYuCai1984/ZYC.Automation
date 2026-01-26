@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,7 +31,7 @@ internal sealed partial class SecretsManagerView
         var ui = SynchronizationContext.Current
                  ?? throw new InvalidOperationException("Must be created on UI thread.");
 
-        FilterEvent = Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+        Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 h => PropertyChanged += h,
                 h => PropertyChanged -= h)
             .Where(e => e.EventArgs.PropertyName == nameof(FilterText))
@@ -43,11 +44,9 @@ internal sealed partial class SecretsManagerView
                     SecretGroupsCollectionView.Refresh();
                     OnPropertyChanged(nameof(CollectionViewCount));
                 }
-            );
+            ).DisposeWith(CompositeDisposable);
     }
 
-
-    private IDisposable FilterEvent { get; }
 
     public string? FilterText
     {
@@ -75,13 +74,6 @@ internal sealed partial class SecretsManagerView
     public ObservableCollection<SettingGroup> SecretGroups { get; set; } = [];
 
     private bool FirstRending { get; set; } = true;
-
-    public override void Dispose()
-    {
-        base.Dispose();
-
-        FilterEvent.Dispose();
-    }
 
     private void OnFilter(object sender, FilterEventArgs e)
     {
