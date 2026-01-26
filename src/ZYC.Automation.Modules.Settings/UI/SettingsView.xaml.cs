@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,7 +37,7 @@ internal partial class SettingsView : ISettingsView
         var ui = SynchronizationContext.Current
                  ?? throw new InvalidOperationException("Must be created on UI thread.");
 
-        FilterEvent = Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+        Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 h => PropertyChanged += h,
                 h => PropertyChanged -= h)
             .Where(e => e.EventArgs.PropertyName == nameof(FilterText))
@@ -49,11 +50,9 @@ internal partial class SettingsView : ISettingsView
                     SettingGroupsCollectionView.Refresh();
                     OnPropertyChanged(nameof(CollectionViewCount));
                 }
-            );
+            ).DisposeWith(CompositeDisposable);
     }
 
-
-    private IDisposable FilterEvent { get; }
 
     public string? FilterText
     {
@@ -142,7 +141,6 @@ internal partial class SettingsView : ISettingsView
 
         SettingsManager.SetSettingsView(null);
         SettingGroupsCollectionViewSource.Filter -= OnFilter;
-        FilterEvent.Dispose();
     }
 
     public static string GetArrayDeleteTarget(UIElement target)

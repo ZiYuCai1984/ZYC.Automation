@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
@@ -30,7 +29,7 @@ internal sealed partial class TaskManagerView
         ManagedTasksCollectionViewSource.Source = ManagedTasks;
         ManagedTasksCollectionViewSource.Filter += OnFilter;
 
-        FilterEvent = Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+        Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 h => PropertyChanged += h,
                 h => PropertyChanged -= h)
             .Where(e => e.EventArgs.PropertyName == nameof(FilterText)
@@ -44,8 +43,6 @@ internal sealed partial class TaskManagerView
                 }
             ).DisposeWith(CompositeDisposable);
     }
-
-    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private IEventAggregator EventAggregator { get; }
 

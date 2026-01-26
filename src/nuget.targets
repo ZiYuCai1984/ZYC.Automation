@@ -37,11 +37,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Update="Microsoft.Extensions.Logging" 
+    <PackageReference Update="Microsoft.Extensions.Logging"
                       Version="$(V_Microsoft_Extensions_Logging_Abstractions)" />
-    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" 
+    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions"
                       Version="$(V_Microsoft_Extensions_Logging_Abstractions)" />
-    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" 
+    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions"
                       Version="$(V_Microsoft_Extensions_Logging_Abstractions)" />
   </ItemGroup>
 
@@ -119,6 +119,7 @@
 
 
   <ItemGroup>
+    <PackageReference Update="PropertyChanged.Fody" Version="4.1.0" />
     <PackageReference Update="log4net" Version="3.2.0" />
     <PackageReference Update="LibreTranslate.Net" Version="1.0.1" />
     <PackageReference Update="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />

@@ -1,12 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using Autofac;
-using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Config;
 using ZYC.Automation.Abstractions.Workspace;
-using ZYC.Automation.Modules.Settings.Abstractions.Event;
+using ZYC.Automation.Core;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Workspace;
@@ -19,31 +21,32 @@ internal sealed partial class WorkspaceMenuView : IDisposable, INotifyPropertyCh
     public WorkspaceMenuView(
         ILifetimeScope lifetimeScope,
         WorkspaceMenuConfig workspaceMenuConfig,
-        IEventAggregator eventAggregator,
         WorkspaceNode workspaceNode,
         IWorkspaceMenuManager workspaceMenuManager)
     {
         LifetimeScope = lifetimeScope;
         WorkspaceMenuConfig = workspaceMenuConfig;
-        EventAggregator = eventAggregator;
         WorkspaceNode = workspaceNode;
         WorkspaceMenuManager = workspaceMenuManager;
 
         InitializeComponent();
 
-        WorkspaceMenuConfigChangedEvent =
-            EventAggregator.Subscribe<SettingChangedEvent<WorkspaceMenuConfig>>(OnWorkspaceMenuConfigChangedEvent);
+        WorkspaceMenuConfig.ObserveProperty(nameof(WorkspaceMenuConfig.IsVisible))
+            .Throttle(TimeSpan.FromMilliseconds(200))
+            .Subscribe(_ =>
+            {
+                OnPropertyChanged(nameof(IsWorkspaceMenuVisible));
+            }).DisposeWith(CompositeDisposable);
     }
 
-    private IDisposable WorkspaceMenuConfigChangedEvent { get; }
+    private CompositeDisposable CompositeDisposable { get; } = new();
+
 
     private ILifetimeScope LifetimeScope { get; }
 
     private WorkspaceMenuConfig WorkspaceMenuConfig { get; }
 
     public bool IsWorkspaceMenuVisible => WorkspaceMenuConfig.IsVisible;
-
-    private IEventAggregator EventAggregator { get; }
 
     public WorkspaceNode WorkspaceNode { get; }
 
@@ -56,23 +59,10 @@ internal sealed partial class WorkspaceMenuView : IDisposable, INotifyPropertyCh
 
     public void Dispose()
     {
-        WorkspaceMenuConfigChangedEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnWorkspaceMenuConfigChangedEvent(SettingChangedEvent<WorkspaceMenuConfig> e)
-    {
-        var oldValue = e.OldValue;
-        var newValue = e.NewValue;
-
-        if (oldValue.IsVisible == newValue.IsVisible)
-        {
-            return;
-        }
-
-        OnPropertyChanged(nameof(IsWorkspaceMenuVisible));
-    }
 
 
     private void OnWorkspaceMenuViewLoaded(object sender, RoutedEventArgs e)

@@ -18,6 +18,7 @@
     <PackageReference Include="ZYC.CoreToolkit.Extensions.Autofac" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" />
     <PackageReference Include="Emoji.Wpf" />
+    <PackageReference Include="System.Reactive" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ZYC.Automation.Abstractions\ZYC.Automation.Abstractions.csproj" />

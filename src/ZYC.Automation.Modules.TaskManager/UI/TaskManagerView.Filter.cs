@@ -15,8 +15,6 @@ internal partial class TaskManagerView
 
     private ObservableCollection<ManagedTaskWrapper> ManagedTasks { get; } = new();
 
-    private IDisposable FilterEvent { get; }
-
     public FilterType FilterType
     {
         get => TaskManagerState.FilterType;

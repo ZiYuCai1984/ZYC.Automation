@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Reactive.Disposables.Fluent;
+using Autofac;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Modules.NuGet.Abstractions.Commands;
 using ZYC.Automation.Modules.Update.Abstractions;
@@ -30,11 +31,9 @@ internal sealed partial class UpdateView
 
         LifetimeScope = lifetimeScope;
 
-        UpdateContextChangedEvent = EventAggregator.Subscribe<UpdateContextChangedEvent>(OnUpdateContextChangedEvent);
+        EventAggregator.Subscribe<UpdateContextChangedEvent>(OnUpdateContextChangedEvent)
+            .DisposeWith(CompositeDisposable);
     }
-
-
-    private IDisposable UpdateContextChangedEvent { get; }
 
     public CheckUpdateCommand CheckUpdateCommand { get; }
 
@@ -67,14 +66,6 @@ internal sealed partial class UpdateView
         OnPropertyChanged(nameof(UpdateException));
         OnPropertyChanged(nameof(NewProduct));
         OnPropertyChanged(nameof(UpdateStatus));
-    }
-
-
-    public override void Dispose()
-    {
-        base.Dispose();
-
-        UpdateContextChangedEvent.Dispose();
     }
 
     protected override void InternalOnLoaded()

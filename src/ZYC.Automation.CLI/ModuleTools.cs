@@ -189,7 +189,8 @@ public static class ModuleTools
         {
             if (typeof(IConfig).IsAssignableFrom(type)
                 && type != typeof(IConfig)
-                && !type.IsInterface)
+                && !type.IsInterface
+                && !type.IsAbstract)
             {
                 var result = SettingsTools.GetFromFolderGeneric(folder, type);
                 builder.RegisterConfigR(result);
@@ -201,7 +202,8 @@ public static class ModuleTools
 
             if (typeof(IState).IsAssignableFrom(type)
                 && type != typeof(IState)
-                && !type.IsInterface)
+                && !type.IsInterface
+                && !type.IsAbstract)
             {
                 var result = SettingsTools.GetFromFolderGeneric(folder, type);
                 builder.RegisterStateR(result);

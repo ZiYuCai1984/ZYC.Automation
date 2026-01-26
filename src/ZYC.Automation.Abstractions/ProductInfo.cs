@@ -25,7 +25,7 @@ public static class ProductInfo
     /// <summary>
     ///     Gets the product version string.
     /// </summary>
-    public static string Version => "1.0.4";
+    public static string Version => "1.0.5";
 
     /// <summary>
     ///     Gets the copyright notice.

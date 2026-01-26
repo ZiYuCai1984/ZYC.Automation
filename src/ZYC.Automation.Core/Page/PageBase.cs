@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -86,9 +87,12 @@ public abstract class PageBase : UserControl, IDisposable, INotifyPropertyChange
 
     private bool FirstRending { get; set; } = true;
 
+    protected CompositeDisposable CompositeDisposable { get; } = new();
+
     public virtual void Dispose()
     {
         Loaded -= OnLoaded;
+        CompositeDisposable.Dispose();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

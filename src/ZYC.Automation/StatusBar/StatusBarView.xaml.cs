@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
-using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Config;
 using ZYC.Automation.Abstractions.StatusBar;
-using ZYC.Automation.Modules.Settings.Abstractions.Event;
+using ZYC.Automation.Core;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.StatusBar;
@@ -13,24 +15,25 @@ internal sealed partial class StatusBarView : INotifyPropertyChanged, IDisposabl
 {
     public StatusBarView(
         StatusBarConfig statusBarConfig,
-        IEventAggregator eventAggregator,
         IStatusBarManager statusBarManager)
     {
         StatusBarConfig = statusBarConfig;
-        EventAggregator = eventAggregator;
         StatusBarManager = statusBarManager;
 
         InitializeComponent();
 
-        StatusBarConfigChangedEvent =
-            EventAggregator.Subscribe<SettingChangedEvent<StatusBarConfig>>(OnStatusBarConfigChanged);
+        statusBarConfig
+            .ObserveProperty(nameof(StatusBarConfig.IsVisible))
+            .Throttle(TimeSpan.FromMilliseconds(200))
+            .Subscribe(_ =>
+            {
+                OnPropertyChanged(nameof(IsStatusBarVisible));
+            }).DisposeWith(CompositeDisposable);
     }
-
-    private IDisposable StatusBarConfigChangedEvent { get; }
 
     private StatusBarConfig StatusBarConfig { get; }
 
-    private IEventAggregator EventAggregator { get; }
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private IStatusBarManager StatusBarManager { get; }
 
@@ -42,7 +45,7 @@ internal sealed partial class StatusBarView : INotifyPropertyChanged, IDisposabl
 
     public void Dispose()
     {
-        StatusBarConfigChangedEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -57,10 +60,6 @@ internal sealed partial class StatusBarView : INotifyPropertyChanged, IDisposabl
         return Height;
     }
 
-    private void OnStatusBarConfigChanged(SettingChangedEvent<StatusBarConfig> obj)
-    {
-        OnPropertyChanged(nameof(IsStatusBarVisible));
-    }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {

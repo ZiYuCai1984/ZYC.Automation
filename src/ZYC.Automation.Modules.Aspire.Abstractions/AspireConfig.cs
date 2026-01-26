@@ -1,4 +1,5 @@
-﻿using ZYC.Automation.Abstractions.Config.Attributes;
+﻿using PropertyChanged;
+using ZYC.Automation.Abstractions.Config.Attributes;
 using ZYC.CoreToolkit.Abstractions.Settings;
 
 namespace ZYC.Automation.Modules.Aspire.Abstractions;
@@ -6,6 +7,7 @@ namespace ZYC.Automation.Modules.Aspire.Abstractions;
 /// <summary>
 ///     Configuration options for the Aspire module.
 /// </summary>
+[AddINotifyPropertyChangedInterface]
 public class AspireConfig : IConfig
 {
     /// <summary>
@@ -34,10 +36,10 @@ public class AspireConfig : IConfig
     public bool AutoStart { get; set; }
 
     //!WARNING Dictionary not support now in UI !!
-    [Hidden]
     /// <summary>
-    /// Gets or sets environment variables used when starting Aspire services.
+    ///     Gets or sets environment variables used when starting Aspire services.
     /// </summary>
+    [Hidden]
     public Dictionary<string, string> Environment { get; set; } = new()
     {
         ["DOTNET_DASHBOARD_OTLP_ENDPOINT_URL"] = "http://localhost:18886",

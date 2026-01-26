@@ -6,6 +6,7 @@
     <PackageReference Include="ZYC.CoreToolkit" />
     <PackageReference Include="AvalonEdit" />
     <PackageReference Include="Emoji.Wpf" />
+    <PackageReference Include="System.Reactive" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ZYC.Automation.Abstractions\ZYC.Automation.Abstractions.csproj" />
