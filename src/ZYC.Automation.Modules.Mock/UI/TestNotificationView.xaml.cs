@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Text;
+using System.Windows;
 using ZYC.Automation.Abstractions.Notification.Banner;
 using ZYC.Automation.Abstractions.Notification.Toast;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
@@ -25,8 +26,36 @@ public partial class TestNotificationView
         BannerManager.PromptRestart();
     }
 
-    private void OnPromptToastBtnClick(object sender, RoutedEventArgs e)
+    private void OnPromptToastInfoBtnClick(object sender, RoutedEventArgs e)
     {
-        ToastManager.PromptMessage(new ToastMessage("Hello World"));
+        ToastManager.PromptMessage(ToastMessage.Info("Hello World"));
+    }
+
+    private void OnPromptToastLongInfoBtnClick(object sender, RoutedEventArgs e)
+    {
+        var stringBuilder = new StringBuilder();
+        for (var i = 0; i < 100; i++)
+        {
+            stringBuilder.Append("HelloWorld");
+        }
+        ToastManager.PromptMessage(ToastMessage.Info(stringBuilder.ToString()));
+    }
+
+    private void OnPromptToastWarnBtnClick(object sender, RoutedEventArgs e)
+    {
+        ToastManager.PromptMessage(ToastMessage.Warn("Hello World"));
+    }
+
+    private void OnPromptToastErrorBtnClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var arr = Array.Empty<int>();
+            _ = arr[0];
+        }
+        catch (Exception exception)
+        {
+            ToastManager.PromptException(exception);
+        }
     }
 }

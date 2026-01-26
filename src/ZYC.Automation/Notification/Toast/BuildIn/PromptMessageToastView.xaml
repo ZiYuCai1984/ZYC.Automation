@@ -8,42 +8,35 @@
                  xmlns:core="clr-namespace:ZYC.Automation.Core;assembly=ZYC.Automation.Core"
                  xmlns:converters="clr-namespace:ZYC.Automation.Core.Converters;assembly=ZYC.Automation.Core"
                  mc:Ignorable="d"
+                 MaxHeight="256"
                  d:DesignHeight="450" d:DesignWidth="800">
-    <Border
-        CornerRadius="12"
-        Padding="12"
-        Margin="0"
-        ClipToBounds="True"
-        Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
-        BorderBrush="{DynamicResource MahApps.Brushes.Control.Border}"
-        BorderThickness="1"
-        SnapsToDevicePixels="True">
-        <Grid
-            DataContext="{Binding ToastMessage}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="12" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <core:HybridIcon
-                Icon="{Binding Icon}"
-                Width="18"
-                Height="18"
-                VerticalAlignment="Center"
-                Opacity="0.9" />
-            <TextBlock Grid.Column="2"
-                       VerticalAlignment="Center"
-                       TextWrapping="Wrap"
-                       FontSize="13"
-                       Opacity="0.95">
-                <TextBlock.Text>
-                    <MultiBinding Converter="{converters:LocalizationMultiConverter}">
-                        <Binding Path="Text" />
-                        <Binding Path="Localization" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
-        </Grid>
-    </Border>
+    <Grid
+        DataContext="{Binding ToastMessage}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="12" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <core:HybridIcon
+            Icon="{Binding Icon}"
+            Width="18"
+            Height="18"
+            VerticalAlignment="Top"
+            Margin="0 2 0 0"
+            Opacity="0.9" />
+        <TextBlock Grid.Column="2"
+                   VerticalAlignment="Center"
+                   TextWrapping="Wrap"
+                   TextTrimming="CharacterEllipsis"
+                   FontSize="13"
+                   Opacity="0.95">
+            <TextBlock.Text>
+                <MultiBinding Converter="{converters:LocalizationMultiConverter}">
+                    <Binding Path="Text" />
+                    <Binding Path="Localization" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+    </Grid>
 </toast:ToastBase>

@@ -18,8 +18,14 @@
             <Button Click="OnPromptRestartBtnClick"
                     Content="Restart Banner" />
             <TextBlock Text="Toast" />
-            <Button Click="OnPromptToastBtnClick"
-                    Content="Toast" />
+            <Button Click="OnPromptToastInfoBtnClick"
+                    Content="Info" />
+            <Button Click="OnPromptToastLongInfoBtnClick"
+                    Content="Long Info" />
+            <Button Click="OnPromptToastWarnBtnClick"
+                    Content="Warn" />
+            <Button Click="OnPromptToastErrorBtnClick"
+                    Content="Error" />
         </StackPanel>
     </ScrollViewer>
 

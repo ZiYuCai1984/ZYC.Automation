@@ -2,9 +2,9 @@
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Config;
 using ZYC.Automation.Abstractions.Event;
+using ZYC.Automation.Abstractions.Notification.Toast;
 using ZYC.Automation.Abstractions.QuickBar;
 using ZYC.Automation.Abstractions.Tab;
-using ZYC.Automation.Core;
 using ZYC.Automation.Core.Commands;
 using ZYC.Automation.Modules.Settings.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
@@ -17,11 +17,13 @@ internal class StarQuickBarProvider : IStarQuickBarItemsProvider
     private ISettingsManager? _settingsManager;
 
     public StarQuickBarProvider(
+        IToastManager toastManager,
         IEventAggregator eventAggregator,
         ITabManager tabManager,
         ILifetimeScope lifetimeScope,
         StarQuickBarConfig starQuickBarConfig)
     {
+        ToastManager = toastManager;
         EventAggregator = eventAggregator;
         TabManager = tabManager;
 
@@ -50,6 +52,7 @@ internal class StarQuickBarProvider : IStarQuickBarItemsProvider
         }
     }
 
+    private IToastManager ToastManager { get; }
     private IEventAggregator EventAggregator { get; }
 
     private ITabManager TabManager { get; }
@@ -164,7 +167,7 @@ internal class StarQuickBarProvider : IStarQuickBarItemsProvider
 
         if (SettingsManager == null)
         {
-            MessageBoxTools.Warning("Save failed, missing <Settings> module !!");
+            ToastManager.PromptMessage(ToastMessage.Warn("Save failed, missing <Settings> module !!"));
         }
         else
         {

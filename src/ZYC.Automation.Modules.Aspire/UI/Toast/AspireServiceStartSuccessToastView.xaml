@@ -14,46 +14,37 @@
                  mc:Ignorable="d"
                  d:DesignHeight="450" d:DesignWidth="800"
                  DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    <Border CornerRadius="12"
-            Padding="12"
-            Margin="0"
-            ClipToBounds="True"
-            Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
-            BorderBrush="{DynamicResource MahApps.Brushes.Control.Border}"
-            BorderThickness="1"
-            SnapsToDevicePixels="True">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid Margin="0 0 0 16">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <core:HybridIcon
-                    Icon="{x:Static abstractions:Base64IconResources.Aspire}"
-                    Width="18" Height="18"
-                    VerticalAlignment="Center"
-                    Opacity="0.9"
-                    VerticalContentAlignment="Top" />
-                <TextBlock Grid.Column="1"
-                           VerticalAlignment="Center"
-                           TextWrapping="Wrap"
-                           FontSize="13"
-                           Opacity="0.95"
-                           Text="{localizations:L Aspire is ready}"
-                           Margin="8 0 0 0" />
-            </Grid>
-
-            <buttons:IconButton Grid.Row="1"
-                                Kind="KeyboardReturn"
-                                Text="{localizations:L Go to dashboard}"
-                                Command="{markupEx:LifetimeScopeResolve commands:NavigateCommand}"
-                                CommandParameter="{Binding TargetUri}"
-                                HorizontalAlignment="Right" />
-
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Margin="0 0 0 16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <core:HybridIcon
+                Icon="{x:Static abstractions:Base64IconResources.Aspire}"
+                Width="18" Height="18"
+                VerticalAlignment="Center"
+                Opacity="0.9"
+                VerticalContentAlignment="Top" />
+            <TextBlock Grid.Column="1"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"
+                       FontSize="13"
+                       Opacity="0.95"
+                       Text="{localizations:L Aspire is ready}"
+                       Margin="8 0 0 0" />
         </Grid>
-    </Border>
+
+        <buttons:IconButton Grid.Row="1"
+                            Kind="KeyboardReturn"
+                            Text="{localizations:L Go to dashboard}"
+                            Command="{markupEx:LifetimeScopeResolve commands:NavigateCommand}"
+                            CommandParameter="{Binding TargetUri}"
+                            HorizontalAlignment="Right" />
+
+    </Grid>
 </toast:ToastBase>
