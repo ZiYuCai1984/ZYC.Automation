@@ -24,7 +24,6 @@
     <PackageReference Include="MahApps.Metro" />
     <PackageReference Include="Autofac" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" />
-    <PackageReference Include="System.Reactive" />
   </ItemGroup>
 
 </Project>

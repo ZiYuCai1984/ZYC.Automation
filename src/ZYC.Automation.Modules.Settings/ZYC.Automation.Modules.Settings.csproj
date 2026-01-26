@@ -6,7 +6,6 @@
     <ProjectReference Include="..\ZYC.Automation.Modules.Settings.Abstractions\ZYC.Automation.Modules.Settings.Abstractions.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Reactive" />
     <PackageReference Include="ZYC.CoreToolkit.Extensions.Autofac" />
     <PackageReference Include="ZYC.CoreToolkit.Extensions.Settings" />
     <PackageReference Include="MahApps.Metro" />

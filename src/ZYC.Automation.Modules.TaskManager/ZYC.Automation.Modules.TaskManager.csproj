@@ -5,7 +5,6 @@
     <ProjectReference Include="..\ZYC.Automation.Modules.TaskManager.Abstractions\ZYC.Automation.Modules.TaskManager.Abstractions.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Reactive" />
     <PackageReference Include="MahApps.Metro" />
     <PackageReference Include="ZYC.CoreToolkit.Extensions.Autofac" />
     <PackageReference Include="Emoji.Wpf" />

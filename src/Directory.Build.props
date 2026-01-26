@@ -9,6 +9,7 @@
     <NoWarn>$(NoWarn);MSB3270</NoWarn>
     <NoWarn>$(NoWarn);NETSDK1206</NoWarn>
     <NoWarn>$(NoWarn);CSS102</NoWarn>
+    <NoWarn>$(NoWarn);CS8620</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>

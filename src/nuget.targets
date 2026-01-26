@@ -117,9 +117,13 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="PropertyChanged.Fody" Version="4.1.0" >
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="PropertyChanged.Fody" Version="4.1.0" />
     <PackageReference Update="log4net" Version="3.2.0" />
     <PackageReference Update="LibreTranslate.Net" Version="1.0.1" />
     <PackageReference Update="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
