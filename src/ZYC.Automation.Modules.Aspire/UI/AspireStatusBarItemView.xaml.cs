@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Runtime.CompilerServices;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.MainMenu;
@@ -19,11 +21,13 @@ internal partial class AspireStatusBarItemView : IDisposable, INotifyPropertyCha
         AspireServiceManager = aspireServiceManager;
         MainMenuItems = aspireMainMenuItemsProvider.SubItems;
 
-        AspireServiceStatusChangedEvent =
-            eventAggregator.Subscribe<AspireServiceStatusChangedEvent>(OnAspireServiceStatusChanged);
+        eventAggregator.Subscribe<AspireServiceStatusChangedEvent>(OnAspireServiceStatusChanged)
+            .DisposeWith(CompositeDisposable);
 
         InitializeComponent();
     }
+
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private IAspireServiceManager AspireServiceManager { get; }
 
@@ -31,13 +35,11 @@ internal partial class AspireStatusBarItemView : IDisposable, INotifyPropertyCha
 
     public IMainMenuItem[] MainMenuItems { get; }
 
-    private IDisposable AspireServiceStatusChangedEvent { get; }
-
     public AspireServiceStatus AspireServiceStatus => AspireServiceManager.GetStatusSnapshot();
 
     public void Dispose()
     {
-        AspireServiceStatusChangedEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Windows;
 using System.Windows.Input;
 using ZYC.Automation.Abstractions;
@@ -34,14 +36,14 @@ internal partial class WindowTitleView : IDisposable
         quickBarManager.RegisterQuickMenuItemsProvider<ISimpleQuickBarItemsProvider>();
         quickBarManager.RegisterQuickMenuItemsProvider<IStarQuickBarItemsProvider>();
 
-        QuickMenuItemsChangedEvent = EventAggregator.Subscribe<QuickMenuItemsChangedEvent>(OnQuickMenuItemsChanged);
+        EventAggregator.Subscribe<QuickMenuItemsChangedEvent>(OnQuickMenuItemsChanged)
+            .DisposeWith(CompositeDisposable);
         OnQuickMenuItemsChanged(null!);
 
         InitializeComponent();
     }
 
-    // ReSharper disable once UnusedAutoPropertyAccessor.Local
-    private IDisposable QuickMenuItemsChangedEvent { get; }
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     public WindowTitleConfig WindowTitleConfig { get; }
 
@@ -59,7 +61,7 @@ internal partial class WindowTitleView : IDisposable
 
     public void Dispose()
     {
-        QuickMenuItemsChangedEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     private void OnQuickMenuItemsChanged(QuickMenuItemsChangedEvent e)

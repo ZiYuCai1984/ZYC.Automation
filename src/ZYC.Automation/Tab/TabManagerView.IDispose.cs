@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using Autofac;
 using ZYC.Automation.Abstractions.Workspace;
 using ZYC.Automation.Commands;
@@ -7,11 +8,7 @@ namespace ZYC.Automation.Tab;
 
 internal partial class TabManagerView : IDisposable
 {
-    private IDisposable TabItemsMovedEvent { get; }
-
-    private IDisposable NavigateCompletedEvent { get; }
-
-    private IDisposable TabItemClosedEvent { get; }
+    private CompositeDisposable CompositeDisposable { get; }=new();
 
     public StarCommand StarCommand => _starCommand ??= LifetimeScope.Resolve<StarCommand>(
         new TypedParameter(typeof(WorkspaceNode), WorkspaceNode),
@@ -31,13 +28,7 @@ internal partial class TabManagerView : IDisposable
         Disposing = true;
 
         StarCommand.Dispose();
-
-        TabItemsMovedEvent.Dispose();
-        NavigateCompletedEvent.Dispose();
-        TabItemClosedEvent.Dispose();
-        WorkspaceFocusChangedEvent.Dispose();
-
-        TabManagerRestoreCompleted.Dispose();
+        CompositeDisposable.Dispose();
 
         DisposeTabManagerViewAsyncFunc.Invoke(WorkspaceNode);
     }

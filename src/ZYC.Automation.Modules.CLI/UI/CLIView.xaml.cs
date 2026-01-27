@@ -1,4 +1,5 @@
-﻿using EasyWindowsTerminalControl;
+﻿using System.Diagnostics;
+using EasyWindowsTerminalControl;
 using Microsoft.Extensions.Logging;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Modules.CLI.Abstractions;
@@ -12,7 +13,8 @@ internal partial class CLIView : IDisposable
 {
     public CLIView(
         CLIConfig cliConfig,
-        CLIUriOptions cliUriOptions, ILogger<CLIView> logger)
+        CLIUriOptions cliUriOptions, 
+        ILogger<CLIView> logger)
     {
         CLIConfig = cliConfig;
         CLIUriOptions = cliUriOptions;
@@ -27,10 +29,12 @@ internal partial class CLIView : IDisposable
         }
 
 
+        Debug.Assert(ConPTYTerm != null);
         ConPTYTerm.TermReady += OnConPTYTermTermReady;
     }
 
-    private TermPTY ConPTYTerm => EasyTerminalControl.ConPTYTerm;
+    // ReSharper disable once ReturnTypeCanBeNotNullable
+    private TermPTY? ConPTYTerm => EasyTerminalControl.ConPTYTerm;
 
     private CLIConfig CLIConfig { get; }
 
@@ -49,12 +53,13 @@ internal partial class CLIView : IDisposable
 
         IsDisposed = true;
 
-        var term = EasyTerminalControl.DisconnectConPTYTerm();
-        term.TermReady -= OnConPTYTermTermReady;
+        var conPTYTerm = ConPTYTerm;
+        if (conPTYTerm != null)
+        {
+            conPTYTerm.TermReady -= OnConPTYTermTermReady;
+        }
 
-        term.CloseStdinToApp();
-        term.StopExternalTermOnly();
-        term.Process.Kill();
+        EasyTerminalControl.Dispose(Logger);
     }
 
     private async void OnConPTYTermTermReady(object? sender, EventArgs e)
@@ -66,37 +71,51 @@ internal partial class CLIView : IDisposable
 
             await Dispatcher.InvokeAsync(async () =>
             {
-                if (!string.IsNullOrWhiteSpace(CLIUriOptions.TypeText))
+                try
                 {
-                    ConPTYTerm.WriteToTerm(CLIUriOptions.TypeText);
-
-                    if (CLIUriOptions.TypeOnly)
+                    var conPTYTerm = ConPTYTerm;
+                    if (conPTYTerm == null)
                     {
                         return;
                     }
 
-                    await ConPTYTerm.ExecuteAndWaitAsync(
-                        CLIUriOptions.TypeText);
-                }
 
-                if (CLIUriOptions.ExecCommands is { Count: > 0 })
-                {
-                    foreach (var command in CLIUriOptions.ExecCommands)
+                    if (!string.IsNullOrWhiteSpace(CLIUriOptions.TypeText))
                     {
-                        if (string.IsNullOrWhiteSpace(command))
+                        conPTYTerm.WriteToTerm(CLIUriOptions.TypeText);
+
+                        if (CLIUriOptions.TypeOnly)
                         {
-                            continue;
+                            return;
                         }
 
-                        await ConPTYTerm.ExecuteAndWaitAsync(
-                            command);
+                        await conPTYTerm.ExecuteAndWaitAsync(
+                            CLIUriOptions.TypeText);
                     }
+
+                    if (CLIUriOptions.ExecCommands is { Count: > 0 })
+                    {
+                        foreach (var command in CLIUriOptions.ExecCommands)
+                        {
+                            if (string.IsNullOrWhiteSpace(command))
+                            {
+                                continue;
+                            }
+
+                            await conPTYTerm.ExecuteAndWaitAsync(
+                                command);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex);
                 }
             });
         }
-        catch (Exception ex)
+        catch
         {
-            Logger.Error(ex);
+            //ignore
         }
     }
 }

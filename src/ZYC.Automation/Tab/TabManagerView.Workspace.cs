@@ -24,8 +24,6 @@ internal partial class TabManagerView
     private IParallelWorkspaceManager ParallelWorkspaceManager =>
         _parallelWorkspaceManager ??= LifetimeScope.Resolve<IParallelWorkspaceManager>();
 
-    private IDisposable WorkspaceFocusChangedEvent { get; }
-
     private void OnWorkspaceFocusChangedEvent(WorkspaceFocusChangedEvent e)
     {
         OnPropertyChanged(nameof(IsFocusedWorkspace));

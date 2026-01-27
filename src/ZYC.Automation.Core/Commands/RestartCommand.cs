@@ -1,4 +1,6 @@
-﻿using ZYC.Automation.Abstractions;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Event;
 using ZYC.Automation.Abstractions.State;
 using ZYC.CoreToolkit;
@@ -19,11 +21,12 @@ public class RestartCommand : CommandBase, IDisposable
         Logger = logger;
         DesktopWindowState = desktopWindowState;
 
-        SetPreventExitEvent =
-            eventAggregator.Subscribe<SetPreventExitCommandExecutedEvent>(OnSetPreventExitCommandExecuted);
+        eventAggregator.Subscribe<SetPreventExitCommandExecutedEvent>(OnSetPreventExitCommandExecuted)
+            .DisposeWith(CompositeDisposable);
     }
 
-    private IDisposable SetPreventExitEvent { get; }
+
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     protected virtual bool IsAdministrator => false;
 
@@ -35,7 +38,7 @@ public class RestartCommand : CommandBase, IDisposable
 
     public void Dispose()
     {
-        SetPreventExitEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     private void OnSetPreventExitCommandExecuted(SetPreventExitCommandExecutedEvent obj)

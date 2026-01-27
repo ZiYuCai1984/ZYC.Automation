@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using Autofac;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Modules.Aspire.Abstractions;
 using ZYC.Automation.Modules.Aspire.Abstractions.Event;
@@ -18,11 +20,10 @@ internal partial class AspireView
         EventAggregator = eventAggregator;
     }
 
-    private IDisposable? AspireDashboardReadyEvent { get; set; }
-
-    private IDisposable? AspireDashboardStartFaultedEvent { get; set; }
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private IAspireServiceManager AspireServiceManager { get; }
+
     private IEventAggregator EventAggregator { get; }
 
     private void OnAspireDashboardStartFaulted(AspireServiceStartFaultedAndDisposeFinishedEvent e)
@@ -34,8 +35,7 @@ internal partial class AspireView
     {
         base.InternalDispose();
 
-        AspireDashboardReadyEvent?.Dispose();
-        AspireDashboardStartFaultedEvent?.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     private async void OnAspireDashboardReady(AspireDashboardReadyEvent e)
@@ -52,11 +52,12 @@ internal partial class AspireView
         }
         else
         {
-            AspireDashboardReadyEvent =
-                EventAggregator.Subscribe<AspireDashboardReadyEvent>(OnAspireDashboardReady, true);
-            AspireDashboardStartFaultedEvent =
-                EventAggregator.Subscribe<AspireServiceStartFaultedAndDisposeFinishedEvent>(
-                    OnAspireDashboardStartFaulted, true);
+            EventAggregator.Subscribe<AspireDashboardReadyEvent>(OnAspireDashboardReady, true)
+                .DisposeWith(CompositeDisposable);
+
+            EventAggregator.Subscribe<AspireServiceStartFaultedAndDisposeFinishedEvent>(
+                    OnAspireDashboardStartFaulted, true)
+                .DisposeWith(CompositeDisposable);
 
             await AspireServiceManager.StartServerAsync();
         }

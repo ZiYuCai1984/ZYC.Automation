@@ -80,20 +80,7 @@ internal class ToastManager : IToastManager
 
     public void PromptException(Exception exception)
     {
-        AppContext.InvokeOnUIThread(() =>
-        {
-            try
-            {
-                var toast = LifetimeScope.Resolve<PromptExceptionToastView>(
-                    new TypedParameter(typeof(Exception), exception));
-                ImplPrompt(toast);
-            }
-            catch (Exception e)
-            {
-                Debugger.Break();
-                Logger.Error(e);
-            }
-        });
+        PromptMessage(ToastMessage.Exception(exception));
     }
 
     public void PromptMessage(ToastMessage toastMessage)

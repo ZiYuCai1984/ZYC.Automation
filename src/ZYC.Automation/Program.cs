@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Reactive.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -11,12 +12,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Config;
+using ZYC.Automation.Abstractions.Notification.Toast;
 using ZYC.Automation.Abstractions.State;
 using ZYC.Automation.CLI;
 using ZYC.Automation.Core;
 using ZYC.Automation.Core.Localizations;
 using ZYC.Automation.Modules.Settings.Abstractions;
-using ZYC.Automation.Modules.Settings.Abstractions.Event;
 using ZYC.Automation.WebView2;
 using ZYC.CoreToolkit;
 using ZYC.CoreToolkit.Extensions.Settings;
@@ -141,8 +142,6 @@ internal partial class Program
             builder,
             typeof(WebViewHostBase).Assembly);
 
-
-        //!WARNING Obfuscation will cause errors in loading the wpf resource dictionary, so it is placed in a separate assembly
         ModuleTools.RegisterAllFromAssembly(appContextDirectory,
             builder,
             MetroWindow.AssemblyInfo.GetAssembly());
@@ -215,7 +214,9 @@ internal partial class Program
         //TODO Design failure, just adding this is not enough !!
         if (!container.TryResolve<ISettingsManager>(out _))
         {
-            MessageBoxTools.Warning("Missing Settings module,some features don't work properly !!");
+            var toastManager = container.Resolve<IToastManager>();
+            toastManager.PromptMessage(
+                ToastMessage.Warn("Missing Settings module,some features don't work properly !!"));
             return;
         }
 
@@ -223,76 +224,62 @@ internal partial class Program
             .GetProcessFileName();
         var logger = container.Resolve<IAppLogger<AppContext>>();
 
-        var eventAggregator = container.Resolve<IEventAggregator>();
-        AppConfigChangedEvent = eventAggregator.Subscribe<SettingChangedEvent<AppConfig>>(e =>
-        {
-            var oldValue = e.OldValue;
-            var newValue = e.NewValue;
-
-            ApplyDesktopShortcut(processFileName, oldValue, newValue);
-            ApplyStartAtBoot(oldValue, newValue, logger);
-            ApplyShowInTaskbar(container, oldValue, newValue);
-        });
-    }
-
-    private static void ApplyShowInTaskbar(IContainer container, AppConfig oldValue, AppConfig newValue)
-    {
-        if (oldValue.ShowInTaskbar == newValue.ShowInTaskbar)
-        {
-            return;
-        }
-
-        var mainWindow = container.Resolve<IMainWindow>();
-        mainWindow.SetShowInTaskbar(newValue.ShowInTaskbar);
-    }
-
-    private static void ApplyStartAtBoot(AppConfig oldValue, AppConfig newValue,
-        IAppLogger<AppContext> logger)
-    {
-        if (oldValue.StartAtBoot == newValue.StartAtBoot)
-        {
-            return;
-        }
-
-        try
-        {
-            if (newValue.StartAtBoot)
+        var appConfig = container.Resolve<AppConfig>();
+        appConfig.ObserveProperty(nameof(AppConfig.ShowInTaskbar))
+            .Throttle(TimeSpan.FromMilliseconds(200))
+            .Subscribe(_ =>
             {
-                ShortcutTools.AddToStartupFolder();
-            }
-            else
+                var mainWindow = container.Resolve<IMainWindow>();
+                mainWindow.SetShowInTaskbar(appConfig.ShowInTaskbar);
+            });
+
+        appConfig.ObserveProperty(nameof(AppConfig.StartAtBoot))
+            .Throttle(TimeSpan.FromMilliseconds(200))
+            .Subscribe(_ =>
             {
-                ShortcutTools.RemoveFromStartupFolder();
-            }
-        }
-        catch (Exception e)
-        {
-            logger.Error(e);
-        }
+                try
+                {
+                    if (appConfig.StartAtBoot)
+                    {
+                        ShortcutTools.AddToStartupFolder();
+                    }
+                    else
+                    {
+                        ShortcutTools.RemoveFromStartupFolder();
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e);
+                }
+            });
+
+
+        appConfig.ObserveProperty(nameof(AppConfig.DesktopShortcut))
+            .Throttle(TimeSpan.FromMilliseconds(200))
+            .Subscribe(_ =>
+            {
+                try
+                {
+                    if (appConfig.DesktopShortcut)
+                    {
+                        ShortcutTools.CreateFromCurrentProcess();
+                    }
+                    else
+                    {
+                        var fileNameWithoutExe = IOTools.GetFileName(
+                            processFileName,
+                            false);
+
+                        ShortcutTools.Delete($"{fileNameWithoutExe}.lnk");
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e);
+                }
+            });
     }
-
-
-    private static void ApplyDesktopShortcut(string processFileName, AppConfig oldValue, AppConfig newValue)
-    {
-        if (oldValue.DesktopShortcut == newValue.DesktopShortcut)
-        {
-            return;
-        }
-
-        if (newValue.DesktopShortcut)
-        {
-            ShortcutTools.CreateFromCurrentProcess();
-        }
-        else
-        {
-            var fileNameWithoutExe = IOTools.GetFileName(
-                processFileName,
-                false);
-
-            ShortcutTools.Delete($"{fileNameWithoutExe}.lnk");
-        }
-    }
-
 
     private static void InitJsonToolsSettings()
     {

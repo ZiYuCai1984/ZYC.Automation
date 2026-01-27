@@ -7,7 +7,6 @@ namespace ZYC.Automation;
 
 [RegisterSingleInstanceAs(typeof(IPendingDeleteManager))]
 [TempCode]
-[Obsolete]
 public class PendingDeleteManager : IPendingDeleteManager
 {
     public PendingDeleteManager(PendingFileOperationsState pendingFileOperationsState)

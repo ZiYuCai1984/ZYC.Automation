@@ -1,4 +1,6 @@
-﻿using ZYC.Automation.Abstractions;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Notification.Toast;
 using ZYC.Automation.Modules.Aspire.Abstractions;
 using ZYC.Automation.Modules.Aspire.Abstractions.Event;
@@ -24,12 +26,13 @@ internal partial class AspireService
 
         DistributedApplication = distributedApplication;
 
-        AspireDashboardReadyEvent = EventAggregator.Subscribe<AspireDashboardReadyEvent>(OnDashboardReady);
+        EventAggregator.Subscribe<AspireDashboardReadyEvent>(OnDashboardReady)
+            .DisposeWith(CompositeDisposable);
     }
 
-    private SemaphoreSlim Gate { get; } = new(1, 1);
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
-    private IDisposable AspireDashboardReadyEvent { get; }
+    private SemaphoreSlim Gate { get; } = new(1, 1);
 
     private IToastManager ToastManager { get; }
 

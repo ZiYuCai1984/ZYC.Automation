@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using ZYC.Automation.Abstractions;
@@ -22,13 +24,14 @@ internal class FullScreenTitleItem : WindowTitleItem, INotifyPropertyChanged, ID
         FullScreenCommand = fullScreenCommand;
         DesktopWindowState = desktopWindowState;
 
-        FullScreennCommandExecutedEvent =
-            eventAggregator.Subscribe<FullScreennCommandExecutedEvent>(OnFullScreenCommandExecuted);
+        eventAggregator.Subscribe<FullScreennCommandExecutedEvent>(OnFullScreenCommandExecuted)
+            .DisposeWith(CompositeDisposable);
     }
 
-    private IDisposable FullScreennCommandExecutedEvent { get; }
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private FullScreenCommand FullScreenCommand { get; }
+
     private DesktopWindowState DesktopWindowState { get; }
 
     public override string Icon
@@ -48,7 +51,7 @@ internal class FullScreenTitleItem : WindowTitleItem, INotifyPropertyChanged, ID
 
     public void Dispose()
     {
-        FullScreennCommandExecutedEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
