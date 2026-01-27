@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reactive.Disposables.Fluent;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -51,20 +52,24 @@ internal partial class TabManagerView : INotifyPropertyChanged
             new TypedParameter(typeof(WorkspaceNode), workspaceNode));
 
 
-        NavigateCompletedEvent = EventAggregator.Subscribe<NavigateCompletedEvent>(OnNavigateCompleted);
-        TabItemClosedEvent = EventAggregator.Subscribe<TabItemClosedEvent>(OnTabItemClosed);
-        TabItemsMovedEvent = EventAggregator.Subscribe<TabItemsMovedEvent>(OnTabItemsMoved);
+        EventAggregator.Subscribe<NavigateCompletedEvent>(OnNavigateCompleted)
+            .DisposeWith(CompositeDisposable);
 
-        WorkspaceFocusChangedEvent =
-            EventAggregator.Subscribe<WorkspaceFocusChangedEvent>(OnWorkspaceFocusChangedEvent);
+        EventAggregator.Subscribe<TabItemClosedEvent>(OnTabItemClosed)
+            .DisposeWith(CompositeDisposable);
 
-        TabManagerRestoreCompleted = EventAggregator.Subscribe<TabManagerRestoreCompleted>(_ =>
+        EventAggregator.Subscribe<TabItemsMovedEvent>(OnTabItemsMoved)
+            .DisposeWith(CompositeDisposable);
+
+        EventAggregator.Subscribe<WorkspaceFocusChangedEvent>(OnWorkspaceFocusChangedEvent)
+            .DisposeWith(CompositeDisposable);
+
+        EventAggregator.Subscribe<TabManagerRestoreCompleted>(_ =>
         {
             PreloadAllTabs(TabControl);
-        });
+        }).DisposeWith(CompositeDisposable);
     }
 
-    private IDisposable TabManagerRestoreCompleted { get; }
 
     private IEventAggregator EventAggregator { get; }
 

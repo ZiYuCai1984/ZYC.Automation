@@ -19,7 +19,7 @@ internal partial class AspireService : IDisposable
             IsDisposed = true;
 
             Gate.Dispose();
-            AspireDashboardReadyEvent.Dispose();
+            CompositeDisposable.Dispose();
             DistributedApplication.Dispose();
         }
     }

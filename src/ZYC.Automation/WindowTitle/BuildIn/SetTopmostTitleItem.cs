@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using ZYC.Automation.Abstractions;
@@ -23,11 +25,12 @@ internal class SetTopmostTitleItem : WindowTitleItem, INotifyPropertyChanged, ID
         _command = command;
         DesktopWindowState = desktopWindowState;
 
-        SetTopmostCommandExecutedEvent =
-            eventAggregator.Subscribe<SetTopmostCommandExecutedEvent>(OnSetTopmostCommandExecuted);
+        eventAggregator.Subscribe<SetTopmostCommandExecutedEvent>(OnSetTopmostCommandExecuted)
+            .DisposeWith(CompositeDisposable);
     }
 
-    private IDisposable SetTopmostCommandExecutedEvent { get; }
+
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private DesktopWindowState DesktopWindowState { get; }
 
@@ -48,7 +51,7 @@ internal class SetTopmostTitleItem : WindowTitleItem, INotifyPropertyChanged, ID
 
     public void Dispose()
     {
-        SetTopmostCommandExecutedEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
 

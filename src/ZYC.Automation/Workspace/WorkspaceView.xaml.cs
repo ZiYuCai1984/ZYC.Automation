@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables.Fluent;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,7 +27,8 @@ internal sealed partial class WorkspaceView : INotifyPropertyChanged
         WorkspaceView? parentWorkspaceView,
         Func<WorkspaceView, Task<object>> buildLeafContentFunc)
     {
-        WorkspaceHighlightEvent = eventAggregator.Subscribe<WorkspaceHighlightEvent>(OnWorkspaceHighlightChanged);
+        eventAggregator.Subscribe<WorkspaceHighlightEvent>(OnWorkspaceHighlightChanged)
+            .DisposeWith(CompositeDisposable);
 
         OverlayManager = overlayManager;
         WorkspaceDragDropManager = workspaceDragDropManager;

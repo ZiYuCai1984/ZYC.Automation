@@ -4,10 +4,10 @@ using ZYC.CoreToolkit.Abstractions.Settings;
 
 namespace ZYC.Automation.Modules.Language.Abstractions;
 
-[Hidden]
 /// <summary>
 /// Configuration options for language selection.
 /// </summary>
+[Hidden]
 public class LanguageConfig : IConfig
 {
     /// <summary>

@@ -1,4 +1,6 @@
-﻿using ZYC.Automation.Abstractions;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core.Commands;
 using ZYC.Automation.Modules.Aspire.Abstractions;
@@ -18,12 +20,12 @@ public class NavigateToDashboardCommand : CommandBase, IDisposable
         TabManager = tabManager;
         AspireServiceManager = aspireServiceManager;
 
-        AspireRunningStateChangedEvent =
-            eventAggregator.Subscribe<AspireServiceStatusChangedEvent>(
-                OnAspireServiceStatusChanged, true);
+        eventAggregator.Subscribe<AspireServiceStatusChangedEvent>(
+            OnAspireServiceStatusChanged, true).DisposeWith(CompositeDisposable);
     }
 
-    private IDisposable AspireRunningStateChangedEvent { get; }
+
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private ITabManager TabManager { get; }
 
@@ -31,7 +33,7 @@ public class NavigateToDashboardCommand : CommandBase, IDisposable
 
     public void Dispose()
     {
-        AspireRunningStateChangedEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     private void OnAspireServiceStatusChanged(AspireServiceStatusChangedEvent obj)

@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using ZYC.Automation.Abstractions;
@@ -21,11 +23,11 @@ internal class SetPreventExitTitleItem : WindowTitleItem, INotifyPropertyChanged
         SetPreventExitCommand = setPreventExitCommand;
         DesktopWindowState = desktopWindowState;
 
-        SetPreventExitEvent =
-            eventAggregator.Subscribe<SetPreventExitCommandExecutedEvent>(OnSetPreventExitCommandExecuted);
+        eventAggregator.Subscribe<SetPreventExitCommandExecutedEvent>(OnSetPreventExitCommandExecuted)
+            .DisposeWith(CompositeDisposable);
     }
 
-    private IDisposable SetPreventExitEvent { get; }
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private SetPreventExitCommand SetPreventExitCommand { get; }
 
@@ -48,7 +50,7 @@ internal class SetPreventExitTitleItem : WindowTitleItem, INotifyPropertyChanged
 
     public void Dispose()
     {
-        SetPreventExitEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
 

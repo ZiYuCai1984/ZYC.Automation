@@ -1,4 +1,6 @@
-﻿using ZYC.Automation.Abstractions;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Event;
 using ZYC.Automation.Abstractions.State;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
@@ -16,19 +18,20 @@ public class ExitProcessCommand : CommandBase, IDisposable
         AppContext = appContext;
         DesktopWindowState = desktopWindowState;
 
-        SetPreventExitEvent =
-            eventAggregator.Subscribe<SetPreventExitCommandExecutedEvent>(OnSetPreventExitCommandExecuted);
+        eventAggregator.Subscribe<SetPreventExitCommandExecutedEvent>(OnSetPreventExitCommandExecuted)
+            .DisposeWith(CompositeDisposable);
     }
+
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private IAppContext AppContext { get; }
 
     private DesktopWindowState DesktopWindowState { get; }
 
-    private IDisposable SetPreventExitEvent { get; }
 
     public void Dispose()
     {
-        SetPreventExitEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     private void OnSetPreventExitCommandExecuted(SetPreventExitCommandExecutedEvent obj)

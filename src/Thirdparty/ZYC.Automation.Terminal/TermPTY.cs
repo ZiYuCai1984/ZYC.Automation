@@ -147,41 +147,46 @@ public class TermPTY : ITerminalConnection
             ConsoleOutputLog = new StringBuilder();
         }
 
-        using (var inputPipe = new PseudoConsolePipe())
-        using (var outputPipe = new PseudoConsolePipe())
-        using (var pseudoConsole =
-               PseudoConsole.Create(inputPipe.ReadSide, outputPipe.WriteSide, consoleWidth, consoleHeight))
-        using (var process = factory.Start(command, PInvoke.PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE, pseudoConsole))
+        var inputPipe = new PseudoConsolePipe();
+        var outputPipe = new PseudoConsolePipe();
+        using var pseudoConsole =
+            PseudoConsole.Create(inputPipe.ReadSide, outputPipe.WriteSide, consoleWidth, consoleHeight);
+        using var process = factory.Start(command, PInvoke.PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE, pseudoConsole);
+
+        inputPipe.ReadSide.Dispose();
+        outputPipe.WriteSide.Dispose();
+
+        Process = process;
+        TheConsole = pseudoConsole;
+        // copy all pseudoconsole output to a FileStream and expose it to the rest of the app
+        ConsoleOutStream = new FileStream(outputPipe.ReadSide, FileAccess.Read);
+        TermProcIsStarted = true;
+
+        // Store input pipe handle, and a writer for later reuse
+        _consoleInputPipeWriteHandle = inputPipe.WriteSide;
+        var st = new FileStream(_consoleInputPipeWriteHandle, FileAccess.Write);
+        if (!USE_BINARY_WRITER)
         {
-            Process = process;
-            TheConsole = pseudoConsole;
-            // copy all pseudoconsole output to a FileStream and expose it to the rest of the app
-            ConsoleOutStream = new FileStream(outputPipe.ReadSide, FileAccess.Read);
-            TermProcIsStarted = true;
-
-            // Store input pipe handle, and a writer for later reuse
-            _consoleInputPipeWriteHandle = inputPipe.WriteSide;
-            var st = new FileStream(_consoleInputPipeWriteHandle, FileAccess.Write);
-            if (!USE_BINARY_WRITER)
-            {
-                _consoleInputWriter = new StreamWriter(st, new UTF8Encoding(false)) { AutoFlush = true };
-            }
-            else
-            {
-                _consoleInputWriterB = new BinaryWriter(st);
-            }
-
-            TermReady?.Invoke(this, EventArgs.Empty);
-
-            // free resources in case the console is ungracefully closed (e.g. by the 'x' in the window titlebar)
-            ReadOutputLoop();
-            OnClose(() => DisposeResources(process, pseudoConsole, outputPipe, inputPipe, _consoleInputWriter));
-
-            process.WaitForExit();
-            WriteToUITerminal("Session Terminated");
-
-            TheConsole.Dispose();
+            _consoleInputWriter = new StreamWriter(st, new UTF8Encoding(false)) { AutoFlush = true };
         }
+        else
+        {
+            _consoleInputWriterB = new BinaryWriter(st);
+        }
+
+        TermReady?.Invoke(this, EventArgs.Empty);
+
+        // free resources in case the console is ungracefully closed (e.g. by the 'x' in the window titlebar)
+        //ReadOutputLoop();
+        //OnClose(() => DisposeResources(process, pseudoConsole, outputPipe, inputPipe, _consoleInputWriter));
+
+
+        process.WaitForExit();
+        WriteToUITerminal("Session Terminated");
+
+        outputPipe.ReadSide.Dispose();
+        inputPipe.WriteSide.Dispose();
+        TheConsole.Dispose();
     }
 
     /// <summary>

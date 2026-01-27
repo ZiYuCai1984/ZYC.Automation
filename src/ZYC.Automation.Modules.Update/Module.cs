@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using Autofac;
 using ZYC.Automation.Abstractions.Event;
 using ZYC.Automation.Core;
 using ZYC.Automation.Modules.Update.Abstractions;
@@ -11,7 +13,7 @@ internal class Module : ModuleBase
 {
     public override string Icon => UpdateTabItem.Constants.Icon;
 
-    private IDisposable? MainWindowLoadedEvent { get; set; }
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     public override Task LoadAsync(ILifetimeScope lifetimeScope)
     {
@@ -25,7 +27,7 @@ internal class Module : ModuleBase
     {
         await Task.CompletedTask;
 
-        MainWindowLoadedEvent = lifetimeScope.SubscribeEvent<MainWindowLoadedEvent>(_ =>
+        lifetimeScope.SubscribeEvent<MainWindowLoadedEvent>(_ =>
         {
             var updateConfig = lifetimeScope.Resolve<UpdateConfig>();
             if (!updateConfig.CheckAtStartup)
@@ -35,6 +37,6 @@ internal class Module : ModuleBase
 
             var checkUpdateCommand = lifetimeScope.Resolve<ICheckUpdateCommand>();
             checkUpdateCommand.Execute();
-        });
+        }).DisposeWith(CompositeDisposable);
     }
 }

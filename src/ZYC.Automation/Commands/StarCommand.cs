@@ -1,4 +1,6 @@
-﻿using ZYC.Automation.Abstractions;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Event;
 using ZYC.Automation.Abstractions.QuickBar;
 using ZYC.Automation.Abstractions.Tab;
@@ -22,16 +24,15 @@ internal class StarCommand : CommandBase, IDisposable
         EventAggregator = eventAggregator;
         StarQuickBarItemsProvider = starQuickBarItemsProvider;
 
-        NavigateCompletedEvent = EventAggregator.Subscribe<NavigateCompletedEvent>(OnNavigateCompleted);
-        TabItemClosedEvent = EventAggregator.Subscribe<TabItemClosedEvent>(OnTabItemClosed);
-        FocusedTabItemChangedEvent = EventAggregator.Subscribe<FocusedTabItemChangedEvent>(OnFocusedTabItemChanged);
+        EventAggregator.Subscribe<NavigateCompletedEvent>(OnNavigateCompleted)
+            .DisposeWith(CompositeDisposable);
+        EventAggregator.Subscribe<TabItemClosedEvent>(OnTabItemClosed)
+            .DisposeWith(CompositeDisposable);
+        EventAggregator.Subscribe<FocusedTabItemChangedEvent>(OnFocusedTabItemChanged)
+            .DisposeWith(CompositeDisposable);
     }
 
-    private IDisposable NavigateCompletedEvent { get; }
-
-    private IDisposable TabItemClosedEvent { get; }
-
-    private IDisposable FocusedTabItemChangedEvent { get; }
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
 
     private ITabManager TabManager { get; }
@@ -57,9 +58,7 @@ internal class StarCommand : CommandBase, IDisposable
 
     public void Dispose()
     {
-        NavigateCompletedEvent.Dispose();
-        TabItemClosedEvent.Dispose();
-        FocusedTabItemChangedEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     private void OnFocusedTabItemChanged(FocusedTabItemChangedEvent obj)

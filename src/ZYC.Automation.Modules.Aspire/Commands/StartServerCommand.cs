@@ -1,4 +1,6 @@
-﻿using ZYC.Automation.Abstractions;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using ZYC.Automation.Abstractions;
 using ZYC.Automation.Core.Commands;
 using ZYC.Automation.Modules.Aspire.Abstractions;
 using ZYC.Automation.Modules.Aspire.Abstractions.Event;
@@ -14,18 +16,19 @@ internal class StartServerCommand : AsyncCommandBase, IDisposable
         IEventAggregator eventAggregator)
     {
         AspireServiceManager = aspireServiceManager;
-        AspireRunningStateChangedEvent =
-            eventAggregator.Subscribe<AspireServiceStatusChangedEvent>(
-                OnAspireServiceStatusChanged, true);
+
+        eventAggregator.Subscribe<AspireServiceStatusChangedEvent>(
+                OnAspireServiceStatusChanged, true)
+            .DisposeWith(CompositeDisposable);
     }
 
     private IAspireServiceManager AspireServiceManager { get; }
 
-    private IDisposable AspireRunningStateChangedEvent { get; }
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     public void Dispose()
     {
-        AspireRunningStateChangedEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     private void OnAspireServiceStatusChanged(AspireServiceStatusChangedEvent obj)

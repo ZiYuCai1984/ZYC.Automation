@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using ZYC.CoreToolkit;
 
 namespace ZYC.Automation.Workspace;
@@ -7,7 +8,7 @@ internal partial class WorkspaceView : IDisposable
 {
     private bool Disposing { get; set; }
 
-    private IDisposable WorkspaceHighlightEvent { get; }
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     public void Dispose()
     {
@@ -19,7 +20,7 @@ internal partial class WorkspaceView : IDisposable
 
         Disposing = true;
 
-        WorkspaceHighlightEvent.Dispose();
+        CompositeDisposable.Dispose();
         Border.Child?.TryDispose();
     }
 }

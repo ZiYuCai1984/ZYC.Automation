@@ -22,7 +22,6 @@ public partial class TestCLIView
             for (var i = 0; i < 50; ++i)
             {
                 await TabManager.NavigateAsync("zyc://cli");
-                await Task.Delay(50);
             }
         }
         catch

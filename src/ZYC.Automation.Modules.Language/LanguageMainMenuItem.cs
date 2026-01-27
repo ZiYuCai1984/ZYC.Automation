@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Runtime.CompilerServices;
 using Autofac;
 using ZYC.Automation.Abstractions;
@@ -16,8 +18,7 @@ namespace ZYC.Automation.Modules.Language;
 internal class LanguageMainMenuItem : MainMenuItemsProvider
 {
     public LanguageMainMenuItem(
-        ILifetimeScope lifetimeScope,
-        ILanguageManager languageManager) : base(lifetimeScope)
+        ILifetimeScope lifetimeScope) : base(lifetimeScope)
     {
         Info = new MenuItemInfo
         {
@@ -60,15 +61,17 @@ internal class SetLanguageOptionMainMenuItem : MainMenuItem, IDisposable, INotif
             Localization = false
         };
 
-        Command = new RelayCommand(_ => languageManager.GetCurrentLanguageType() != TargetLanguageType, t =>
+        Command = new RelayCommand(_ => languageManager.GetCurrentLanguageType() != TargetLanguageType, _ =>
         {
             languageManager.SetCurrentLanguageType(TargetLanguageType);
         });
 
-        LanguageChangedEvent = eventAggregator.Subscribe<LanguageChangedEvent>(OnLanguageChanged);
+        eventAggregator.Subscribe<LanguageChangedEvent>(OnLanguageChanged)
+            .DisposeWith(CompositeDisposable);
     }
 
-    private IDisposable LanguageChangedEvent { get; }
+
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     private LanguageType TargetLanguageType { get; }
 
@@ -89,7 +92,7 @@ internal class SetLanguageOptionMainMenuItem : MainMenuItem, IDisposable, INotif
 
     public void Dispose()
     {
-        LanguageChangedEvent.Dispose();
+        CompositeDisposable.Dispose();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -1,14 +1,18 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using EasyWindowsTerminalControl.Internals;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Terminal.Wpf;
 
 namespace EasyWindowsTerminalControl;
 
-public class EasyTerminalControl : UserControl
+public class EasyTerminalControl : UserControl, IDisposable
 {
     [Flags]
     [TypeConverter(typeof(EnumConverter))]
@@ -94,6 +98,19 @@ public class EasyTerminalControl : UserControl
         set => SetValue(LogConPTYOutputProperty, value);
     }
 
+    private TerminalContainer TerminalContainer
+    {
+        get
+        {
+            var f = typeof(TerminalControl).GetField("termContainer",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            var v = f.GetValue(Terminal);
+
+            return (TerminalContainer)v!;
+        }
+    }
+
+
     /// <summary>
     ///     Sets if the GUI Terminal control communicates to ConPTY using extended key events (handles certain control
     ///     sequences better)
@@ -115,6 +132,66 @@ public class EasyTerminalControl : UserControl
     {
         get => (int)GetValue(FontSizeWhenSettingThemeProperty);
         set => SetValue(FontSizeWhenSettingThemeProperty, value);
+    }
+
+    private bool IsDisposed { get; set; }
+
+
+    private bool FirstRender { get; set; } = true;
+
+    public void Dispose()
+    {
+        Dispose(NullLogger.Instance);
+    }
+
+    public void Dispose(ILogger logger)
+    {
+        if (IsDisposed)
+        {
+            Debugger.Break();
+            return;
+        }
+
+        IsDisposed = true;
+
+        var term = DisconnectConPTYTerm();
+
+        try
+        {
+            term.CloseStdinToApp();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "");
+        }
+
+        try
+        {
+            term.StopExternalTermOnly();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "");
+        }
+
+        try
+        {
+            // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+            term.Process?.Kill();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "");
+        }
+
+        try
+        {
+            TerminalContainer.Dispose();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "");
+        }
     }
 
     /// <summary>
@@ -251,9 +328,15 @@ public class EasyTerminalControl : UserControl
     {
         MainThreadRun(() =>
         {
-            Terminal.Connection = ConPTYTerm;
-            ConPTYTerm.Win32DirectInputMode(Win32InputMode);
-            ConPTYTerm.Resize(Terminal.Columns, Terminal.Rows); //fix the size being partially off on first load
+            var conPTYTerm = ConPTYTerm;
+            if (conPTYTerm == null)
+            {
+                return;
+            }
+
+            Terminal.Connection = conPTYTerm;
+            conPTYTerm.Win32DirectInputMode(Win32InputMode);
+            conPTYTerm.Resize(Terminal.Columns, Terminal.Rows); //fix the size being partially off on first load
         });
     }
 
@@ -306,8 +389,21 @@ public class EasyTerminalControl : UserControl
 
     private async void Terminal_Loaded(object sender, RoutedEventArgs e)
     {
-        await TermInit();
-        //Terminal.Focus();
+        try
+        {
+            if (!FirstRender)
+            {
+                return;
+            }
+
+            FirstRender = false;
+
+            await TermInit();
+        }
+        catch
+        {
+            //ignore
+        }
     }
 
     private async Task TermInit()
