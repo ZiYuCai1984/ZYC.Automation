@@ -27,6 +27,8 @@
             <Button Command="{markupEx:LifetimeScopeResolve commands:NavigateCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource Self},Path=Content}"
                     Content="zyc://cli/?exec=timeout%20/t%203%20/nobreak&amp;exec=dir&amp;exec=whoami" />
+            <Button Content="Navigate 50 times"
+                    Click="OnNavigate50TimesButtonClick"/>
         </StackPanel>
     </ScrollViewer>
 
