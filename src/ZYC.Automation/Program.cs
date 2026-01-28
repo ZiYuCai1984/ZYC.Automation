@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Reactive.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,12 +11,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Config;
-using ZYC.Automation.Abstractions.Notification.Toast;
 using ZYC.Automation.Abstractions.State;
 using ZYC.Automation.CLI;
 using ZYC.Automation.Core;
 using ZYC.Automation.Core.Localizations;
-using ZYC.Automation.Modules.Settings.Abstractions;
 using ZYC.Automation.WebView2;
 using ZYC.CoreToolkit;
 using ZYC.CoreToolkit.Extensions.Settings;
@@ -29,8 +26,6 @@ namespace ZYC.Automation;
 
 internal partial class Program
 {
-    private static IDisposable? AppConfigChangedEvent { get; set; }
-
     private static void StartApp()
     {
         var mainAppFolder = AppContext.GetMainAppDirectory();
@@ -198,87 +193,15 @@ internal partial class Program
 
         L.SetLifetimeScope(container);
 
+        var app = container.Resolve<AppContext>();
+        ReactiveExtensions.SetSynchronizationContext(app.GetUISynchronizationContext());
+
         var mainWindowView = container.Resolve<MainWindowView>();
         var mainWindow = container.Resolve<IMainWindow>();
         mainWindow.InitContent(mainWindowView);
 
-        var app = container.Resolve<AppContext>();
-        RegisterAppConfigChangedCallback(container);
-
         var window = (Window)mainWindow;
         app.Run(window);
-    }
-
-    private static void RegisterAppConfigChangedCallback(IContainer container)
-    {
-        //TODO Design failure, just adding this is not enough !!
-        if (!container.TryResolve<ISettingsManager>(out _))
-        {
-            var toastManager = container.Resolve<IToastManager>();
-            toastManager.PromptMessage(
-                ToastMessage.Warn("Missing Settings module,some features don't work properly !!"));
-            return;
-        }
-
-        var processFileName = container.Resolve<IAppContext>()
-            .GetProcessFileName();
-        var logger = container.Resolve<IAppLogger<AppContext>>();
-
-        var appConfig = container.Resolve<AppConfig>();
-        appConfig.ObserveProperty(nameof(AppConfig.ShowInTaskbar))
-            .Throttle(TimeSpan.FromMilliseconds(200))
-            .Subscribe(_ =>
-            {
-                var mainWindow = container.Resolve<IMainWindow>();
-                mainWindow.SetShowInTaskbar(appConfig.ShowInTaskbar);
-            });
-
-        appConfig.ObserveProperty(nameof(AppConfig.StartAtBoot))
-            .Throttle(TimeSpan.FromMilliseconds(200))
-            .Subscribe(_ =>
-            {
-                try
-                {
-                    if (appConfig.StartAtBoot)
-                    {
-                        ShortcutTools.AddToStartupFolder();
-                    }
-                    else
-                    {
-                        ShortcutTools.RemoveFromStartupFolder();
-                    }
-                }
-                catch (Exception e)
-                {
-                    logger.Error(e);
-                }
-            });
-
-
-        appConfig.ObserveProperty(nameof(AppConfig.DesktopShortcut))
-            .Throttle(TimeSpan.FromMilliseconds(200))
-            .Subscribe(_ =>
-            {
-                try
-                {
-                    if (appConfig.DesktopShortcut)
-                    {
-                        ShortcutTools.CreateFromCurrentProcess();
-                    }
-                    else
-                    {
-                        var fileNameWithoutExe = IOTools.GetFileName(
-                            processFileName,
-                            false);
-
-                        ShortcutTools.Delete($"{fileNameWithoutExe}.lnk");
-                    }
-                }
-                catch (Exception e)
-                {
-                    logger.Error(e);
-                }
-            });
     }
 
     private static void InitJsonToolsSettings()

@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Linq;
+using ZYC.CoreToolkit;
 using ZYC.CoreToolkit.Abstractions.Settings;
 
 namespace ZYC.Automation.Core;
@@ -8,6 +10,8 @@ namespace ZYC.Automation.Core;
 // ReSharper disable SuspiciousTypeConversion.Global
 public static class ReactiveExtensions
 {
+    public static SynchronizationContext? UISynchronizationContext { get; private set; }
+
     public static IObservable<T> ObserveAnyChange<T>(this T persistedData) where T : IPersistedData
     {
         if (persistedData is not INotifyPropertyChanged t)
@@ -35,5 +39,26 @@ public static class ReactiveExtensions
                 h => t.PropertyChanged -= h)
             .Where(e => string.Equals(e.EventArgs.PropertyName, propertyName, StringComparison.Ordinal))
             .Select(_ => Unit.Default);
+    }
+
+    public static IObservable<TSource> ObserveOnUI<TSource>(this IObservable<TSource> source)
+    {
+        if (UISynchronizationContext == null)
+        {
+            DebuggerTools.Break();
+        }
+
+        Debug.Assert(UISynchronizationContext != null);
+        return source.ObserveOn(UISynchronizationContext);
+    }
+
+    internal static void SetSynchronizationContext(SynchronizationContext context)
+    {
+        if (context == null)
+        {
+            DebuggerTools.Break();
+        }
+
+        UISynchronizationContext = context;
     }
 }

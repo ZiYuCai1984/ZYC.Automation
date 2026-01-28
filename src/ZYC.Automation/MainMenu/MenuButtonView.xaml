@@ -11,6 +11,7 @@
              xmlns:core="clr-namespace:ZYC.Automation.Core;assembly=ZYC.Automation.Core"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
+             Visibility="{Binding MainMenuConfig.IsVisible,Converter={converters:BoolToVisibilityConverter}}"
              Loaded="OnMenuButtonViewLoaded"
              Background="{DynamicResource MahApps.Brushes.Validation2}"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">

@@ -38,6 +38,9 @@ internal partial class WindowTitleView : IDisposable
 
         EventAggregator.Subscribe<QuickMenuItemsChangedEvent>(OnQuickMenuItemsChanged)
             .DisposeWith(CompositeDisposable);
+
+ 
+
         OnQuickMenuItemsChanged(null!);
 
         InitializeComponent();

@@ -34,9 +34,6 @@ internal partial class SettingsView : ISettingsView
         SettingGroupsCollectionViewSource.Source = SettingGroups;
         SettingGroupsCollectionViewSource.Filter += OnFilter;
 
-        var ui = SynchronizationContext.Current
-                 ?? throw new InvalidOperationException("Must be created on UI thread.");
-
         Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 h => PropertyChanged += h,
                 h => PropertyChanged -= h)
@@ -44,7 +41,7 @@ internal partial class SettingsView : ISettingsView
             .Select(_ => FilterText)
             .Throttle(TimeSpan.FromMilliseconds(250))
             .DistinctUntilChanged()
-            .ObserveOn(ui)
+            .ObserveOnUI()
             .Subscribe(_ =>
                 {
                     SettingGroupsCollectionView.Refresh();

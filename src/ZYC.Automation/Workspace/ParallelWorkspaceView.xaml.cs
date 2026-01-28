@@ -46,24 +46,31 @@ internal partial class ParallelWorkspaceView : IParallelWorkspaceManager
 
     private async void OnParallelWorkspaceViewLoaded(object sender, RoutedEventArgs e)
     {
-        if (!FirstRending)
+        try
         {
-            return;
-        }
+            if (!FirstRending)
+            {
+                return;
+            }
 
-        FirstRending = false;
+            FirstRending = false;
 
-        var root = LifetimeScope.Resolve<WorkspaceView>(
-            new TypedParameter(typeof(WorkspaceNode), RootWorkspaceNodeState),
-            new TypedParameter(typeof(WorkspaceView), null),
+            var root = LifetimeScope.Resolve<WorkspaceView>(
+                new TypedParameter(typeof(WorkspaceNode), RootWorkspaceNodeState),
+                new TypedParameter(typeof(WorkspaceView), null),
 #pragma warning disable CS8974
-            new TypedParameter(typeof(Func<WorkspaceView, Task<object>>), CreateTabManagerViewAsync));
+                new TypedParameter(typeof(Func<WorkspaceView, Task<object>>), CreateTabManagerViewAsync));
 
-        Content = root;
+            Content = root;
 
-        await TabManager.RestoreStateAsync();
+            await TabManager.RestoreStateAsync();
 
-        EventAggregator.Publish(new TabManagerRestoreCompleted());
+            EventAggregator.Publish(new TabManagerRestoreCompleted());
+        }
+        catch
+        {
+            //ignore
+        }
     }
 
 
@@ -235,7 +242,7 @@ internal partial class ParallelWorkspaceView : IParallelWorkspaceManager
         var focusedWorkspace = FocusedWorkspaceNode;
         var toId = focusedWorkspace.Id;
 
-        WorkspaceNode? fallbackWorkspace = null;
+        WorkspaceNode? fallbackWorkspace;
 
         if (WorkspaceDictionary.TryGetValue(toId, out var candidate)
             && candidate.Id != id)

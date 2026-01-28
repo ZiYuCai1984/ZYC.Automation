@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
@@ -7,6 +8,7 @@ using Autofac;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Config;
 using ZYC.Automation.Abstractions.State;
+using ZYC.Automation.Core;
 using ZYC.CoreToolkit;
 using ZYC.CoreToolkit.Abstractions.Settings;
 using ZYC.CoreToolkit.Extensions.Autofac;
@@ -35,6 +37,54 @@ internal partial class AppContext : Application, IAppContext
 
         AppDomain.CurrentDomain.UnhandledException += OnAppDomainExceptionUnhandled;
         TaskScheduler.UnobservedTaskException += OnTaskExceptionUnhandled;
+
+
+        appConfig.ObserveProperty(nameof(Abstractions.Config.AppConfig.StartAtBoot))
+            .Throttle(TimeSpan.FromMilliseconds(200))
+            .Subscribe(_ =>
+            {
+                try
+                {
+                    if (appConfig.StartAtBoot)
+                    {
+                        ShortcutTools.AddToStartupFolder();
+                    }
+                    else
+                    {
+                        ShortcutTools.RemoveFromStartupFolder();
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e);
+                }
+            });
+
+
+        appConfig.ObserveProperty(nameof(Abstractions.Config.AppConfig.DesktopShortcut))
+            .Throttle(TimeSpan.FromMilliseconds(200))
+            .Subscribe(_ =>
+            {
+                try
+                {
+                    if (appConfig.DesktopShortcut)
+                    {
+                        ShortcutTools.CreateFromCurrentProcess();
+                    }
+                    else
+                    {
+                        var fileNameWithoutExe = IOTools.GetFileName(
+                            GetProcessFileName(),
+                            false);
+
+                        ShortcutTools.Delete($"{fileNameWithoutExe}.lnk");
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e);
+                }
+            });
     }
 
     private static string AlternateFolderName => "Alternate";

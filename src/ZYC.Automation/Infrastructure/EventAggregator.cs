@@ -5,12 +5,12 @@ using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 namespace ZYC.Automation.Infrastructure;
 
 [RegisterSingleInstanceAs(typeof(IEventAggregator))]
-public sealed class UIEventAggregator : IEventAggregator
+public sealed class EventAggregator : IEventAggregator
 {
     private readonly ConcurrentDictionary<Type, List<WeakReference>> _map = new();
     private readonly SynchronizationContext? _uiCtx;
 
-    public UIEventAggregator(IAppContext appContext)
+    public EventAggregator(IAppContext appContext)
     {
         _uiCtx = appContext.GetUISynchronizationContext();
     }

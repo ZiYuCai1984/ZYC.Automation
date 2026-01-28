@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using System.IO;
 using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
@@ -27,11 +28,13 @@ internal class FileExplorerTabItemFactory : ITabItemFactory
     public async Task<bool> CheckUriMatchedAsync(Uri uri)
     {
         await Task.CompletedTask;
-        if (uri.Scheme == "file")
+
+        if (!uri.IsFile)
         {
-            return true;
+            return false;
         }
 
-        return false;
+        var localPath = uri.LocalPath;
+        return Directory.Exists(localPath);
     }
 }

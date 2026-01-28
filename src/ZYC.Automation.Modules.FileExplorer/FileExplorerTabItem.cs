@@ -74,6 +74,6 @@ public class FileExplorerTabItem : TabItemInstanceBase, IFileExplorerTabItemInst
 
         public static Uri DefaultUri => new("file:///C:/");
 
-        public static Uri Uri => UriTools.CreateAppUri(Host);
+        public static Uri Uri => DefaultUri;
     }
 }

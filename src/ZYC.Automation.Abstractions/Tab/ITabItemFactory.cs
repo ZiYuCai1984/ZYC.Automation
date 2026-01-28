@@ -4,6 +4,11 @@ public interface ITabItemFactory
 {
     bool IsSingle => true;
 
+    /// <summary>
+    ///     TODO-zyc ITabItemFactory.Priority
+    /// </summary>
+    int Priority => 0;
+
     Task<ITabItemInstance> CreateTabItemInstanceAsync(TabItemCreationContext context);
 
     Task<bool> CheckUriMatchedAsync(Uri uri);

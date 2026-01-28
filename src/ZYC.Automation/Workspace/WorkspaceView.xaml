@@ -8,8 +8,6 @@
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="Root"
              AllowDrop="True"
-             DragEnter="OnWorkspaceViewDragEnter"
-             DragOver="OnWorkspaceViewDragOver"
              Drop="OnWorkspaceViewDrop"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Border x:Name="Border" />

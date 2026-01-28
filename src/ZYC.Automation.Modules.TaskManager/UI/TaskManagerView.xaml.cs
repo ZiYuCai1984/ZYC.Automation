@@ -4,6 +4,7 @@ using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using ZYC.Automation.Abstractions;
+using ZYC.Automation.Core;
 using ZYC.Automation.Modules.TaskManager.Abstractions;
 using ZYC.Automation.Modules.TaskManager.Abstractions.Event;
 using ZYC.CoreToolkit;
@@ -23,9 +24,6 @@ internal sealed partial class TaskManagerView
         TaskManager = taskManager;
         TaskManagerState = taskManagerState;
 
-        var ui = SynchronizationContext.Current
-                 ?? throw new InvalidOperationException("Must be created on UI thread.");
-
         ManagedTasksCollectionViewSource.Source = ManagedTasks;
         ManagedTasksCollectionViewSource.Filter += OnFilter;
 
@@ -36,7 +34,7 @@ internal sealed partial class TaskManagerView
                         || e.EventArgs.PropertyName == nameof(FilterType))
             .Throttle(TimeSpan.FromMilliseconds(250))
             .DistinctUntilChanged()
-            .ObserveOn(ui)
+            .ObserveOnUI()
             .Subscribe(_ =>
                 {
                     RefreshCollectionView();

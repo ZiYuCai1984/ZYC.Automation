@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using ZYC.Automation.Abstractions.Config;
 using ZYC.Automation.Abstractions.MainMenu;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
@@ -10,20 +11,33 @@ namespace ZYC.Automation.MainMenu;
 [RegisterSingleInstance]
 public sealed partial class MenuButtonView
 {
-    public MenuButtonView(IMainMenuManager mainMenuManager)
+    public MenuButtonView(IMainMenuManager mainMenuManager, MainMenuConfig mainMenuConfig)
     {
         MainMenuManager = mainMenuManager;
+        MainMenuConfig = mainMenuConfig;
+
         InitializeComponent();
     }
 
     private IMainMenuManager MainMenuManager { get; }
 
+    public MainMenuConfig MainMenuConfig { get; }
+
     public ObservableCollection<IMainMenuItem?> MainMenuItems { get; } = new();
+
+    private bool FirstRending { get; set; } = true;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnMenuButtonViewLoaded(object sender, RoutedEventArgs e)
     {
+        if (!FirstRending)
+        {
+            return;
+        }
+
+        FirstRending = false;
+
         MainMenuItems.Clear();
 
         var items = MainMenuManager.GetSortedItems();

@@ -137,7 +137,7 @@ public class EasyTerminalControl : UserControl, IDisposable
     private bool IsDisposed { get; set; }
 
 
-    private bool FirstRender { get; set; } = true;
+    private bool FirstRending { get; set; } = true;
 
     public void Dispose()
     {
@@ -391,12 +391,12 @@ public class EasyTerminalControl : UserControl, IDisposable
     {
         try
         {
-            if (!FirstRender)
+            if (!FirstRending)
             {
                 return;
             }
 
-            FirstRender = false;
+            FirstRending = false;
 
             await TermInit();
         }

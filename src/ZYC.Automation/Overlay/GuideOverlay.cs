@@ -41,7 +41,7 @@ internal sealed class GuideOverlay : IOverlay
             _overlay.Show();
         }
 
-        // Start intercepting (you can also delay until fade-in reaches 0.2).
+        // Start intercepting
         _overlay.BlocksInput = true;
 
         FadeTo(1.0, true, new Duration(TimeSpan.FromMilliseconds(256)), null);

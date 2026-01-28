@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using ZYC.Automation.Core;
 using ZYC.Automation.Modules.Secrets.Abstractions;
 using ZYC.Automation.Modules.Settings.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
@@ -28,9 +29,6 @@ internal sealed partial class SecretsManagerView
         SecretGroupsCollectionViewSource.Filter += OnFilter;
 
 
-        var ui = SynchronizationContext.Current
-                 ?? throw new InvalidOperationException("Must be created on UI thread.");
-
         Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 h => PropertyChanged += h,
                 h => PropertyChanged -= h)
@@ -38,7 +36,7 @@ internal sealed partial class SecretsManagerView
             .Select(_ => FilterText)
             .Throttle(TimeSpan.FromMilliseconds(250))
             .DistinctUntilChanged()
-            .ObserveOn(ui)
+            .ObserveOnUI()
             .Subscribe(_ =>
                 {
                     SecretGroupsCollectionView.Refresh();

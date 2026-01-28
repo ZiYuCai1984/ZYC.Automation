@@ -36,7 +36,7 @@ internal sealed class SpotlightMask : FrameworkElement
         // Avoid transparent areas not receiving hit tests (default transparent background may not intercept).
         IsHitTestVisible = true;
 
-        // Override the mouse cursor: you can also switch Cursor based on inside/outside the hole.
+        // Override the mouse cursor
         Cursor = Cursors.Arrow;
     }
 

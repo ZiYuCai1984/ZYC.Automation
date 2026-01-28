@@ -10,18 +10,22 @@ namespace ZYC.Automation.Modules.WebBrowser.UI;
 internal partial class WebBrowserView
 {
     public WebBrowserView(
+        IWebBrowserUriPolicy webBrowserUriPolicy,
         ITabManager tabManager,
         ILifetimeScope lifetimeScope,
         Uri uri,
         IWebTabItemInstance instance,
         WebBrowserConfig webBrowserConfig) : base(lifetimeScope)
     {
+        WebBrowserUriPolicy = webBrowserUriPolicy;
         TabManager = tabManager;
         Uri = uri;
         Instance = instance;
         WebBrowserConfig = webBrowserConfig;
     }
 
+    private IWebBrowserUriPolicy WebBrowserUriPolicy { get; }
+    
     private ITabManager TabManager { get; }
 
     private Uri Uri { get; }
@@ -32,7 +36,7 @@ internal partial class WebBrowserView
 
     protected override bool IsApplyFaviconChanged => true;
 
-    public override string? HomePageUri => WebBrowserConfig.StartupPage;
+    public override string HomePageUri => WebBrowserConfig.StartupPage;
 
     protected override async Task InternalWebViewHostLoadedAsync()
     {
@@ -55,10 +59,17 @@ internal partial class WebBrowserView
         object? sender,
         CoreWebView2NavigationStartingEventArgs e)
     {
-        base.OnNavigationStarting(sender, e);
+        try
+        {
+            base.OnNavigationStarting(sender, e);
 
-        var target = e.Uri;
-        await Instance.TabInternalNavigatingAsync(new Uri(target));
+            var target = e.Uri;
+            await Instance.TabInternalNavigatingAsync(new Uri(target));
+        }
+        catch
+        {
+            //ignore
+        }
     }
 
 
@@ -66,7 +77,21 @@ internal partial class WebBrowserView
         object? sender,
         CoreWebView2NewWindowRequestedEventArgs e)
     {
-        e.Handled = true;
-        await TabManager.NavigateAsync(e.Uri);
+        try
+        {
+            //!WARNING There appears to be a bug here.
+            e.Handled = true;
+            if (!WebBrowserUriPolicy.IsAllowed(new Uri(e.Uri)))
+            {
+                //TODO-zyc To respond to drag and drop, the event needs to be forwarded to an external location.
+                return;
+            }
+
+            await TabManager.NavigateAsync(e.Uri);
+        }
+        catch
+        {
+            //ignore
+        }
     }
 }

@@ -1,11 +1,12 @@
-﻿using System.ComponentModel;
+﻿using Autofac;
+using System.ComponentModel;
 using System.Reactive.Disposables.Fluent;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using Autofac;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Event;
+using ZYC.Automation.Abstractions.Notification.Toast;
 using ZYC.Automation.Abstractions.Overlay;
 using ZYC.Automation.Abstractions.State;
 using ZYC.Automation.Abstractions.Workspace;
@@ -19,8 +20,8 @@ namespace ZYC.Automation.Workspace;
 internal sealed partial class WorkspaceView : INotifyPropertyChanged
 {
     public WorkspaceView(
+        IToastManager toastManager,
         IOverlayManager overlayManager,
-        WorkspaceDragDropManager workspaceDragDropManager,
         IEventAggregator eventAggregator,
         ILifetimeScope lifetimeScope,
         WorkspaceNode node,
@@ -30,8 +31,8 @@ internal sealed partial class WorkspaceView : INotifyPropertyChanged
         eventAggregator.Subscribe<WorkspaceHighlightEvent>(OnWorkspaceHighlightChanged)
             .DisposeWith(CompositeDisposable);
 
+        ToastManager = toastManager;
         OverlayManager = overlayManager;
-        WorkspaceDragDropManager = workspaceDragDropManager;
 
         Node = node ?? throw new ArgumentNullException(nameof(node));
 
@@ -50,9 +51,9 @@ internal sealed partial class WorkspaceView : INotifyPropertyChanged
         _ = RenderNodeAsync();
     }
 
-    private IOverlayManager OverlayManager { get; }
+    private IToastManager ToastManager { get; }
 
-    private WorkspaceDragDropManager WorkspaceDragDropManager { get; }
+    private IOverlayManager OverlayManager { get; }
 
     public WorkspaceNode Node { get; }
 
@@ -110,20 +111,27 @@ internal sealed partial class WorkspaceView : INotifyPropertyChanged
 
     private async Task RenderNodeAsync()
     {
-        var ori = Border.Child;
-
-        if (Node.Left == null)
+        try
         {
-            Border.Child = await BuildLeafContentAsync();
+            var ori = Border.Child;
+
+            if (Node.Left == null)
+            {
+                Border.Child = await BuildLeafContentAsync();
+            }
+            else
+            {
+                Border.Child = BuildSplitContent();
+            }
+
+            ori?.TryDispose();
+
+            OnPropertyChanged(nameof(IsMenuVisible));
         }
-        else
+        catch
         {
-            Border.Child = BuildSplitContent();
+            //ignore
         }
-
-        ori?.TryDispose();
-
-        OnPropertyChanged(nameof(IsMenuVisible));
     }
 
     private async Task<UIElement> BuildLeafContentAsync()

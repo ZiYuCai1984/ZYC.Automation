@@ -27,6 +27,19 @@ public static class UriTools
         return builder.Uri;
     }
 
+    public static Uri CreateUri(string scheme, string host = "", string path = "", string query = "")
+    {
+        var builder = new UriBuilder
+        {
+            Scheme = scheme,
+            Host = host,
+            Path = path,
+            Query = query
+        };
+        return builder.Uri;
+    }
+
+
     /// <summary>
     ///     Creates an application URI from a host and path.
     /// </summary>

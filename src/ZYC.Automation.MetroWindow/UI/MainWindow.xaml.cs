@@ -1,7 +1,10 @@
-﻿using System.Reflection;
+﻿using Autofac;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Interop;
-using Autofac;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Config;
 using ZYC.Automation.Abstractions.State;
@@ -35,7 +38,18 @@ internal partial class MainWindow
         LifetimeScope = lifetimeScope;
 
         SetMenuDropAlignmentRight();
+
+        appConfig.ObserveProperty(nameof(AppConfig.ShowInTaskbar))
+            .Throttle(TimeSpan.FromMilliseconds(200))
+            .ObserveOnUI()
+            .Subscribe(_ =>
+            {
+                SetShowInTaskbar(appConfig.ShowInTaskbar);
+            }).DisposeWith(CompositeDisposable);
     }
+
+    private CompositeDisposable CompositeDisposable { get; } = new();
+
 
     /// <summary>
     ///     !WARNING There is a bug in using the converter, so this is how it is implemented temporarily

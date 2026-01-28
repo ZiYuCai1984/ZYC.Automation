@@ -4,9 +4,7 @@ using ZYC.CoreToolkit.Abstractions.Settings;
 namespace ZYC.Automation.Abstractions.Config;
 
 [AddINotifyPropertyChangedInterface]
-public class WindowTitleConfig : IConfig
+public class MainMenuConfig : IConfig
 {
-    public bool IsMachineNameVisible { get; set; } = true;
-
     public bool IsVisible { get; set; } = true;
 }

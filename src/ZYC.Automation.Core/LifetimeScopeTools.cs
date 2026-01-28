@@ -5,7 +5,6 @@ using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.MainMenu;
 using ZYC.Automation.Abstractions.StatusBar;
 using ZYC.Automation.Abstractions.Tab;
-using ZYC.Automation.Abstractions.Workspace;
 using ZYC.Automation.Core.Commands;
 
 namespace ZYC.Automation.Core;
@@ -49,13 +48,6 @@ public static class LifetimeScopeTools
         {
             var simpleTabItemFactoryManager = lifetimeScope.Resolve<ISimpleTabItemFactoryManager>();
             simpleTabItemFactoryManager.Register(info);
-        }
-
-        public void RegisterWorkspaceDragDropProvider<T>()
-            where T : IWorkspaceDragDropProvider
-        {
-            var workspaceDragDropManager = lifetimeScope.Resolve<IWorkspaceDragDropManager>();
-            workspaceDragDropManager.Register<T>();
         }
 
         public ICommand CreateNavigateCommand(Uri uri)

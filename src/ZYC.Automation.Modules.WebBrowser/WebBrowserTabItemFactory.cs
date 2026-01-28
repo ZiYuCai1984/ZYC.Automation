@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.WebBrowser.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.WebBrowser;
@@ -8,6 +9,13 @@ namespace ZYC.Automation.Modules.WebBrowser;
 [RegisterSingleInstance]
 internal class WebBrowserTabItemFactory : ITabItemFactory
 {
+    public WebBrowserTabItemFactory(IWebBrowserUriPolicy webBrowserUriPolicy)
+    {
+        WebBrowserUriPolicy = webBrowserUriPolicy;
+    }
+
+    private IWebBrowserUriPolicy WebBrowserUriPolicy { get; }
+
     public bool IsSingle => false;
 
     public async Task<ITabItemInstance> CreateTabItemInstanceAsync(TabItemCreationContext context)
@@ -20,14 +28,6 @@ internal class WebBrowserTabItemFactory : ITabItemFactory
     public async Task<bool> CheckUriMatchedAsync(Uri uri)
     {
         await Task.CompletedTask;
-        if (uri.Scheme == "http"
-            || uri.Scheme == "https"
-            || uri.Scheme == "chrome-extension"
-            || uri.Scheme == "extension")
-        {
-            return true;
-        }
-
-        return false;
+        return WebBrowserUriPolicy.IsAllowed(uri);
     }
 }
