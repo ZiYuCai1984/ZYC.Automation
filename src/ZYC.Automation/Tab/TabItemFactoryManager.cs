@@ -25,6 +25,7 @@ internal partial class TabItemFactoryManager : ITabItemFactoryManager
     {
         return TabItemFactories
             .OrderBy(t => t.Priority)
+            .Reverse()
             .ToArray();
     }
 }
