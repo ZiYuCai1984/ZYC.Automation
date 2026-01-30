@@ -1,5 +1,6 @@
 ﻿using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.Update.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.Update;
@@ -16,7 +17,7 @@ internal class UpdateTabItemFactory : ITabItemFactory
     public async Task<bool> CheckUriMatchedAsync(Uri uri)
     {
         await Task.CompletedTask;
-        if (uri.Host == UpdateTabItem.Constants.Host)
+        if (uri.Host == UpdateModuleConstants.Host)
         {
             return true;
         }

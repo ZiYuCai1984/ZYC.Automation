@@ -39,6 +39,6 @@ internal sealed partial class SecretsManagerView : ISecretsManager
 
     public Uri GetPageUri()
     {
-        return SecretsTabItem.Constants.Uri;
+        return SecretsModuleConstants.Uri;
     }
 }

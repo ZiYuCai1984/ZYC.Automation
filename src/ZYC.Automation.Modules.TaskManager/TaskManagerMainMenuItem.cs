@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions.MainMenu;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.TaskManager.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.TaskManager;
@@ -12,11 +13,11 @@ internal class TaskManagerMainMenuItem : MainMenuItem
     {
         Info = new MenuItemInfo
         {
-            Title = TaskManagerTabItem.Constants.Title,
-            Icon = TaskManagerTabItem.Constants.Icon,
+            Title = TaskManagerModuleConstants.Title,
+            Icon = TaskManagerModuleConstants.Icon,
             Anchor = MainMenuAnchors.Setting_Manager
         };
 
-        Command = lifetimeScope.CreateNavigateCommand(TaskManagerTabItem.Constants.Uri);
+        Command = lifetimeScope.CreateNavigateCommand(TaskManagerModuleConstants.Uri);
     }
 }

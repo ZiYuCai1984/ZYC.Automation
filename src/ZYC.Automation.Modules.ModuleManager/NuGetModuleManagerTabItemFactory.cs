@@ -1,27 +1,17 @@
-﻿using ZYC.Automation.Abstractions;
-using ZYC.Automation.Abstractions.Tab;
+﻿using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.ModuleManager.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.ModuleManager;
 
 [RegisterSingleInstance]
-internal class NuGetModuleManagerTabItemFactory : ITabItemFactory
+[TabItemRoute(Host = ModuleManagerModuleConstants.Host, Path = ModuleManagerModuleConstants.NuGet.Path)]
+internal class NuGetModuleManagerTabItemFactory : TabItemFactoryBase
 {
-    public async Task<ITabItemInstance> CreateTabItemInstanceAsync(TabItemCreationContext context)
+    public override async Task<ITabItemInstance> CreateTabItemInstanceAsync(TabItemCreationContext context)
     {
         await Task.CompletedTask;
         return context.Resolve<NuGetModuleTabItem>();
-    }
-
-    public async Task<bool> CheckUriMatchedAsync(Uri uri)
-    {
-        await Task.CompletedTask;
-        if (UriTools.IsPathMatched(uri, NuGetModuleTabItem.Constants.Path))
-        {
-            return true;
-        }
-
-        return false;
     }
 }

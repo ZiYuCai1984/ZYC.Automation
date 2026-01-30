@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows;
-using System.Windows.Forms.Integration;
 using Microsoft.WindowsAPICodePack.Controls;
-using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 using Microsoft.WindowsAPICodePack.Shell;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Modules.FileExplorer.Abstractions;
@@ -26,26 +24,15 @@ internal partial class FileExplorerView : IDisposable
 
         InitializeComponent();
 
-        var explorerBrowser = new ExplorerBrowser();
-
-        explorerBrowser.NavigationOptions.PaneVisibility.Navigation = PaneVisibilityState.Hide;
-        explorerBrowser.NavigationOptions.PaneVisibility.Commands = PaneVisibilityState.Hide;
-        explorerBrowser.NavigationComplete += OnExplorerBrowserNavigationComplete;
+        ExplorerBrowser.NavigationOptions.PaneVisibility.Navigation = PaneVisibilityState.Hide;
+        ExplorerBrowser.NavigationOptions.PaneVisibility.Commands = PaneVisibilityState.Hide;
+        ExplorerBrowser.NavigationComplete += OnExplorerBrowserNavigationComplete;
 
         //!WARNING If an exception is thrown here, explorerBrowser will be released automatically, so there's no need to worry about memory leaks.
-        explorerBrowser.Navigate(ShellObject.FromParsingName(
+        ExplorerBrowser.Navigate(ShellObject.FromParsingName(
             uri.ToString()));
-
-        ExplorerBrowser = explorerBrowser;
-        var windowsFormsHost = new WindowsFormsHost();
-        windowsFormsHost.Child = ExplorerBrowser;
-
-        Content = windowsFormsHost;
-
-        //explorerBrowser.ForeColor = Color.FromArgb(45, 45, 200);
     }
 
-    private ExplorerBrowser ExplorerBrowser { get; }
 
     private IAppLogger<FileExplorerView> Logger { get; }
     private IFileExplorerTabItemInstance FileExplorerTabItemInstance { get; }
@@ -87,30 +74,37 @@ internal partial class FileExplorerView : IDisposable
 
     private async void OnExplorerBrowserNavigationComplete(object? sender, NavigationCompleteEventArgs e)
     {
-        var path = e.NewLocation.ParsingName;
-
-        await FileExplorerTabItemInstance.TabInternalNavigatingAsync(
-            new Uri($"file:///{path}"));
-
-        _ = Task.Run(() =>
+        try
         {
-            try
-            {
-                var base64Icon = ShellIconBase64.TryGetFolderIconPngBase64(path);
-                if (string.IsNullOrWhiteSpace(base64Icon))
-                {
-                    return;
-                }
+            var path = e.NewLocation.ParsingName;
 
-                AppContext.InvokeOnUIThread(() =>
-                {
-                    FileExplorerTabItemInstance.UpdateIcon(base64Icon);
-                });
-            }
-            catch (Exception exception)
+            await FileExplorerTabItemInstance.TabInternalNavigatingAsync(
+                new Uri($"file:///{path}"));
+
+            _ = Task.Run(() =>
             {
-                Logger.Error(exception);
-            }
-        });
+                try
+                {
+                    var base64Icon = ShellIconBase64.TryGetFolderIconPngBase64(path);
+                    if (string.IsNullOrWhiteSpace(base64Icon))
+                    {
+                        return;
+                    }
+
+                    AppContext.InvokeOnUIThread(() =>
+                    {
+                        FileExplorerTabItemInstance.UpdateIcon(base64Icon);
+                    });
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception);
+                }
+            });
+        }
+        catch
+        {
+            //ignore
+        }
     }
 }

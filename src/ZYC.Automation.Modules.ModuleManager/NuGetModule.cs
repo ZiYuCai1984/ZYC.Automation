@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using ZYC.Automation.Abstractions;
 using ZYC.Automation.Modules.ModuleManager.Abstractions;
 using ZYC.CoreToolkit.Abstractions.Autofac;
 
@@ -20,7 +21,7 @@ internal class NuGetModule : INuGetModule, INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public string Icon => "PackageVariantClosed";
+    public string Icon => Base64IconResources.NuGet;
 
     public string Description { get; }
 

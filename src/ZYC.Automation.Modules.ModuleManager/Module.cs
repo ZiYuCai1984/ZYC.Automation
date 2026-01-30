@@ -20,5 +20,5 @@ internal class Module : ModuleBase
         return Task.CompletedTask;
     }
 
-    public override string Icon => "PuzzleOutline";
+    public override string Icon => ModuleManagerModuleConstants.Local.Icon;
 }

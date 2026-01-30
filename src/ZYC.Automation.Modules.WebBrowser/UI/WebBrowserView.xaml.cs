@@ -36,7 +36,7 @@ internal partial class WebBrowserView
 
     protected override bool IsApplyFaviconChanged => true;
 
-    public override string HomePageUri => WebBrowserConfig.StartupPage;
+    public override string HomePageUri => WebBrowserConfig.StartupUri;
 
     protected override async Task InternalWebViewHostLoadedAsync()
     {

@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions.MainMenu;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.FileExplorer.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.FileExplorer;
@@ -12,10 +13,10 @@ internal class FileExplorerMainMenuItem : MainMenuItem
     {
         Info = new MenuItemInfo
         {
-            Icon = FileExplorerTabItem.Constants.Icon,
-            Title = FileExplorerTabItem.Constants.MenuTitle
+            Icon = FileExplorerModuleConstants.Icon,
+            Title = FileExplorerModuleConstants.MenuTitle
         };
 
-        Command = lifetimeScope.CreateNavigateCommand(FileExplorerTabItem.Constants.DefaultUri);
+        Command = lifetimeScope.CreateNavigateCommand(FileExplorerModuleConstants.InitialUri);
     }
 }

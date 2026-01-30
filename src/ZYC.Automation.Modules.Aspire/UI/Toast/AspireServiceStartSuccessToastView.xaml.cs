@@ -1,4 +1,5 @@
-﻿using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
+﻿using ZYC.Automation.Modules.Aspire.Abstractions;
+using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.Aspire.UI.Toast;
 
@@ -11,5 +12,5 @@ internal partial class AspireServiceStartSuccessToastView
     }
 
 
-    public Uri TargetUri => AspireTabItem.Constants.Uri;
+    public Uri TargetUri => AspireModuleContansts.Uri;
 }

@@ -11,6 +11,7 @@ using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 namespace ZYC.Automation.Modules.FileExplorer;
 
 [Register]
+[ConstantsSource(typeof(FileExplorerModuleConstants))]
 public class FileExplorerTabItem : TabItemInstanceBase, IFileExplorerTabItemInstance, INotifyPropertyChanged
 {
     public FileExplorerTabItem(
@@ -28,7 +29,7 @@ public class FileExplorerTabItem : TabItemInstanceBase, IFileExplorerTabItemInst
 
     public override string Title => Uri.UnescapeDataString(Uri.Segments.Last());
 
-    public new string Icon { get; set; } = Constants.Icon;
+    public new string Icon { get; set; } = FileExplorerModuleConstants.Icon;
 
     public override object View => _view ??= LifetimeScope.Resolve<FileExplorerView>(
         new TypedParameter(typeof(Uri), Uri),
@@ -59,18 +60,5 @@ public class FileExplorerTabItem : TabItemInstanceBase, IFileExplorerTabItemInst
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    public static class Constants
-    {
-        public static string Icon => "FolderOutline";
-
-        public static string MenuTitle => "FileExplorer";
-
-        public static string Host => "file";
-
-        public static Uri DefaultUri => new("file:///C:/");
-
-        public static Uri Uri => DefaultUri;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.CLI.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.CLI;
@@ -19,7 +20,7 @@ internal class CLITabItemFactory : ITabItemFactory
     public async Task<bool> CheckUriMatchedAsync(Uri uri)
     {
         await Task.CompletedTask;
-        if (uri.Host == CLITabItem.Constants.Host)
+        if (uri.Host == CLIModuleConstants.Host)
         {
             return true;
         }

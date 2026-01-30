@@ -8,7 +8,7 @@ namespace ZYC.Automation.Modules.TaskManager;
 
 internal class Module : ModuleBase
 {
-    public override string Icon => TaskManagerTabItem.Constants.Icon;
+    public override string Icon => TaskManagerModuleConstants.Icon;
 
     public override async Task LoadAsync(ILifetimeScope lifetimeScope)
     {

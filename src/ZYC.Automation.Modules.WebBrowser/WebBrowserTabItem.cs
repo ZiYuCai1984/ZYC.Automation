@@ -10,7 +10,9 @@ using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.WebBrowser;
 
+
 [Register]
+[ConstantsSource(typeof(WebBrowserModuleConstants))]
 internal class WebBrowserTabItem : TabItemInstanceBase, IWebTabItemInstance, INotifyPropertyChanged
 {
     public WebBrowserTabItem(
@@ -27,7 +29,7 @@ internal class WebBrowserTabItem : TabItemInstanceBase, IWebTabItemInstance, INo
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public new string Icon { get; set; } = Constants.MenuIcon;
+    public new string Icon { get; set; } = WebBrowserModuleConstants.MenuIcon;
 
     public override bool Localization => false;
 
@@ -66,16 +68,5 @@ internal class WebBrowserTabItem : TabItemInstanceBase, IWebTabItemInstance, INo
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    public static class Constants
-    {
-        public static string MenuIcon => "Web";
-
-        public static string Host => UriTools.TempHost;
-
-        public static string MenuTitle => "WebBrowser";
-
-        public static Uri Uri => UriTools.CreateAppUri(Host);
     }
 }

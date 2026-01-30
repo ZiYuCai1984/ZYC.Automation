@@ -87,7 +87,7 @@ public partial class SettingsManager : ISettingsManager
 
     public Uri GetPageUri()
     {
-        return SettingsTabItem.Constants.Uri;
+        return SettingsModuleConstants.Uri;
     }
 
     public SettingGroup[] CreateSettingGroups<T>(T[] configs) where T : IConfig

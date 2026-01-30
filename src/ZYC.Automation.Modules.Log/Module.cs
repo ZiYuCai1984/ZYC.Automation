@@ -2,13 +2,14 @@
 using Microsoft.Extensions.Logging;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.Log.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac;
 
 namespace ZYC.Automation.Modules.Log;
 
 internal class Module : ModuleBase
 {
-    public override string Icon => "ScriptOutline";
+    public override string Icon => LogModuleConstants.Icon;
 
     public override Task RegisterAsync(ContainerBuilder builder)
     {

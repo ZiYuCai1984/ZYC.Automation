@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions.MainMenu;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.BlazorDemo.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.BlazorDemo;
@@ -12,12 +13,12 @@ internal class BlazorDemoMainMenuItem : MainMenuItem
     {
         Info = new MenuItemInfo
         {
-            Title = BlazorDemoTabItem.Constants.Title,
-            Icon = BlazorDemoTabItem.Constants.Icon,
+            Title = BlazorDemoModuleConstants.Title,
+            Icon = BlazorDemoModuleConstants.Icon,
             Anchor = MainMenuAnchors.Default,
             Localization = false
         };
 
-        Command = lifetimeScope.CreateNavigateCommand(BlazorDemoTabItem.Constants.Uri);
+        Command = lifetimeScope.CreateNavigateCommand(BlazorDemoModuleConstants.Uri);
     }
 }

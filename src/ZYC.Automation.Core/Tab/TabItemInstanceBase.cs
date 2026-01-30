@@ -17,6 +17,8 @@ public abstract class TabItemInstanceBase<T> : TabItemInstanceBase where T : not
 
 public abstract class TabItemInstanceBase : ITabItemInstance
 {
+    private static readonly ConcurrentDictionary<(Type type, string memberName), object?> ConstantsCache = new();
+
     // ReSharper disable once InconsistentNaming
     protected object? _view;
 
@@ -29,7 +31,6 @@ public abstract class TabItemInstanceBase : ITabItemInstance
 
     protected ILifetimeScope LifetimeScope { get; }
 
-    private ConcurrentDictionary<(Type, string), object?> ConstantsCache { get; } = new();
 
     public TabReference TabReference { get; }
 
@@ -72,32 +73,108 @@ public abstract class TabItemInstanceBase : ITabItemInstance
         // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
         View?.TryDispose();
     }
-    //TODO Design failure !!
-    protected T GetConstant<T>(string propertyName)
+
+    protected T GetConstant<T>(string memberName)
     {
-        var key = (GetType(), propertyName);
+        var runtimeType = GetType();
+        var key = (runtimeType, memberName);
 
-        return (T)ConstantsCache.GetOrAdd(key, k =>
+        var value = ConstantsCache.GetOrAdd(key, static k =>
         {
-            var (type, prop) = k;
+            var (type, memberName) = k;
 
-            var nestedTypeName = "Constants";
-
-            var constantsType = type.GetNestedType(nestedTypeName, BindingFlags.Public | BindingFlags.NonPublic);
-            if (constantsType == null)
+            var src = type.GetCustomAttribute<ConstantsSourceAttribute>(false);
+            if (src is not null)
             {
-                throw new InvalidOperationException(
-                    $"<{nestedTypeName}> must be defined in <{type.Name}>");
+                return GetRequiredStaticConstantValue(src.Type, memberName);
             }
 
-            var property = constantsType.GetProperty(prop, BindingFlags.Public | BindingFlags.Static);
-            if (property == null)
+#pragma warning disable CS0618
+            return GetConstantLegacy(type, memberName);
+#pragma warning restore CS0618
+        });
+
+        if (value is null)
+        {
+            throw new InvalidOperationException(
+                $"Constant <{memberName}> resolved to null in <{runtimeType.FullName}>.");
+        }
+
+        if (value is T t)
+        {
+            return t;
+        }
+
+        throw new InvalidOperationException(
+            $"Constant <{memberName}> type mismatch. Expected <{typeof(T).FullName}>, but got <{value.GetType().FullName}>.");
+    }
+
+
+    [Obsolete(
+        "Use GetConstant(...) with [ConstantsSource] support. This legacy method resolves only <ThisType>.Constants.*",
+        false)]
+    protected static object? GetConstantLegacy(Type type, string propertyName)
+    {
+        var nestedTypeName = "Constants";
+
+        var constantsType = type.GetNestedType(nestedTypeName, BindingFlags.Public | BindingFlags.NonPublic);
+        if (constantsType is null)
+        {
+            throw new InvalidOperationException($"<{nestedTypeName}> must be defined in <{type.Name}>");
+        }
+
+        var property = constantsType.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Static);
+        if (property is null)
+        {
+            throw new InvalidOperationException($"<{propertyName}> static property missing in <{nestedTypeName}>");
+        }
+
+        if (property.GetIndexParameters().Length != 0)
+        {
+            throw new InvalidOperationException($"<{constantsType.FullName}.{propertyName}> must not be an indexer.");
+        }
+
+        return property.GetValue(null);
+    }
+
+
+    private static object? GetRequiredStaticConstantValue(Type constantsType, string memberName)
+    {
+        // ReSharper disable once InconsistentNaming
+        const BindingFlags Flags =
+            BindingFlags.Public | BindingFlags.NonPublic |
+            BindingFlags.Static | BindingFlags.FlattenHierarchy;
+
+        // 1) property
+        var prop = constantsType.GetProperty(memberName, Flags);
+        if (prop is not null)
+        {
+            if (prop.GetIndexParameters().Length != 0)
             {
-                throw new InvalidOperationException(
-                    $"<{prop}> static property missing in <{nestedTypeName}>");
+                throw new InvalidOperationException($"<{constantsType.FullName}.{memberName}> must not be an indexer.");
             }
 
-            return property.GetValue(null);
-        })!;
+            return prop.GetValue(null);
+        }
+
+        // 2) field（const / static readonly / static）
+        var field = constantsType.GetField(memberName, Flags);
+        if (field is not null)
+        {
+            if (!field.IsStatic)
+            {
+                throw new InvalidOperationException($"<{constantsType.FullName}.{memberName}> must be static.");
+            }
+
+            if (field.IsLiteral && !field.IsInitOnly)
+            {
+                return field.GetRawConstantValue();
+            }
+
+            return field.GetValue(null);
+        }
+
+        throw new InvalidOperationException(
+            $"<{memberName}> static field/property missing in <{constantsType.FullName}>");
     }
 }

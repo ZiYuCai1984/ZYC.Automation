@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions.MainMenu;
+using ZYC.Automation.Modules.Log.Abstractions;
 using ZYC.Automation.Modules.Log.Commands;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
@@ -12,8 +13,8 @@ internal class LogMainMenuItem : MainMenuItem
     {
         Info = new MenuItemInfo
         {
-            Title = "Log",
-            Icon = "ScriptOutline",
+            Title = LogModuleConstants.Title,
+            Icon = LogModuleConstants.Icon,
             Anchor = MainMenuAnchors.Exit,
             Priority = -1
         };

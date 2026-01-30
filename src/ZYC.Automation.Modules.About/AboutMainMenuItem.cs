@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions.MainMenu;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.About.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.About;
@@ -12,11 +13,11 @@ internal class AboutMainMenuItem : MainMenuItem
     {
         Info = new MenuItemInfo
         {
-            Title = AboutTabItem.Constants.Title,
-            Icon = AboutTabItem.Constants.Icon,
+            Title = AboutModuleConstants.Title,
+            Icon = AboutModuleConstants.Icon,
             Anchor = MainMenuAnchors.Update_About
         };
 
-        Command = lifetimeScope.CreateNavigateCommand(AboutTabItem.Constants.Uri);
+        Command = lifetimeScope.CreateNavigateCommand(AboutModuleConstants.Uri);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.BlazorDemo.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.BlazorDemo;
@@ -19,7 +20,7 @@ internal class BlazorDemoTabItemFactory : ITabItemFactory
     public async Task<bool> CheckUriMatchedAsync(Uri uri)
     {
         await Task.CompletedTask;
-        if (uri.Host == BlazorDemoTabItem.Constants.Host)
+        if (uri.Host == BlazorDemoModuleConstants.Host)
         {
             return true;
         }

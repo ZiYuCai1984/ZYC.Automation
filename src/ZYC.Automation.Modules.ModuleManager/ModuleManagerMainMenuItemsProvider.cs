@@ -17,7 +17,7 @@ internal class ModuleManagerMainMenuItemsProvider : MainMenuItemsProvider, IModu
 
     public override MenuItemInfo Info { get; } = new()
     {
-        Icon = LocalModuleTabItem.Constants.Icon,
+        Icon = ModuleManagerModuleConstants.Local.Icon,
         Title = "ModuleManager",
         Anchor = MainMenuAnchors.Setting_Manager
     };
