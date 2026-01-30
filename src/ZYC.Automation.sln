@@ -115,6 +115,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZYC.MdXaml", "Thirdparty\ZY
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZYC.Titanium.Web.Proxy", "Thirdparty\ZYC.Titanium.Web.Proxy\ZYC.Titanium.Web.Proxy.csproj", "{B03A7F76-B721-4B2B-BD74-43A090228F8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZYC.Automation.Modules.MarkdownViewer", "ZYC.Automation.Modules.MarkdownViewer\ZYC.Automation.Modules.MarkdownViewer.csproj", "{1313DB7D-3CD8-688B-07E2-44513AFFFAA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZYC.Automation.Modules.MarkdownViewer.Abstractions", "ZYC.Automation.Modules.MarkdownViewer.Abstractions\ZYC.Automation.Modules.MarkdownViewer.Abstractions.csproj", "{51853CD0-FE8C-3C50-E1F3-BC9B239582CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -297,6 +301,14 @@ Global
 		{B03A7F76-B721-4B2B-BD74-43A090228F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B03A7F76-B721-4B2B-BD74-43A090228F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B03A7F76-B721-4B2B-BD74-43A090228F8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1313DB7D-3CD8-688B-07E2-44513AFFFAA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1313DB7D-3CD8-688B-07E2-44513AFFFAA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1313DB7D-3CD8-688B-07E2-44513AFFFAA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1313DB7D-3CD8-688B-07E2-44513AFFFAA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51853CD0-FE8C-3C50-E1F3-BC9B239582CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51853CD0-FE8C-3C50-E1F3-BC9B239582CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51853CD0-FE8C-3C50-E1F3-BC9B239582CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51853CD0-FE8C-3C50-E1F3-BC9B239582CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -340,6 +352,8 @@ Global
 		{952CECFA-CA3A-43DE-80AD-D275684F647B} = {911DCF44-4C42-4704-9BD3-6AE70D6AAC43}
 		{308F911B-AB11-4C2B-B7A5-169FE301E632} = {911DCF44-4C42-4704-9BD3-6AE70D6AAC43}
 		{B03A7F76-B721-4B2B-BD74-43A090228F8E} = {911DCF44-4C42-4704-9BD3-6AE70D6AAC43}
+		{1313DB7D-3CD8-688B-07E2-44513AFFFAA5} = {AE35FA0F-EDD7-480C-82AD-01539A34E137}
+		{51853CD0-FE8C-3C50-E1F3-BC9B239582CB} = {AE35FA0F-EDD7-480C-82AD-01539A34E137}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ADE3FF46-E6C6-498A-85D8-A9119E294614}

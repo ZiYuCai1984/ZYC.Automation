@@ -1,0 +1,48 @@
+﻿using System.Text.RegularExpressions;
+using System.Windows.Documents;
+using ZYC.MdXaml.Plugins;
+
+namespace ZYC.MdXaml.MdXaml.Extensions;
+
+internal sealed class HtmlInlineParser : IInlineParser
+{
+    // Inline tags we support: a, img, br, strong/b, em/i, del/s/strike, code, kbd, sub, sup, span, input[type=checkbox]
+    public Regex FirstMatchPattern { get; } =
+        new(@"<(?:(?:a|img|br|strong|b|em|i|del|s|strike|code|kbd|sub|sup|span|input)\b)",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    public IEnumerable<Inline> Parse(
+        string text, Match firstMatch,
+        IMarkdown engine,
+        out int parseTextBegin, out int parseTextEnd)
+    {
+        parseTextBegin = firstMatch.Index;
+        parseTextEnd = firstMatch.Index;
+
+        if (!HtmlFragmentExtractor.TryExtractElementOrComment(text, firstMatch.Index, out var end))
+        {
+            return null!;
+        }
+
+        var html = text.Substring(firstMatch.Index, end - firstMatch.Index);
+        parseTextEnd = end;
+
+        // Parse fragment DOM
+        var root = HtmlDom.ParseAsWrapper(html);
+
+
+        var markdownHtmlContext = new MarkdownHtmlContext(engine);
+
+        HtmlDomSanitizer.Sanitize(root, markdownHtmlContext);
+
+        // Render Inlines from wrapper children
+        var renderer = new WpfHtmlRenderer(markdownHtmlContext);
+        var inlines = renderer.RenderInlines(root).ToArray();
+        if (inlines.Length == 0)
+        {
+            return null!;
+        }
+
+        return inlines;
+    }
+}

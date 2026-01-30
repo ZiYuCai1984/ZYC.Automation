@@ -17,7 +17,7 @@ internal class ModuleManagerMainMenuItemsProvider : MainMenuItemsProvider, IModu
 
     public override MenuItemInfo Info { get; } = new()
     {
-        Icon = "HexagonMultipleOutline",
+        Icon = LocalModuleTabItem.Constants.Icon,
         Title = "ModuleManager",
         Anchor = MainMenuAnchors.Setting_Manager
     };

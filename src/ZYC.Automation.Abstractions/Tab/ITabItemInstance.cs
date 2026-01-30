@@ -4,13 +4,13 @@ public interface ITabItemInstance : IDisposable
 {
     TabReference TabReference { get; }
 
-    Guid Id { get; }
+    Guid Id => TabReference.Id;
 
-    Uri Uri { get; }
+    Uri Uri => TabReference.Uri;
 
-    string Scheme { get; }
+    string Scheme => Uri.Scheme;
 
-    string Host { get; }
+    string Host => Uri.Host;
 
     string Title { get; }
 
