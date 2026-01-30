@@ -26,12 +26,9 @@ public class FileExplorerTabItem : TabItemInstanceBase, IFileExplorerTabItemInst
 
     public override bool Localization => false;
 
-    string ITabItemInstance.Host => Host;
-
     public override string Title => Uri.UnescapeDataString(Uri.Segments.Last());
 
     public new string Icon { get; set; } = Constants.Icon;
-
 
     public override object View => _view ??= LifetimeScope.Resolve<FileExplorerView>(
         new TypedParameter(typeof(Uri), Uri),

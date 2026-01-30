@@ -20,7 +20,7 @@ internal class WebBrowserTabItem : TabItemInstanceBase, IWebTabItemInstance, INo
     {
         Uri = uri;
         TabManager = tabManager;
-        Title = Host;
+        Title = uri.Host;
     }
 
     private ITabManager TabManager { get; }
@@ -30,8 +30,6 @@ internal class WebBrowserTabItem : TabItemInstanceBase, IWebTabItemInstance, INo
     public new string Icon { get; set; } = Constants.MenuIcon;
 
     public override bool Localization => false;
-
-    public new string Host => Uri.Host;
 
     public new string Title { get; private set; }
 

@@ -15,7 +15,7 @@ internal class LocalModuleTabItem : TabItemInstanceBase<LocalModuleManagerView>
 
     public class Constants
     {
-        public static string Icon => "PackageVariantClosed";
+        public static string Icon => "PuzzleOutline";
 
         public static string Host => "modules";
 

@@ -103,6 +103,7 @@ public static class UriTools
 
     /// <summary>
     ///     Normalizes a raw URI string with the application scheme.
+    ///     If raw looks like a Windows path, it will be converted to a file:// URI.
     /// </summary>
     /// <param name="raw">The raw URI string.</param>
     /// <returns>The normalized URI string, or null if invalid.</returns>
@@ -114,6 +115,43 @@ public static class UriTools
         }
 
         raw = raw.Trim();
+
+        // 1) If it's already an absolute URI, keep it.
+        if (Uri.TryCreate(raw, UriKind.Absolute, out var absolute))
+        {
+            return absolute.ToString();
+        }
+
+        // 2) Windows drive path -> file:///
+        if (LooksLikeWindowsPath(raw))
+        {
+            // Normalize slashes so the resulting URI is canonical.
+            var path = raw.Replace('\\', '/');
+
+            // Handle "C:foo" (drive-relative) by making it "C:/foo"
+            if (path.Length > 2 && path[2] != '/')
+            {
+                path = path.Insert(2, "/");
+            }
+
+            // file:///C:/...
+            var fileUri = new Uri("file:///" + path);
+            return fileUri.ToString();
+        }
+
+        // 3) UNC path -> file://server/share/...
+        if (raw.StartsWith(@"\\", StringComparison.Ordinal))
+        {
+            var unc = raw.TrimStart('\\').Replace('\\', '/');
+            if (Uri.TryCreate("file://" + unc, UriKind.Absolute, out var uncUri))
+            {
+                return uncUri.ToString();
+            }
+
+            return null;
+        }
+
+        // 4) Not a URI: apply app scheme unless "about:"
         if (!raw.Contains("://", StringComparison.Ordinal) &&
             !raw.StartsWith("about:", StringComparison.OrdinalIgnoreCase))
         {
@@ -121,5 +159,10 @@ public static class UriTools
         }
 
         return Uri.TryCreate(raw, UriKind.Absolute, out var u) ? u.ToString() : null;
+    }
+
+    public static bool LooksLikeWindowsPath(string s)
+    {
+        return s.Length >= 2 && char.IsLetter(s[0]) && s[1] == ':';
     }
 }

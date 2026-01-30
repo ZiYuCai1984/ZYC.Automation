@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.DragDrop;
 using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Modules.WebBrowser.Abstractions;
@@ -50,8 +51,7 @@ internal class WebBrowserDropProvider : IDropActionProvider
                     progress?.Report((i + 1) / (double)total);
                 }
             },
-            "Icon.Browser",
-            true
+            "Icon.Browser"
         );
 
         return Task.FromResult(new[] { action });
@@ -64,7 +64,7 @@ internal class WebBrowserDropProvider : IDropActionProvider
         // 1) Paths: Could be files, folders, or URL strings.
         foreach (var raw in payload.Paths)
         {
-            var s = raw?.Trim();
+            var s = raw.Trim();
             if (string.IsNullOrWhiteSpace(s))
             {
                 continue;
@@ -72,7 +72,7 @@ internal class WebBrowserDropProvider : IDropActionProvider
 
             // Prioritize Windows drive paths as file paths to prevent Uri.TryCreate 
             // from misinterpreting "C:\..." as a URI with scheme "c".
-            if (LooksLikeWindowsPath(s) || Path.IsPathRooted(s))
+            if (UriTools.LooksLikeWindowsPath(s) || Path.IsPathRooted(s))
             {
                 var full = Path.GetFullPath(s);
 
@@ -122,10 +122,5 @@ internal class WebBrowserDropProvider : IDropActionProvider
         }
 
         return result.ToArray();
-    }
-
-    private static bool LooksLikeWindowsPath(string s)
-    {
-        return s.Length >= 2 && char.IsLetter(s[0]) && s[1] == ':';
     }
 }

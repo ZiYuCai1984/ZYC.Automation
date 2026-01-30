@@ -1,15 +1,9 @@
 ﻿namespace ZYC.Automation.Abstractions.Tab;
 
-/// <summary>
-///     !WARNING Design flaw: GUID and Uri should not be modified arbitrarily by external parties (compromise for
-///     serialization convenience)
-/// </summary>
-public class TabReference : IEquatable<TabReference>
+public sealed class TabReference : IEquatable<TabReference>
 {
-    // ReSharper disable once UnusedMember.Global
     public TabReference()
     {
-        //For serialization
     }
 
     public TabReference(Uri uri)
@@ -17,20 +11,15 @@ public class TabReference : IEquatable<TabReference>
         Uri = uri;
     }
 
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; init; } = Guid.NewGuid();
 
     public Uri Uri { get; set; } = null!;
 
-    public DateTime CreateTime { get; set; } = DateTime.Now;
+    public DateTimeOffset CreateTime { get; init; } = DateTimeOffset.UtcNow;
 
     public bool Equals(TabReference? other)
     {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return Id == other.Id;
+        return other is not null && (ReferenceEquals(this, other) || Id == other.Id);
     }
 
     public override bool Equals(object? obj)
@@ -40,7 +29,6 @@ public class TabReference : IEquatable<TabReference>
 
     public override int GetHashCode()
     {
-        // ReSharper disable once NonReadonlyMemberInGetHashCode
         return Id.GetHashCode();
     }
 
@@ -53,24 +41,28 @@ public class TabReference : IEquatable<TabReference>
     {
         return !(left == right);
     }
+
+    public override string ToString()
+    {
+        return $"{Id} {Uri}";
+    }
 }
 
 public static class TabReferenceEx
 {
-    public static TabReference[] RemoveReference(
-        this TabReference[] references,
-        TabReference item)
+    extension(TabReference[] references)
     {
-        var list = new List<TabReference>(references);
-        list.Remove(item);
-        return list.ToArray();
-    }
+        public TabReference[] RemoveReference(TabReference item)
+        {
+            var list = new List<TabReference>(references);
+            list.Remove(item);
+            return list.ToArray();
+        }
 
-    public static TabReference[] AddReference(
-        this TabReference[] references,
-        TabReference item)
-    {
-        var list = new List<TabReference>(references) { item };
-        return list.ToArray();
+        public TabReference[] AddReference(TabReference item)
+        {
+            var list = new List<TabReference>(references) { item };
+            return list.ToArray();
+        }
     }
 }

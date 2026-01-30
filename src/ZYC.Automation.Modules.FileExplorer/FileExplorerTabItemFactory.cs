@@ -1,5 +1,5 @@
-﻿using Autofac;
-using System.IO;
+﻿using System.IO;
+using Autofac;
 using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
@@ -15,6 +15,8 @@ internal class FileExplorerTabItemFactory : ITabItemFactory
     }
 
     private ILifetimeScope LifetimeScope { get; }
+
+    public int Priority => 20;
 
     public bool IsSingle => false;
 

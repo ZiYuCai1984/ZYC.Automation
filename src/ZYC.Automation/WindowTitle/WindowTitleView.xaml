@@ -32,10 +32,11 @@
                             BorderBrush="Transparent">
                         <core:HybridIcon HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
-                                         HorizontalContentAlignment="Center"
-                                         VerticalContentAlignment="Center"
+                                         HorizontalContentAlignment="Stretch"
+                                         VerticalContentAlignment="Stretch"
                                          Width="16"
                                          Height="16"
+                                         FontSize="12"
                                          Icon="{Binding Icon}" />
                     </Button>
                 </DataTemplate>
@@ -91,10 +92,11 @@
                             Background="Transparent"
                             BorderBrush="Transparent">
                         <core:HybridIcon Icon="{Binding Icon}"
+                                         HorizontalContentAlignment="Stretch"
+                                         VerticalContentAlignment="Stretch"
                                          HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
-                                         HorizontalContentAlignment="Center"
-                                         VerticalContentAlignment="Center"
+                                         FontSize="12"
                                          Width="16"
                                          Height="16" />
                     </Button>

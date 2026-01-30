@@ -442,8 +442,10 @@ internal partial class TabManager : ITabManager
                 }
                 else
                 {
-                    instance = await item.CreateTabItemInstanceAsync(
-                        new TabItemCreationContext(uri, LifetimeScope));
+                    //!WARNING LifetimeScope.BeginLifetimeScope() is not used here intentionally because ExternallyOwned is defaults to true.
+                    var tabItemCreationContext = new TabItemCreationContext(uri, LifetimeScope);
+                    instance = await item.CreateTabItemInstanceAsync(tabItemCreationContext);
+
                     await instance.LoadAsync();
                     //!WARNING Resolve View in advance, if there are errors, they can be displayed on the page
                     _ = instance.View;

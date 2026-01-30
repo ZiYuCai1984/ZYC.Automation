@@ -18,8 +18,10 @@
 
 
   <ItemGroup>
+    <PackageReference Include="AngleSharp" />
     <PackageReference Include="AvalonEdit" />
     <PackageReference Include="Emoji.Wpf" />
+    <PackageReference Include="SharpVectors" />
   </ItemGroup>
 
   <ItemGroup>

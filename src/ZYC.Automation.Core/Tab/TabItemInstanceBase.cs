@@ -1,7 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac;
-using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Tab;
 using ZYC.CoreToolkit;
 
@@ -35,8 +34,6 @@ public abstract class TabItemInstanceBase : ITabItemInstance
     public TabReference TabReference { get; }
 
     public Guid Id => TabReference.Id;
-
-    public virtual string Scheme => ProductInfo.Scheme;
 
     public virtual string Host => GetConstant<string>(nameof(Host));
 

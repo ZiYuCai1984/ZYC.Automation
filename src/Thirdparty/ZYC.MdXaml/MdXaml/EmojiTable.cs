@@ -21,13 +21,13 @@ public static class EmojiTable
     */
     private static ConcurrentDictionary<string, string> LoadTxt()
     {
-        var resourceName = "MdXaml.MdXaml.EmojiTable.txt";
+        var resourceName = "ZYC.MdXaml.MdXaml.EmojiTable.txt";
         var dic = new ConcurrentDictionary<string, string>();
 
         var asm = typeof(EmojiTable).Assembly;
-
+#if DEBUG
         var names = asm.GetManifestResourceNames();
-
+#endif
 
         using var stream = asm.GetManifestResourceStream(resourceName);
         if (stream is null)

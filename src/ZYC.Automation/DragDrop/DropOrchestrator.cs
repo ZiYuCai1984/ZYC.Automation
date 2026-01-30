@@ -16,7 +16,7 @@ namespace ZYC.Automation.DragDrop;
 ///     - multiple => if has default and not holding Ctrl => ExecuteDefault else PickAction
 /// </summary>
 [RegisterSingleInstanceAs(typeof(IDropOrchestrator))]
-public sealed class DropOrchestrator : IDropOrchestrator
+internal sealed class DropOrchestrator : IDropOrchestrator
 {
     private readonly IDropActionProvider[] _providers;
 
@@ -56,7 +56,7 @@ public sealed class DropOrchestrator : IDropOrchestrator
 
         if (ordered.Length == 0)
         {
-            return new DropResolution(Array.Empty<DropAction>(), DropResolutionMode.None, null);
+            return new DropResolution([], DropResolutionMode.None, null);
         }
 
         if (ordered.Length == 1)
