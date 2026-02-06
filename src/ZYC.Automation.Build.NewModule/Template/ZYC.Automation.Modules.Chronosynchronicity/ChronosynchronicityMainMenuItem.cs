@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions.MainMenu;
-using ZYC.Automation.Build.NewModule.Template.ZYC.Automation.Modules.Chronosynchronicity.Abstractions;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.Chronosynchronicity.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 // ReSharper disable once CheckNamespace
