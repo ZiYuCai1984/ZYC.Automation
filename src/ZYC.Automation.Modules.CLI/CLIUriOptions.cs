@@ -2,6 +2,7 @@
 
 namespace ZYC.Automation.Modules.CLI;
 
+//TODO-zyc CLIUriOptions
 internal sealed record CLIUriOptions(
     string? StartupCommandLineOverride,
     IReadOnlyList<string> ExecCommands,

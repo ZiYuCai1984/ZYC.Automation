@@ -1,12 +1,15 @@
 ﻿using System.Globalization;
 using System.IO;
 using System.Net.Http;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using Autofac;
 using Microsoft.Web.WebView2.Core;
 using ZYC.Automation.Abstractions;
+using ZYC.Automation.Core;
 using ZYC.CoreToolkit;
 using ZYC.CoreToolkit.WebView2;
 
@@ -26,7 +29,11 @@ public abstract partial class WebViewHostBase : UserControl, IDisposable
         Logger = lifetimeScope.Resolve<IAppLogger<WebViewHostBase>>();
         AppContext = lifetimeScope.Resolve<IAppContext>();
 
-        Loaded += OnWebViewHostLoaded;
+        EventDisposables.Hook(
+                () => Loaded += OnWebViewHostLoaded,
+                () => Loaded -= OnWebViewHostLoaded)
+            .DisposeWith(CompositeDisposable);
+
         WebView2 = new Microsoft.Web.WebView2.Wpf.WebView2();
 
         Margin = new Thickness(0);
@@ -54,6 +61,7 @@ public abstract partial class WebViewHostBase : UserControl, IDisposable
 
     private IAppContext AppContext { get; }
 
+    private CompositeDisposable CompositeDisposable { get; } = new();
 
     protected CoreWebView2 CoreWebView2 => WebView2.CoreWebView2;
 
@@ -161,7 +169,7 @@ public abstract partial class WebViewHostBase : UserControl, IDisposable
         var env = await GetCoreWebView2Environment();
         await WebView2.EnsureCoreWebView2Async(env);
 
-        AttachEvent();
+        HookEvent();
 
         await InternalWebViewHostLoadedAsync();
     }
@@ -301,7 +309,7 @@ public abstract partial class WebViewHostBase : UserControl, IDisposable
 
     #region Event
 
-    private void AttachEvent()
+    private void HookEvent()
     {
         var coreWebView2 = CoreWebView2;
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
@@ -310,87 +318,176 @@ public abstract partial class WebViewHostBase : UserControl, IDisposable
             return;
         }
 
-        coreWebView2.ContainsFullScreenElementChanged += OnContainsFullScreenElementChanged;
-        coreWebView2.ContentLoading += OnContentLoading;
-        coreWebView2.DocumentTitleChanged += OnDocumentTitleChanged;
-        coreWebView2.FrameNavigationCompleted += OnFrameNavigationCompleted;
-        coreWebView2.FrameNavigationStarting += OnFrameNavigationStarting;
-        coreWebView2.HistoryChanged += OnHistoryChanged;
-        coreWebView2.NavigationCompleted += OnNavigationCompleted;
-        coreWebView2.NavigationStarting += OnNavigationStarting;
-        coreWebView2.NewWindowRequested += OnNewWindowRequested;
-        coreWebView2.PermissionRequested += OnPermissionRequested;
-        coreWebView2.ProcessFailed += OnProcessFailed;
-        coreWebView2.ScriptDialogOpening += OnScriptDialogOpening;
-        coreWebView2.SourceChanged += OnSourceChanged;
-        coreWebView2.WebMessageReceived += OnWebMessageReceived;
-        coreWebView2.WebResourceRequested += OnWebResourceRequested;
-        coreWebView2.WindowCloseRequested += OnWindowCloseRequested;
-        coreWebView2.BasicAuthenticationRequested += OnBasicAuthenticationRequested;
-        coreWebView2.ContextMenuRequested += OnContextMenuRequested;
-        coreWebView2.StatusBarTextChanged += OnStatusBarTextChanged;
-        coreWebView2.ServerCertificateErrorDetected += OnServerCertificateErrorDetected;
-        coreWebView2.FaviconChanged += OnFaviconChanged;
-        coreWebView2.LaunchingExternalUriScheme += OnLaunchingExternalUriScheme;
-        coreWebView2.DOMContentLoaded += OnDOMContentLoaded;
-        coreWebView2.WebResourceResponseReceived += OnWebResourceResponseReceived;
-        coreWebView2.SaveAsUIShowing += OnSaveAsUIShowing;
-        coreWebView2.ScreenCaptureStarting += OnScreenCaptureStarting;
-        coreWebView2.SaveFileSecurityCheckStarting += OnSaveFileSecurityCheckStarting;
-        coreWebView2.NotificationReceived += OnNotificationReceived;
-        coreWebView2.DownloadStarting += OnDownloadStarting;
-        coreWebView2.FrameCreated += OnFrameCreated;
-        coreWebView2.ClientCertificateRequested += OnClientCertificateRequested;
-        coreWebView2.IsDocumentPlayingAudioChanged += OnIsDocumentPlayingAudioChanged;
-        coreWebView2.IsMutedChanged += OnIsMutedChanged;
-        coreWebView2.IsDefaultDownloadDialogOpenChanged += OnIsDefaultDownloadDialogOpenChanged;
+        EventDisposables.Hook(
+                () => coreWebView2.ContainsFullScreenElementChanged += OnContainsFullScreenElementChanged,
+                () => coreWebView2.ContainsFullScreenElementChanged -= OnContainsFullScreenElementChanged)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.ContentLoading += OnContentLoading,
+                () => coreWebView2.ContentLoading -= OnContentLoading)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.DocumentTitleChanged += OnDocumentTitleChanged,
+                () => coreWebView2.DocumentTitleChanged -= OnDocumentTitleChanged)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.FrameNavigationCompleted += OnFrameNavigationCompleted,
+                () => coreWebView2.FrameNavigationCompleted -= OnFrameNavigationCompleted)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.FrameNavigationStarting += OnFrameNavigationStarting,
+                () => coreWebView2.FrameNavigationStarting -= OnFrameNavigationStarting)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.HistoryChanged += OnHistoryChanged,
+                () => coreWebView2.HistoryChanged -= OnHistoryChanged)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.NavigationCompleted += OnNavigationCompleted,
+                () => coreWebView2.NavigationCompleted -= OnNavigationCompleted)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.NavigationStarting += OnNavigationStarting,
+                () => coreWebView2.NavigationStarting -= OnNavigationStarting)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.NewWindowRequested += OnNewWindowRequested,
+                () => coreWebView2.NewWindowRequested -= OnNewWindowRequested)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.PermissionRequested += OnPermissionRequested,
+                () => coreWebView2.PermissionRequested -= OnPermissionRequested)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.ProcessFailed += OnProcessFailed,
+                () => coreWebView2.ProcessFailed -= OnProcessFailed)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.ScriptDialogOpening += OnScriptDialogOpening,
+                () => coreWebView2.ScriptDialogOpening -= OnScriptDialogOpening)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.SourceChanged += OnSourceChanged,
+                () => coreWebView2.SourceChanged -= OnSourceChanged)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.WebMessageReceived += OnWebMessageReceived,
+                () => coreWebView2.WebMessageReceived -= OnWebMessageReceived)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.WebResourceRequested += OnWebResourceRequested,
+                () => coreWebView2.WebResourceRequested -= OnWebResourceRequested)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.WindowCloseRequested += OnWindowCloseRequested,
+                () => coreWebView2.WindowCloseRequested -= OnWindowCloseRequested)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.BasicAuthenticationRequested += OnBasicAuthenticationRequested,
+                () => coreWebView2.BasicAuthenticationRequested -= OnBasicAuthenticationRequested)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.ContextMenuRequested += OnContextMenuRequested,
+                () => coreWebView2.ContextMenuRequested -= OnContextMenuRequested)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.StatusBarTextChanged += OnStatusBarTextChanged,
+                () => coreWebView2.StatusBarTextChanged -= OnStatusBarTextChanged)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.ServerCertificateErrorDetected += OnServerCertificateErrorDetected,
+                () => coreWebView2.ServerCertificateErrorDetected -= OnServerCertificateErrorDetected)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.FaviconChanged += OnFaviconChanged,
+                () => coreWebView2.FaviconChanged -= OnFaviconChanged)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.LaunchingExternalUriScheme += OnLaunchingExternalUriScheme,
+                () => coreWebView2.LaunchingExternalUriScheme -= OnLaunchingExternalUriScheme)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.DOMContentLoaded += OnDOMContentLoaded,
+                () => coreWebView2.DOMContentLoaded -= OnDOMContentLoaded)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.WebResourceResponseReceived += OnWebResourceResponseReceived,
+                () => coreWebView2.WebResourceResponseReceived -= OnWebResourceResponseReceived)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.SaveAsUIShowing += OnSaveAsUIShowing,
+                () => coreWebView2.SaveAsUIShowing -= OnSaveAsUIShowing)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.ScreenCaptureStarting += OnScreenCaptureStarting,
+                () => coreWebView2.ScreenCaptureStarting -= OnScreenCaptureStarting)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.SaveFileSecurityCheckStarting += OnSaveFileSecurityCheckStarting,
+                () => coreWebView2.SaveFileSecurityCheckStarting -= OnSaveFileSecurityCheckStarting)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.NotificationReceived += OnNotificationReceived,
+                () => coreWebView2.NotificationReceived -= OnNotificationReceived)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.DownloadStarting += OnDownloadStarting,
+                () => coreWebView2.DownloadStarting -= OnDownloadStarting)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.FrameCreated += OnFrameCreated,
+                () => coreWebView2.FrameCreated -= OnFrameCreated)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.ClientCertificateRequested += OnClientCertificateRequested,
+                () => coreWebView2.ClientCertificateRequested -= OnClientCertificateRequested)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.IsDocumentPlayingAudioChanged += OnIsDocumentPlayingAudioChanged,
+                () => coreWebView2.IsDocumentPlayingAudioChanged -= OnIsDocumentPlayingAudioChanged)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.IsMutedChanged += OnIsMutedChanged,
+                () => coreWebView2.IsMutedChanged -= OnIsMutedChanged)
+            .DisposeWith(CompositeDisposable);
+
+        EventDisposables.Hook(
+                () => coreWebView2.IsDefaultDownloadDialogOpenChanged += OnIsDefaultDownloadDialogOpenChanged,
+                () => coreWebView2.IsDefaultDownloadDialogOpenChanged -= OnIsDefaultDownloadDialogOpenChanged)
+            .DisposeWith(CompositeDisposable);
     }
-
-    private void DetachEvent()
-    {
-        var coreWebView2 = CoreWebView2;
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (coreWebView2 == null)
-        {
-            return;
-        }
-
-        coreWebView2.ContainsFullScreenElementChanged -= OnContainsFullScreenElementChanged;
-        coreWebView2.ContentLoading -= OnContentLoading;
-        coreWebView2.DocumentTitleChanged -= OnDocumentTitleChanged;
-        coreWebView2.FrameNavigationCompleted -= OnFrameNavigationCompleted;
-        coreWebView2.FrameNavigationStarting -= OnFrameNavigationStarting;
-        coreWebView2.HistoryChanged -= OnHistoryChanged;
-        coreWebView2.NavigationCompleted -= OnNavigationCompleted;
-        coreWebView2.NavigationStarting -= OnNavigationStarting;
-        coreWebView2.NewWindowRequested -= OnNewWindowRequested;
-        coreWebView2.PermissionRequested -= OnPermissionRequested;
-        coreWebView2.ProcessFailed -= OnProcessFailed;
-        coreWebView2.ScriptDialogOpening -= OnScriptDialogOpening;
-        coreWebView2.SourceChanged -= OnSourceChanged;
-        coreWebView2.WebMessageReceived -= OnWebMessageReceived;
-        coreWebView2.WebResourceRequested -= OnWebResourceRequested;
-        coreWebView2.WindowCloseRequested -= OnWindowCloseRequested;
-        coreWebView2.BasicAuthenticationRequested -= OnBasicAuthenticationRequested;
-        coreWebView2.ContextMenuRequested -= OnContextMenuRequested;
-        coreWebView2.StatusBarTextChanged -= OnStatusBarTextChanged;
-        coreWebView2.ServerCertificateErrorDetected -= OnServerCertificateErrorDetected;
-        coreWebView2.FaviconChanged -= OnFaviconChanged;
-        coreWebView2.LaunchingExternalUriScheme -= OnLaunchingExternalUriScheme;
-        coreWebView2.DOMContentLoaded -= OnDOMContentLoaded;
-        coreWebView2.WebResourceResponseReceived -= OnWebResourceResponseReceived;
-        coreWebView2.SaveAsUIShowing -= OnSaveAsUIShowing;
-        coreWebView2.ScreenCaptureStarting -= OnScreenCaptureStarting;
-        coreWebView2.SaveFileSecurityCheckStarting -= OnSaveFileSecurityCheckStarting;
-        coreWebView2.NotificationReceived -= OnNotificationReceived;
-        coreWebView2.DownloadStarting -= OnDownloadStarting;
-        coreWebView2.FrameCreated -= OnFrameCreated;
-        coreWebView2.ClientCertificateRequested -= OnClientCertificateRequested;
-        coreWebView2.IsDocumentPlayingAudioChanged -= OnIsDocumentPlayingAudioChanged;
-        coreWebView2.IsMutedChanged -= OnIsMutedChanged;
-        coreWebView2.IsDefaultDownloadDialogOpenChanged -= OnIsDefaultDownloadDialogOpenChanged;
-    }
-
 
     protected virtual void OnNewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs e)
     {

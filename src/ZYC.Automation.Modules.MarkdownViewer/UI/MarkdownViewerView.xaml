@@ -16,13 +16,15 @@
                 <DataTemplate>
                     <dragDrop:DragDropPickerView AllowMultiple="False"
                                                  PickerKind="File"
-                                                 PathsPicked="OnDragDropPickerViewPathsPicked" />
+                                                 PathsPicked="OnDragDropPickerViewPathsPicked"
+                                                 Title="Drag markdown files here"
+                                                 FileFilter="Markdown files (*.md;*.markdown)|*.md;*.markdown|All files (*.*)|*.*" />
                 </DataTemplate>
             </core:NullBasedTemplateSelector.NullTemplate>
             <core:NullBasedTemplateSelector.NonNullTemplate>
                 <DataTemplate>
-                    <mdXaml:MarkdownScrollViewer Loaded="OnMarkdownScrollViewerLoaded" 
-                                                 Padding="8 8 8 0"/>
+                    <mdXaml:MarkdownScrollViewer Loaded="OnMarkdownScrollViewerLoaded"
+                                                 Padding="8 8 8 0" />
                 </DataTemplate>
             </core:NullBasedTemplateSelector.NonNullTemplate>
         </core:NullBasedTemplateSelector>
