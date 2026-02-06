@@ -13,13 +13,6 @@
              x:Name="Root"
              Visibility="{Binding IsWorkspaceMenuVisible,Converter={converters:BoolToVisibilityConverter}}"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
     <mah:DropDownButton BorderBrush="Transparent"
                         ItemsSource="{Binding WorkspaceMenuItems}"
                         Padding="0"
