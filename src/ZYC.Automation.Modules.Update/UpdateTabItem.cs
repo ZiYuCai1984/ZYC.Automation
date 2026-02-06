@@ -11,7 +11,8 @@ namespace ZYC.Automation.Modules.Update;
 [ConstantsSource(typeof(UpdateModuleConstants))]
 internal class UpdateTabItem : TabItemInstanceBase<UpdateView>
 {
-    public UpdateTabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public UpdateTabItem(ILifetimeScope lifetimeScope, TabReference tabReference) 
+        : base(lifetimeScope, tabReference)
     {
     }
 }

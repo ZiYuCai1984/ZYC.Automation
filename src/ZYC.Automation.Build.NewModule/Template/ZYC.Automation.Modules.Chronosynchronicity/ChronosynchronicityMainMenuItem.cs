@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions.MainMenu;
+using ZYC.Automation.Build.NewModule.Template.ZYC.Automation.Modules.Chronosynchronicity.Abstractions;
 using ZYC.Automation.Core;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
@@ -13,11 +14,11 @@ internal class ChronosynchronicityMainMenuItem : MainMenuItem
     {
         Info = new MenuItemInfo
         {
-            Title = ChronosynchronicityTabItem.Constants.Title,
-            Icon = ChronosynchronicityTabItem.Constants.Icon,
+            Title = ChronosynchronicityModuleConstants.Title,
+            Icon = ChronosynchronicityModuleConstants.Icon,
             Anchor = MainMenuAnchors.Default
         };
 
-        Command = lifetimeScope.CreateNavigateCommand(ChronosynchronicityTabItem.Constants.Uri);
+        Command = lifetimeScope.CreateNavigateCommand(ChronosynchronicityModuleConstants.Uri);
     }
 }

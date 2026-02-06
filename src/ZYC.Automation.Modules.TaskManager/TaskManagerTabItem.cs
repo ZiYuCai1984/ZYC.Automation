@@ -11,7 +11,7 @@ namespace ZYC.Automation.Modules.TaskManager;
 [ConstantsSource(typeof(TaskManagerModuleConstants))]
 internal class TaskManagerTabItem : TabItemInstanceBase<TaskManagerView>
 {
-    public TaskManagerTabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public TaskManagerTabItem(ILifetimeScope lifetimeScope, TabReference tabReference) : base(lifetimeScope, tabReference)
     {
     }
 

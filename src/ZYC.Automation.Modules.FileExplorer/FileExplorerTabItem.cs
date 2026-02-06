@@ -17,13 +17,22 @@ public class FileExplorerTabItem : TabItemInstanceBase, IFileExplorerTabItemInst
     public FileExplorerTabItem(
         ILifetimeScope lifetimeScope,
         ITabManager tabManager,
-        Uri uri) : base(lifetimeScope)
+        MutableTabReference tabReference) : base(lifetimeScope, tabReference)
     {
         TabManager = tabManager;
-        Uri = uri;
     }
 
+    private MutableTabReference MutableTabReference => (MutableTabReference)TabReference;
+
+    public Uri Uri
+    {
+        get => MutableTabReference.Uri;
+        set => MutableTabReference.Uri = value;
+    }
+
+
     private ITabManager TabManager { get; }
+
 
     public override bool Localization => false;
 

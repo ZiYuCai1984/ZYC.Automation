@@ -10,22 +10,27 @@ using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.WebBrowser;
 
-
 [Register]
 [ConstantsSource(typeof(WebBrowserModuleConstants))]
 internal class WebBrowserTabItem : TabItemInstanceBase, IWebTabItemInstance, INotifyPropertyChanged
 {
     public WebBrowserTabItem(
         ILifetimeScope lifetimeScope,
-        Uri uri,
-        ITabManager tabManager) : base(lifetimeScope)
+        ITabManager tabManager, MutableTabReference tabReference) : base(lifetimeScope, tabReference)
     {
-        Uri = uri;
         TabManager = tabManager;
-        Title = uri.Host;
+        Title = tabReference.Uri.Host;
     }
 
+    private MutableTabReference MutableTabReference => (MutableTabReference)TabReference;
+
     private ITabManager TabManager { get; }
+
+    public Uri Uri
+    {
+        get => MutableTabReference.Uri;
+        set => MutableTabReference.Uri = value;
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -38,7 +43,6 @@ internal class WebBrowserTabItem : TabItemInstanceBase, IWebTabItemInstance, INo
     public override object View => _view ??= LifetimeScope.Resolve<WebBrowserView>(
         new TypedParameter(typeof(Uri), Uri),
         new TypedParameter(typeof(IWebTabItemInstance), this));
-
 
     public void SetTitle(string title)
     {

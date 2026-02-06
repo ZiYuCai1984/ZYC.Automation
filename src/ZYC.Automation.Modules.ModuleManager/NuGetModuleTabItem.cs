@@ -11,7 +11,8 @@ namespace ZYC.Automation.Modules.ModuleManager;
 [ConstantsSource(typeof(ModuleManagerModuleConstants.NuGet))]
 internal class NuGetModuleTabItem : TabItemInstanceBase<NuGetModuleManagerView>
 {
-    public NuGetModuleTabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public NuGetModuleTabItem(ILifetimeScope lifetimeScope, TabReference tabReference) 
+        : base(lifetimeScope, tabReference)
     {
     }
 }

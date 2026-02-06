@@ -11,7 +11,7 @@ namespace ZYC.Automation.Modules.Secrets;
 [ConstantsSource(typeof(SecretsModuleConstants))]
 internal class SecretsTabItem : TabItemInstanceBase<SecretsManagerView>
 {
-    public SecretsTabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public SecretsTabItem(ILifetimeScope lifetimeScope, TabReference tabReference) : base(lifetimeScope, tabReference)
     {
     }
 }

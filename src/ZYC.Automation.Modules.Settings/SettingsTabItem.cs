@@ -11,7 +11,7 @@ namespace ZYC.Automation.Modules.Settings;
 [ConstantsSource(typeof(SettingsModuleConstants))]
 internal class SettingsTabItem : TabItemInstanceBase<SettingsView>
 {
-    public SettingsTabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public SettingsTabItem(ILifetimeScope lifetimeScope, TabReference tabReference) : base(lifetimeScope, tabReference)
     {
     }
 }

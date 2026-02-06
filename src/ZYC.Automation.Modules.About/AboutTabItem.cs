@@ -11,7 +11,8 @@ namespace ZYC.Automation.Modules.About;
 [ConstantsSource(typeof(AboutModuleConstants))]
 internal class AboutTabItem : TabItemInstanceBase<AboutView>
 {
-    public AboutTabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public AboutTabItem(ILifetimeScope lifetimeScope, TabReference tabReference)
+        : base(lifetimeScope, tabReference)
     {
     }
 }

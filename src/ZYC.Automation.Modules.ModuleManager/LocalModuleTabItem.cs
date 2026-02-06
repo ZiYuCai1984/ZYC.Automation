@@ -11,7 +11,8 @@ namespace ZYC.Automation.Modules.ModuleManager;
 [ConstantsSource(typeof(ModuleManagerModuleConstants.Local))]
 internal class LocalModuleTabItem : TabItemInstanceBase<LocalModuleManagerView>
 {
-    public LocalModuleTabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public LocalModuleTabItem(ILifetimeScope lifetimeScope, TabReference tabReference) : base(lifetimeScope,
+        tabReference)
     {
     }
 }

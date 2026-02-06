@@ -4,14 +4,6 @@ public interface ITabItemInstance : IDisposable
 {
     TabReference TabReference { get; }
 
-    Guid Id => TabReference.Id;
-
-    Uri Uri => TabReference.Uri;
-
-    string Scheme => Uri.Scheme;
-
-    string Host => Uri.Host;
-
     string Title { get; }
 
     string Icon { get; }
@@ -23,4 +15,19 @@ public interface ITabItemInstance : IDisposable
     Task LoadAsync();
 
     bool OnClosing();
+}
+
+public static class ITabItemInstanceEx
+{
+    extension(ITabItemInstance instance)
+    {
+        public Guid Id => instance.TabReference.Id;
+
+        public Uri Uri => instance.TabReference.Uri;
+
+        public string Scheme => instance.Uri.Scheme;
+
+        public string Host => instance.Uri.Host;
+
+    }
 }

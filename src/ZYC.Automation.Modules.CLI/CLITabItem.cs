@@ -14,7 +14,8 @@ internal class CLITabItem : TabItemInstanceBase
 {
     public CLITabItem(
         ILifetimeScope lifetimeScope,
-        CLITabItemIndexPool indexPool) : base(lifetimeScope)
+        TabReference tabReference,
+        CLITabItemIndexPool indexPool) : base(lifetimeScope, tabReference)
     {
         IndexPool = indexPool;
         Lease = IndexPool.AcquireLease();

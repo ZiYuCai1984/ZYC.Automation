@@ -8,11 +8,6 @@ public static class UriTools
     private static string Scheme => ProductInfo.Scheme;
 
     /// <summary>
-    ///     !WARNING Used to initialize TabReference, which will usually be replaced by the host in the new uri later
-    /// </summary>
-    public const string TempHost = "temp";
-
-    /// <summary>
     ///     Creates an application URI from a host.
     /// </summary>
     /// <param name="host">The host name.</param>

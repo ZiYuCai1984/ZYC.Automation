@@ -1,19 +1,15 @@
 ﻿namespace ZYC.Automation.Abstractions.Tab;
 
-public sealed class TabReference : IEquatable<TabReference>
+public class TabReference : IEquatable<TabReference>
 {
-    public TabReference()
-    {
-    }
-
     public TabReference(Uri uri)
     {
         Uri = uri;
     }
 
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid Id { get; } = Guid.NewGuid();
 
-    public Uri Uri { get; set; } = null!;
+    public Uri Uri { get; protected set; }
 
     public DateTimeOffset CreateTime { get; init; } = DateTimeOffset.UtcNow;
 

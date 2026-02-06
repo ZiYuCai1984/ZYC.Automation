@@ -4,7 +4,7 @@ namespace ZYC.Automation.Modules.Secrets.Abstractions;
 
 public static class SecretsModuleConstants
 {
-    public const string Icon = "EyeOutline";
+    public const string Icon = "🔑";
 
     public const string Host = "secrets";
 

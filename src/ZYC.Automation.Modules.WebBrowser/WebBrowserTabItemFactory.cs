@@ -22,7 +22,7 @@ internal class WebBrowserTabItemFactory : ITabItemFactory
     {
         await Task.CompletedTask;
         return context.Resolve<WebBrowserTabItem>(
-            new TypedParameter(typeof(Uri), context.Uri));
+            new TypedParameter(typeof(MutableTabReference), new MutableTabReference(context.Uri)));
     }
 
     public async Task<bool> CheckUriMatchedAsync(Uri uri)

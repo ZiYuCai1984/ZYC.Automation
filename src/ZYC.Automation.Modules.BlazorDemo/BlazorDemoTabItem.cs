@@ -11,7 +11,9 @@ namespace ZYC.Automation.Modules.BlazorDemo;
 [ConstantsSource(typeof(BlazorDemoModuleConstants))]
 internal class BlazorDemoTabItem : TabItemInstanceBase<BlazorDemoView>
 {
-    public BlazorDemoTabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public BlazorDemoTabItem(
+        ILifetimeScope lifetimeScope, 
+        TabReference tabReference) : base(lifetimeScope, tabReference)
     {
     }
 

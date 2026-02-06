@@ -14,7 +14,8 @@ internal class CLITabItemFactory : ITabItemFactory
     public async Task<ITabItemInstance> CreateTabItemInstanceAsync(TabItemCreationContext context)
     {
         await Task.CompletedTask;
-        return context.Resolve<CLITabItem>(new TypedParameter(typeof(Uri), context.Uri));
+        return context.Resolve<CLITabItem>(
+            new TypedParameter(typeof(TabReference), new TabReference(context.Uri)));
     }
 
     public async Task<bool> CheckUriMatchedAsync(Uri uri)

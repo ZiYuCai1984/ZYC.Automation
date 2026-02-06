@@ -11,7 +11,7 @@ namespace ZYC.Automation.Modules.Aspire;
 [ConstantsSource(typeof(AspireModuleContansts))]
 internal class AspireTabItem : TabItemInstanceBase<AspireView>
 {
-    public AspireTabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public AspireTabItem(ILifetimeScope lifetimeScope, TabReference tabReference) : base(lifetimeScope, tabReference)
     {
     }
 

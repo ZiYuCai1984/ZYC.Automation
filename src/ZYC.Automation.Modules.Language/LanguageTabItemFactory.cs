@@ -22,7 +22,8 @@ internal class LanguageTabItemFactory : ITabItemFactory
     {
         await Task.CompletedTask;
 
-        return context.Resolve<LanguageTabItem>();
+        return context.Resolve<LanguageTabItem>(
+            new TypedParameter(typeof(TabReference), new TabReference(context.Uri)));
     }
 
     public async Task<bool> CheckUriMatchedAsync(Uri uri)

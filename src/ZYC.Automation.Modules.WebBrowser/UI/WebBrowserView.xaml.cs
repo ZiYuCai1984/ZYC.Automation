@@ -1,5 +1,7 @@
 ﻿using Autofac;
+using Microsoft.Extensions.Logging;
 using Microsoft.Web.WebView2.Core;
+using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Modules.WebBrowser.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
@@ -10,6 +12,7 @@ namespace ZYC.Automation.Modules.WebBrowser.UI;
 internal partial class WebBrowserView
 {
     public WebBrowserView(
+        ILogger<WebBrowserView> logger,
         IWebBrowserUriPolicy webBrowserUriPolicy,
         ITabManager tabManager,
         ILifetimeScope lifetimeScope,
@@ -17,6 +20,7 @@ internal partial class WebBrowserView
         IWebTabItemInstance instance,
         WebBrowserConfig webBrowserConfig) : base(lifetimeScope)
     {
+        Logger = logger;
         WebBrowserUriPolicy = webBrowserUriPolicy;
         TabManager = tabManager;
         Uri = uri;
@@ -24,8 +28,10 @@ internal partial class WebBrowserView
         WebBrowserConfig = webBrowserConfig;
     }
 
+    private ILogger<WebBrowserView> Logger { get; }
+
     private IWebBrowserUriPolicy WebBrowserUriPolicy { get; }
-    
+
     private ITabManager TabManager { get; }
 
     private Uri Uri { get; }
@@ -66,9 +72,9 @@ internal partial class WebBrowserView
             var target = e.Uri;
             await Instance.TabInternalNavigatingAsync(new Uri(target));
         }
-        catch
+        catch (Exception ex)
         {
-            //ignore
+            Logger.Error(ex);
         }
     }
 
@@ -89,9 +95,9 @@ internal partial class WebBrowserView
 
             await TabManager.NavigateAsync(e.Uri);
         }
-        catch
+        catch (Exception ex)
         {
-            //ignore
+            Logger.Error(ex);
         }
     }
 }

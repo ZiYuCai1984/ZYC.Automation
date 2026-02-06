@@ -14,7 +14,8 @@ internal class LanguageTabItem : TabItemInstanceBase<LanguageView>
 {
     public LanguageTabItem(
         ILanguageManager languageManager,
-        ILifetimeScope lifetimeScope) : base(lifetimeScope)
+        ILifetimeScope lifetimeScope, 
+        TabReference tabReference) : base(lifetimeScope, tabReference)
     {
         LanguageManager = languageManager;
     }

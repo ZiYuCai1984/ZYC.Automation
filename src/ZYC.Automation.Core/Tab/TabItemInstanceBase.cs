@@ -8,7 +8,8 @@ namespace ZYC.Automation.Core.Tab;
 
 public abstract class TabItemInstanceBase<T> : TabItemInstanceBase where T : notnull
 {
-    protected TabItemInstanceBase(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    protected TabItemInstanceBase(ILifetimeScope lifetimeScope, TabReference tabReference)
+        : base(lifetimeScope, tabReference)
     {
     }
 
@@ -22,31 +23,21 @@ public abstract class TabItemInstanceBase : ITabItemInstance
     // ReSharper disable once InconsistentNaming
     protected object? _view;
 
-    protected TabItemInstanceBase(ILifetimeScope lifetimeScope)
+    protected TabItemInstanceBase(ILifetimeScope lifetimeScope, TabReference tabReference)
     {
         LifetimeScope = lifetimeScope;
-
-        TabReference = new TabReference(GetConstant<Uri>(nameof(Uri)));
+        TabReference = tabReference;
     }
 
     protected ILifetimeScope LifetimeScope { get; }
 
+    public virtual string Host => GetConstant<string>(nameof(Host));
 
     public TabReference TabReference { get; }
-
-    public Guid Id => TabReference.Id;
-
-    public virtual string Host => GetConstant<string>(nameof(Host));
 
     public virtual string Title => GetConstant<string>(nameof(Title));
 
     public virtual string Icon => GetConstant<string>(nameof(Icon));
-
-    public Uri Uri
-    {
-        get => TabReference.Uri;
-        set => TabReference.Uri = value;
-    }
 
     public abstract object View { get; }
 
