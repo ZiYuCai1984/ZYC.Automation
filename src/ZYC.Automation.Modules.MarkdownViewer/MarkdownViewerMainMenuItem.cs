@@ -1,6 +1,7 @@
-using Autofac;
+﻿using Autofac;
 using ZYC.Automation.Abstractions.MainMenu;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.MarkdownViewer.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 
@@ -13,11 +14,11 @@ internal class MarkdownViewerMainMenuItem : MainMenuItem
     {
         Info = new MenuItemInfo
         {
-            Title = MarkdownViewerTabItem.Constants.Title,
-            Icon = MarkdownViewerTabItem.Constants.Icon,
+            Title = MarkdownViewerModuleConstants.Title,
+            Icon = MarkdownViewerModuleConstants.Icon,
             Anchor = MainMenuAnchors.Default
         };
 
-        Command = lifetimeScope.CreateNavigateCommand(MarkdownViewerTabItem.Constants.Uri);
+        Command = lifetimeScope.CreateNavigateCommand(MarkdownViewerModuleConstants.Uri);
     }
 }

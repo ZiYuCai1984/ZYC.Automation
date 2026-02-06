@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions;
+using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core.Tab;
 using ZYC.Automation.Modules.Secrets.UI;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
@@ -9,7 +10,7 @@ namespace ZYC.Automation.Modules.Secrets;
 [Register]
 internal class PasswordGeneratorTabItem : TabItemInstanceBase<PasswordGeneratorView>
 {
-    public PasswordGeneratorTabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public PasswordGeneratorTabItem(ILifetimeScope lifetimeScope, TabReference tabReference) : base(lifetimeScope, tabReference)
     {
     }
 

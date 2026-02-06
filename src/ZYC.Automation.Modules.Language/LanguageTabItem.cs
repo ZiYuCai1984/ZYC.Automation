@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using ZYC.Automation.Abstractions;
+using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core.Tab;
 using ZYC.Automation.Modules.Language.Abstractions;
 using ZYC.Automation.Modules.Language.UI;
@@ -9,11 +9,13 @@ using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 namespace ZYC.Automation.Modules.Language;
 
 [Register]
+[ConstantsSource(typeof(LanguageModuleConstants))]
 internal class LanguageTabItem : TabItemInstanceBase<LanguageView>
 {
     public LanguageTabItem(
         ILanguageManager languageManager,
-        ILifetimeScope lifetimeScope) : base(lifetimeScope)
+        ILifetimeScope lifetimeScope, 
+        TabReference tabReference) : base(lifetimeScope, tabReference)
     {
         LanguageManager = languageManager;
     }
@@ -29,18 +31,7 @@ internal class LanguageTabItem : TabItemInstanceBase<LanguageView>
                 return "SyllabaryHiragana";
             }
 
-            return Constants.DefaultIcon;
+            return LanguageModuleConstants.DefaultIcon;
         }
-    }
-
-    public static class Constants
-    {
-        public static string DefaultIcon => "FormatTextVariantOutline";
-
-        public static string Host => "lang";
-
-        public static string Title => "Language";
-
-        public static Uri Uri => UriTools.CreateAppUri(Host);
     }
 }

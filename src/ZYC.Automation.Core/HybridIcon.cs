@@ -1,11 +1,14 @@
 ﻿using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MahApps.Metro.IconPacks;
+using SharpVectors.Converters;
+using SharpVectors.Renderers.Wpf;
 using ZYC.CoreToolkit;
 using WTextBlock = Emoji.Wpf.TextBlock;
 
@@ -37,31 +40,43 @@ public class HybridIcon : ContentControl
             return;
         }
 
-        var s = e.NewValue.ToString() ?? string.Empty;
+        var s = (e.NewValue.ToString() ?? string.Empty).Trim();
 
-        // 1) Try Material icon name first.
-        if (Enum.TryParse<PackIconMaterialKind>(s, out var materialKind))
+        // 1) Try Material icon name first
+        if (Enum.TryParse<PackIconMaterialKind>(s, true, out var materialKind))
         {
             hybridIcon.SetFromMaterialIcon(materialKind);
             return;
         }
 
-        // 2) Then try a Base64 image.
-        //    Use a preallocated buffer + TryFromBase64String to avoid exceptions.
-        if (LooksLikeBase64(s))
+        // 2) Try Base64 (optionally Data URI)
+        if (TryDecodeBase64Payload(s, out var buffer, out var mime))
         {
-            var requiredBufferSize = s.Length * 3 / 4;
-            var buffer = new byte[requiredBufferSize];
-            if (Convert.TryFromBase64String(s, buffer, out var bytesWritten))
+            // SVG first
+            if (string.Equals(mime, "image/svg+xml", StringComparison.OrdinalIgnoreCase) || LooksLikeSvgXml(buffer))
             {
-                if (bytesWritten != buffer.Length)
+                if (hybridIcon.TrySetFromSvgBytes(buffer))
                 {
-                    Array.Resize(ref buffer, bytesWritten);
+                    return;
                 }
 
-                hybridIcon.SetFromByteArray(buffer);
+                if (hybridIcon.TrySetFromRasterBytes(buffer))
+                {
+                    return;
+                }
+
+                hybridIcon.SetFromMaterialIcon(DefaultIconKind);
                 return;
             }
+
+            // Not SVG -> raster
+            if (hybridIcon.TrySetFromRasterBytes(buffer))
+            {
+                return;
+            }
+
+            hybridIcon.SetFromMaterialIcon(DefaultIconKind);
+            return;
         }
 
         // 3) Emoji / emoji sequence.
@@ -71,28 +86,164 @@ public class HybridIcon : ContentControl
             return;
         }
 
-        // 4) Fallback: default Material icon.
+        // 4) Fallback
         hybridIcon.SetFromMaterialIcon(DefaultIconKind);
     }
 
-    private void SetFromByteArray(byte[] buffer)
+    private bool TrySetFromRasterBytes(byte[] buffer)
     {
-        Content?.TryDispose();
-
-        var image = new Image
+        try
         {
-            Stretch = Stretch.Uniform
-        };
+            Content?.TryDispose();
 
-        var bitmap = new BitmapImage();
-        bitmap.BeginInit();
-        bitmap.CacheOption = BitmapCacheOption.OnLoad;
-        bitmap.StreamSource = new MemoryStream(buffer);
-        bitmap.EndInit();
-        bitmap.Freeze();
+            var image = new Image { Stretch = Stretch.Uniform };
 
-        image.Source = bitmap;
-        Content = image;
+            var bitmap = new BitmapImage();
+            using (var ms = new MemoryStream(buffer, false))
+            {
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.StreamSource = ms;
+                bitmap.EndInit();
+            }
+
+            bitmap.Freeze();
+
+            image.Source = bitmap;
+            Content = image;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool LooksLikeSvgXml(ReadOnlySpan<byte> bytes)
+    {
+        // UTF-8 BOM
+        if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)
+        {
+            bytes = bytes.Slice(3);
+        }
+
+        // skip leading whitespace
+        var i = 0;
+        while (i < bytes.Length && bytes[i] <= 0x20)
+        {
+            i++;
+        }
+
+        if (i >= bytes.Length)
+        {
+            return false;
+        }
+
+        // Very small sniff window (avoid large allocations)
+        var head = bytes.Slice(i, Math.Min(256, bytes.Length - i));
+
+        // Quick check: must contain '<'
+        if (head.IndexOf((byte)'<') < 0)
+        {
+            return false;
+        }
+
+        // Decode head as UTF8 for contains check
+        var text = Encoding.UTF8.GetString(head);
+        return text.Contains("<svg", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool TrySetFromSvgBytes(byte[] buffer)
+    {
+        try
+        {
+            Content?.TryDispose();
+
+            var settings = new WpfDrawingSettings
+            {
+                IncludeRuntime = false,
+                TextAsGeometry = true
+            };
+
+            var reader = new FileSvgReader(settings);
+
+            using var ms = new MemoryStream(buffer, false);
+            var drawing = reader.Read(ms); // DrawingGroup
+            if (drawing == null)
+            {
+                return false;
+            }
+
+            drawing.Freeze();
+
+            var imgSource = new DrawingImage(drawing);
+            imgSource.Freeze();
+
+            var image = new Image
+            {
+                Stretch = Stretch.Uniform,
+                Source = imgSource
+            };
+
+            Content = image;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool TryDecodeBase64Payload(string s, out byte[] bytes, out string? mime)
+    {
+        bytes = Array.Empty<byte>();
+        mime = null;
+
+        // Support: data:image/svg+xml;base64,xxxx
+        // Support: pure base64 (xxxx)
+        var base64 = s;
+
+        if (s.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+        {
+            var comma = s.IndexOf(',');
+            if (comma <= 0 || comma >= s.Length - 1)
+            {
+                return false;
+            }
+
+            var meta = s.Substring(5, comma - 5); // after "data:"
+            base64 = s.Substring(comma + 1);
+
+            // meta: "image/svg+xml;base64"
+            var semi = meta.IndexOf(';');
+            mime = (semi > 0 ? meta.Substring(0, semi) : meta).Trim();
+
+            if (!meta.Contains("base64", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+        }
+
+        //if (!LooksLikeBase64(base64))
+        //{
+        //    return false;
+        //}
+
+        var maxLen = (base64.Length + 3) / 4 * 3;
+        var buffer = new byte[maxLen];
+
+        if (!Convert.TryFromBase64String(base64, buffer, out var written))
+        {
+            return false;
+        }
+
+        if (written != buffer.Length)
+        {
+            Array.Resize(ref buffer, written);
+        }
+
+        bytes = buffer;
+        return true;
     }
 
     private void SetFromMaterialIcon(PackIconMaterialKind kind)
@@ -101,17 +252,18 @@ public class HybridIcon : ContentControl
 
         Content = new PackIconMaterial
         {
-            Kind = kind,
-
+            Kind = kind
         };
 
         if (Content is PackIconMaterial pi)
         {
             pi.SetBinding(VerticalAlignmentProperty, new Binding(nameof(VerticalAlignment)) { Source = this });
-            pi.SetBinding(VerticalContentAlignmentProperty, new Binding(nameof(VerticalContentAlignment)) { Source = this });
+            pi.SetBinding(VerticalContentAlignmentProperty,
+                new Binding(nameof(VerticalContentAlignment)) { Source = this });
 
             pi.SetBinding(HorizontalAlignmentProperty, new Binding(nameof(HorizontalAlignment)) { Source = this });
-            pi.SetBinding(HorizontalContentAlignmentProperty, new Binding(nameof(HorizontalContentAlignment)) { Source = this });
+            pi.SetBinding(HorizontalContentAlignmentProperty,
+                new Binding(nameof(HorizontalContentAlignment)) { Source = this });
 
 
             pi.SetBinding(WidthProperty, new Binding(nameof(Width)) { Source = this });
@@ -128,15 +280,17 @@ public class HybridIcon : ContentControl
         var tb = new WTextBlock
         {
             Text = emojiText,
-            TextAlignment = TextAlignment.Center,
+            TextAlignment = TextAlignment.Center
         };
 
 
         tb.SetBinding(VerticalAlignmentProperty, new Binding(nameof(VerticalAlignment)) { Source = this });
-        tb.SetBinding(VerticalContentAlignmentProperty, new Binding(nameof(VerticalContentAlignment)) { Source = this });
+        tb.SetBinding(VerticalContentAlignmentProperty,
+            new Binding(nameof(VerticalContentAlignment)) { Source = this });
 
         tb.SetBinding(HorizontalAlignmentProperty, new Binding(nameof(HorizontalAlignment)) { Source = this });
-        tb.SetBinding(HorizontalContentAlignmentProperty, new Binding(nameof(HorizontalContentAlignment)) { Source = this });
+        tb.SetBinding(HorizontalContentAlignmentProperty,
+            new Binding(nameof(HorizontalContentAlignment)) { Source = this });
 
         tb.SetBinding(FontSizeProperty, new Binding(nameof(FontSize)) { Source = this });
         tb.SetBinding(ForegroundProperty, new Binding(nameof(Foreground)) { Source = this });

@@ -21,6 +21,6 @@ internal class OpenLogFolderCommand : CommandBase
     protected override void InternalExecute(object? parameter)
     {
         var dir = Path.Combine(AppContext.GetMainAppDirectory(), "logs");
-        TabManager.NavigateAsync($"file:///{dir}");
+        TabManager.NavigateAsync(dir);
     }
 }

@@ -139,6 +139,7 @@
     <PackageReference Update="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Update="System.Security.Principal.Windows" Version="5.0.0" />
     <PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Update="Microsoft.AspNetCore.WebUtilities" Version="10.0.2" />
   </ItemGroup>
 
 

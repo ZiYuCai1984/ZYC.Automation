@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using ZYC.Automation.Abstractions;
 using ZYC.Automation.Abstractions.Tab;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
@@ -13,17 +12,17 @@ internal class ErrorTabItemInstance : ITabItemInstance
 {
     private object? _view;
 
-    public ErrorTabItemInstance(Uri? uri, Exception exception, ILifetimeScope lifetimeScope)
+    public ErrorTabItemInstance(TabReference tabReference, Exception exception, ILifetimeScope lifetimeScope)
     {
-        Uri = uri!;
+        TabReference = tabReference;
         Exception = exception;
         LifetimeScope = lifetimeScope;
-
-        TabReference = new TabReference(Uri);
     }
 
     private Exception Exception { get; }
+
     private ILifetimeScope LifetimeScope { get; }
+
 
     public object View => _view ??= LifetimeScope.Resolve<ErrorView>(
         new TypedParameter(typeof(Exception), Exception));
@@ -35,13 +34,6 @@ internal class ErrorTabItemInstance : ITabItemInstance
 
     public TabReference TabReference { get; }
 
-    public Guid Id => TabReference.Id;
-
-    public Uri Uri { get; }
-
-    public string Scheme => Uri.Scheme;
-
-    public string Host => UriTools.TempHost;
 
     public string Title => "Error";
 

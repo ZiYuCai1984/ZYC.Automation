@@ -2,10 +2,10 @@
 
 namespace ZYC.Automation.Abstractions;
 
-[TempCode]
 /// <summary>
 ///     Tracks files pending deletion.
 /// </summary>
+[TempCode]
 public interface IPendingDeleteManager
 {
     /// <summary>

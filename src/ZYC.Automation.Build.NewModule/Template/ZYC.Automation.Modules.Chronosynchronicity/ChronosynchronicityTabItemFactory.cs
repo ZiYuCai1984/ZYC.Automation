@@ -1,4 +1,6 @@
-﻿using ZYC.Automation.Abstractions.Tab;
+﻿using Autofac;
+using ZYC.Automation.Abstractions.Tab;
+using ZYC.Automation.Build.NewModule.Template.ZYC.Automation.Modules.Chronosynchronicity.Abstractions;
 using ZYC.Automation.Core;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
@@ -13,13 +15,14 @@ internal class ChronosynchronicityTabItemFactory : ITabItemFactory
     public async Task<ITabItemInstance> CreateTabItemInstanceAsync(TabItemCreationContext context)
     {
         await Task.CompletedTask;
-        return context.Resolve<ChronosynchronicityTabItem>();
+        return context.Resolve<ChronosynchronicityTabItem>(
+            new TypedParameter(typeof(TabReference), new TabReference(context.Uri)));
     }
 
     public async Task<bool> CheckUriMatchedAsync(Uri uri)
     {
         await Task.CompletedTask;
-        if (uri.Host == ChronosynchronicityTabItem.Constants.Host)
+        if (uri.Host == ChronosynchronicityModuleConstants.Host)
         {
             return true;
         }

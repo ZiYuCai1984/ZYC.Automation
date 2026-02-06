@@ -11,7 +11,7 @@ namespace ZYC.Automation.Modules.Update;
 
 internal class Module : ModuleBase
 {
-    public override string Icon => UpdateTabItem.Constants.Icon;
+    public override string Icon => UpdateModuleConstants.Icon;
 
     private CompositeDisposable CompositeDisposable { get; } = new();
 

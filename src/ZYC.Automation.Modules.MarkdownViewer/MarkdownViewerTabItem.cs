@@ -11,20 +11,27 @@ using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 namespace ZYC.Automation.Modules.MarkdownViewer;
 
 [RegisterAs(typeof(MarkdownViewerTabItem), typeof(IMarkdownViewerTabItem))]
+[ConstantsSource(typeof(MarkdownViewerModuleConstants))]
 internal class MarkdownViewerTabItem : TabItemInstanceBase, IMarkdownViewerTabItem, INotifyPropertyChanged
 {
     public MarkdownViewerTabItem(
-        ITabManager tabManager,
         ILifetimeScope lifetimeScope,
-        MarkdownSource? markdownSource) : base(lifetimeScope)
+        MutableTabReference tabReference,
+        MarkdownSource? markdownSource) : base(lifetimeScope, tabReference)
     {
-        TabManager = tabManager;
-
         if (markdownSource != null)
         {
             MarkdownSource = markdownSource;
             Uri = MarkdownRoute.BuildWithDocument(markdownSource.SourceUri);
         }
+    }
+
+    private MutableTabReference MutableTabReference => (MutableTabReference)TabReference;
+
+    public Uri Uri
+    {
+        get => MutableTabReference.Uri;
+        set => MutableTabReference.Uri = value;
     }
 
     public override string Title
@@ -33,7 +40,7 @@ internal class MarkdownViewerTabItem : TabItemInstanceBase, IMarkdownViewerTabIt
         {
             if (MarkdownSource == null)
             {
-                return Constants.Title;
+                return MarkdownViewerModuleConstants.Title;
             }
 
             return Uri.UnescapeDataString(MarkdownSource.SourceUri.Segments.Last());
@@ -43,7 +50,7 @@ internal class MarkdownViewerTabItem : TabItemInstanceBase, IMarkdownViewerTabIt
     public override object View => LifetimeScope.Resolve<MarkdownViewerView>(
         new TypedParameter(typeof(IMarkdownViewerTabItem), this));
 
-    private ITabManager TabManager { get; }
+    private ITabManager TabManager => LifetimeScope.Resolve<ITabManager>();
 
     public MarkdownSource? MarkdownSource { get; private set; }
 
@@ -68,17 +75,5 @@ internal class MarkdownViewerTabItem : TabItemInstanceBase, IMarkdownViewerTabIt
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-
-    public class Constants
-    {
-        public static string Host => "md";
-
-        public static string Title => "MarkdownViewer";
-
-        public static string Icon => "📄";
-
-        public static Uri Uri => UriTools.CreateAppUri(Host);
     }
 }

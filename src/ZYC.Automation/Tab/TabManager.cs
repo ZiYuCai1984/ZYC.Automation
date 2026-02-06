@@ -459,7 +459,7 @@ internal partial class TabManager : ITabManager
             if (instance == null)
             {
                 instance = LifetimeScope.Resolve<NotFoundTabItemInstance>(
-                    new TypedParameter(typeof(Uri), uri));
+                    new TypedParameter(typeof(TabReference), new TabReference(uri)));
                 AttachTabItemInstance(workspaceId, instance);
             }
         }
@@ -469,7 +469,7 @@ internal partial class TabManager : ITabManager
 
             instance = LifetimeScope.Resolve<ErrorTabItemInstance>(
                 new TypedParameter(typeof(Exception), e),
-                new TypedParameter(typeof(Uri), uri));
+                new TypedParameter(typeof(TabReference), new TabReference(uri)));
             AttachTabItemInstance(workspaceId, instance);
         }
         finally

@@ -22,8 +22,8 @@ internal class LanguageMainMenuItem : MainMenuItemsProvider
     {
         Info = new MenuItemInfo
         {
-            Title = LanguageTabItem.Constants.Title,
-            Icon = LanguageTabItem.Constants.DefaultIcon
+            Title = LanguageModuleConstants.Title,
+            Icon = LanguageModuleConstants.DefaultIcon
         };
 
         var languages = Enum.GetValues<LanguageType>();

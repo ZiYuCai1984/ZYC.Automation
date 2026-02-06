@@ -1,28 +1,18 @@
 ﻿using Autofac;
-using ZYC.Automation.Abstractions;
+using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core.Tab;
+using ZYC.Automation.Modules.ModuleManager.Abstractions;
 using ZYC.Automation.Modules.ModuleManager.UI;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.ModuleManager;
 
 [Register]
+[ConstantsSource(typeof(ModuleManagerModuleConstants.Local))]
 internal class LocalModuleTabItem : TabItemInstanceBase<LocalModuleManagerView>
 {
-    public LocalModuleTabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public LocalModuleTabItem(ILifetimeScope lifetimeScope, TabReference tabReference) : base(lifetimeScope,
+        tabReference)
     {
-    }
-
-    public class Constants
-    {
-        public static string Icon => "PuzzleOutline";
-
-        public static string Host => "modules";
-
-        public static string Path => "/local";
-
-        public static string Title => "Local Modules";
-
-        public static Uri Uri => UriTools.CreateAppUri(Host, Path);
     }
 }

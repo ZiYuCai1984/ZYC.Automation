@@ -1,4 +1,5 @@
 ﻿using ZYC.Automation.Abstractions;
+using ZYC.Automation.Modules.MarkdownViewer.Abstractions;
 
 namespace ZYC.Automation.Modules.MarkdownViewer;
 
@@ -7,7 +8,7 @@ public static class MarkdownRoute
 {
     public static string Scheme => ProductInfo.Scheme;
 
-    public static string Host => MarkdownViewerTabItem.Constants.Host;
+    public static string Host => MarkdownViewerModuleConstants.Host;
 
     public const string UriParam = "src";
 

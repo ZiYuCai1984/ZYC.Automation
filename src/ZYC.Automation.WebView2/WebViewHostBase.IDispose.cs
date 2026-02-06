@@ -18,8 +18,7 @@ public partial class WebViewHostBase
 
         InternalDispose();
 
-        Loaded -= OnWebViewHostLoaded;
-        DetachEvent();
+        CompositeDisposable.Dispose();
 
         WebView2.Dispose();
         InnerHttpClient.Dispose();

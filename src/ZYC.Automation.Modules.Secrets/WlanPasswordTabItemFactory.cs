@@ -1,4 +1,5 @@
-﻿using ZYC.Automation.Abstractions.Tab;
+﻿using Autofac;
+using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
@@ -13,7 +14,8 @@ internal class WlanPasswordTabItemFactory : ITabItemFactory
     {
         await Task.CompletedTask;
 
-        return context.Resolve<WlanPasswordTabItem>();
+        return context.Resolve<WlanPasswordTabItem>(
+            new TypedParameter(typeof(TabReference), new TabReference(context.Uri)));
     }
 
     public async Task<bool> CheckUriMatchedAsync(Uri uri)

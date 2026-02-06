@@ -1,4 +1,5 @@
 ﻿using ZYC.Automation.Abstractions.MainMenu;
+using ZYC.Automation.Modules.Aspire.Abstractions;
 using ZYC.Automation.Modules.Aspire.Commands;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
@@ -12,7 +13,7 @@ internal class DashboardMainMenuItem : MainMenuItem
         Info = new MenuItemInfo
         {
             Title = "Dashboard",
-            Icon = AspireTabItem.Constants.Icon
+            Icon = AspireModuleContansts.Icon
         };
 
         Command = navigateToDashboardCommand;

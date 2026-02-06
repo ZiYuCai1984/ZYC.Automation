@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using MahApps.Metro.IconPacks;
-using ZYC.Automation.Abstractions;
+using ZYC.Automation.Abstractions.Tab;
+using ZYC.Automation.Build.NewModule.Template.ZYC.Automation.Modules.Chronosynchronicity.Abstractions;
 using ZYC.Automation.Core.Tab;
 using ZYC.Automation.Modules.Chronosynchronicity.UI;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
@@ -9,20 +9,12 @@ using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 namespace ZYC.Automation.Modules.Chronosynchronicity;
 
 [Register]
+[ConstantsSource(typeof(ChronosynchronicityModuleConstants))]
 internal class ChronosynchronicityTabItem : TabItemInstanceBase<ChronosynchronicityView>
 {
-    public ChronosynchronicityTabItem(ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public ChronosynchronicityTabItem(
+        ILifetimeScope lifetimeScope,
+        TabReference tabReference) : base(lifetimeScope, tabReference)
     {
-    }
-
-    public class Constants
-    {
-        public static string Host => "chronosynchronicity";
-
-        public static string Title => "Chronosynchronicity";
-
-        public static string Icon => PackIconMaterialKind.Bug.ToString();
-
-        public static Uri Uri => UriTools.CreateAppUri(Host);
     }
 }

@@ -1,5 +1,7 @@
-﻿using ZYC.Automation.Abstractions.Tab;
+﻿using Autofac;
+using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.Settings.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.Settings;
@@ -11,13 +13,14 @@ internal class SettingsTabItemFactory : ITabItemFactory
     {
         await Task.CompletedTask;
 
-        return context.Resolve<SettingsTabItem>();
+        return context.Resolve<SettingsTabItem>(
+            new TypedParameter(typeof(TabReference), new TabReference(context.Uri)));
     }
 
     public async Task<bool> CheckUriMatchedAsync(Uri uri)
     {
         await Task.CompletedTask;
-        if (uri.Host == SettingsTabItem.Constants.Host)
+        if (uri.Host == SettingsModuleConstants.Host)
         {
             return true;
         }

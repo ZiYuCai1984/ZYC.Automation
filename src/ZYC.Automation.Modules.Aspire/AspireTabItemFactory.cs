@@ -1,5 +1,7 @@
-﻿using ZYC.Automation.Abstractions.Tab;
+﻿using Autofac;
+using ZYC.Automation.Abstractions.Tab;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.Aspire.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.Aspire;
@@ -13,13 +15,14 @@ internal class AspireTabItemFactory : ITabItemFactory
     {
         await Task.CompletedTask;
 
-        return context.Resolve<AspireTabItem>();
+        return context.Resolve<AspireTabItem>(new TypedParameter(
+            typeof(TabReference), new TabReference(context.Uri)));
     }
 
     public async Task<bool> CheckUriMatchedAsync(Uri uri)
     {
         await Task.CompletedTask;
-        if (uri.Host == AspireTabItem.Constants.Host)
+        if (uri.Host == AspireModuleContansts.Host)
         {
             return true;
         }

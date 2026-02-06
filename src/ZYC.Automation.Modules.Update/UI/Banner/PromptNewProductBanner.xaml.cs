@@ -25,7 +25,7 @@ internal partial class PromptNewProductBanner : IBanner
         NavigateCommand = new ActionCommand(_ =>
         {
             CloseBannerCommand.Execute(null);
-            navigateCommand.Execute(UpdateTabItem.Constants.Uri);
+            navigateCommand.Execute(UpdateModuleConstants.Uri);
         });
 
         InitializeComponent();
@@ -37,5 +37,4 @@ internal partial class PromptNewProductBanner : IBanner
 
     public NewProduct NewProduct { get; }
 
-    public Uri Uri => UpdateTabItem.Constants.Uri;
 }

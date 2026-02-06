@@ -9,7 +9,7 @@ namespace ZYC.Automation.Modules.Language;
 
 internal class Module : ModuleBase
 {
-    public override string Icon => LanguageTabItem.Constants.DefaultIcon;
+    public override string Icon => LanguageModuleConstants.DefaultIcon;
 
     public override async Task RegisterAsync(ContainerBuilder builder)
     {

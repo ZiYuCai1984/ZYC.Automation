@@ -24,7 +24,7 @@ internal class FileExplorerTabItemFactory : ITabItemFactory
     {
         await Task.CompletedTask;
         return context.Resolve<FileExplorerTabItem>(
-            new TypedParameter(typeof(Uri), context.Uri));
+            new TypedParameter(typeof(MutableTabReference), new MutableTabReference(context.Uri)));
     }
 
     public async Task<bool> CheckUriMatchedAsync(Uri uri)

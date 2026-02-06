@@ -1,7 +1,8 @@
-﻿using System.IO;
-using Autofac;
+﻿using Autofac;
+using System.IO;
 using ZYC.Automation.Abstractions;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.CLI.Abstractions;
 using ZYC.CoreToolkit;
 using ZYC.CoreToolkit.Extensions.Autofac;
 
@@ -9,7 +10,7 @@ namespace ZYC.Automation.Modules.CLI;
 
 internal class Module : ModuleBase
 {
-    public override string Icon => CLITabItem.Constants.Icon;
+    public override string Icon => CLIModuleConstants.Icon;
 
     public override Task LoadAsync(ILifetimeScope lifetimeScope)
     {

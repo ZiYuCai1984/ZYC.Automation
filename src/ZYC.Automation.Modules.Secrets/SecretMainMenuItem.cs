@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using ZYC.Automation.Abstractions.MainMenu;
 using ZYC.Automation.Core;
+using ZYC.Automation.Modules.Secrets.Abstractions;
 using ZYC.CoreToolkit.Extensions.Autofac.Attributes;
 
 namespace ZYC.Automation.Modules.Secrets;
@@ -12,10 +13,10 @@ internal class SecretMainMenuItem : MainMenuItem
     {
         Info = new MenuItemInfo
         {
-            Title = SecretsTabItem.Constants.Title,
-            Icon = SecretsTabItem.Constants.Icon
+            Title = SecretsModuleConstants.Title,
+            Icon = SecretsModuleConstants.Icon
         };
 
-        Command = lifetimeScope.CreateNavigateCommand(SecretsTabItem.Constants.Uri);
+        Command = lifetimeScope.CreateNavigateCommand(SecretsModuleConstants.Uri);
     }
 }

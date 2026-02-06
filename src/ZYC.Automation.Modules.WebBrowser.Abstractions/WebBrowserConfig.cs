@@ -4,5 +4,5 @@ namespace ZYC.Automation.Modules.WebBrowser.Abstractions;
 
 public class WebBrowserConfig : IConfig
 {
-    public string StartupPage { get; set; } = "https://google.com";
+    public string StartupUri { get; set; } = "https://google.com";
 }

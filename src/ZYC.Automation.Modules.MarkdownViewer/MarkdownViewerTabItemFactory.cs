@@ -26,14 +26,15 @@ internal class MarkdownViewerTabItemFactory : ITabItemFactory
         }
 
         return context.Resolve<MarkdownViewerTabItem>(
-            new TypedParameter(typeof(MarkdownSource), markdownSource));
+            new TypedParameter(typeof(MarkdownSource), markdownSource),
+            new TypedParameter(typeof(MutableTabReference), new MutableTabReference(context.Uri)));
     }
 
     public async Task<bool> CheckUriMatchedAsync(Uri uri)
     {
         await Task.CompletedTask;
 
-        if (uri.Host == MarkdownViewerTabItem.Constants.Host)
+        if (uri.Host == MarkdownViewerModuleConstants.Host)
         {
             return true;
         }

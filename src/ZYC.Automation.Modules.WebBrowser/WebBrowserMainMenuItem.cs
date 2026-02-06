@@ -11,14 +11,13 @@ public class WebBrowserMainMenuItem : MainMenuItem
 {
     public WebBrowserMainMenuItem(
         ILifetimeScope lifetimeScope,
-        WebBrowserConfig webBrowserConfig,
-        IToolsMainMenuItemsProvider toolsMainMenuItemsProvider)
+        WebBrowserConfig webBrowserConfig)
     {
-        Command = lifetimeScope.CreateNavigateCommand(new Uri(webBrowserConfig.StartupPage));
+        Command = lifetimeScope.CreateNavigateCommand(new Uri(webBrowserConfig.StartupUri));
         Info = new MenuItemInfo
         {
-            Title = WebBrowserTabItem.Constants.MenuTitle,
-            Icon = WebBrowserTabItem.Constants.MenuIcon
+            Title = WebBrowserModuleConstants.MenuTitle,
+            Icon = WebBrowserModuleConstants.MenuIcon
         };
     }
 }

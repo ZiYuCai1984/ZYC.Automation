@@ -9,19 +9,15 @@ namespace ZYC.Automation.Tab.BuildIn;
 [RegisterAs(typeof(NotFoundTabItemInstance), typeof(INotFoundTabItemInstance))]
 internal class NotFoundTabItemInstance : TabItemInstanceBase<NotFoundView>, INotFoundTabItemInstance
 {
-    public NotFoundTabItemInstance(Uri uri, ILifetimeScope lifetimeScope) : base(lifetimeScope)
+    public NotFoundTabItemInstance(ILifetimeScope lifetimeScope, TabReference tabReference) : base(lifetimeScope, tabReference)
     {
-        Uri = uri;
+        
     }
 
     public static class Constants
     {
-        public static string Host => UriTools.TempHost;
-
         public static string Title => "Page not found";
 
         public static string Icon => "BugOutline";
-
-        public static Uri Uri => UriTools.CreateAppUri(Host);
     }
 }

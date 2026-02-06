@@ -38,7 +38,7 @@ internal partial class TaskManagerStatusBarItemView : IDisposable, INotifyProper
 
     private ITaskManager TaskManager { get; }
 
-    public Uri Uri => TaskManagerTabItem.Constants.Uri;
+    public Uri Uri => TaskManagerModuleConstants.Uri;
 
     public string RunningTaskNum
     {
